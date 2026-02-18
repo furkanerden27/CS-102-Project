@@ -9,13 +9,13 @@ public class Core extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        // İlk açılacak ekranı set ediyoruz
+        // Setting the first screen
         this.setScreen(new PlayScreen(this));
     }
 
     @Override
     public void render() {
-        // Super.render() mutlaka kalmalı, aktif ekranın render'ını çağırır
+        // Super.render() must always stay, it calls the render of the active screen
         super.render();
     }
 
