@@ -40,7 +40,6 @@ public class Dice {
         currentFrame = diceAnimation.getKeyFrame(stateTime);
     }
 
-
     private void handleInput(float worldX, float worldY) {
         if (Gdx.input.justTouched() && 
             (worldX >= posx && worldX <= posx + currentFrame.getRegionWidth()) && 
