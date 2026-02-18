@@ -25,6 +25,14 @@ public abstract class Entity {
         isAlive = true;
     }
 
+    public void getDamage(int damage) {
+        health -= damage;
+    }
+
+    public void heal(int heal) {
+        health += heal;
+    }
+
     
 
 
