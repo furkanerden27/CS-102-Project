@@ -2,17 +2,17 @@ package io.github.furkanerden27.TestGameV3;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Entity extends Sprite {
-    /*Implementation od this class is incomplete */
+    /*Implementation of this class is incomplete */
     protected final double MAX_HEALTH;
     protected double health;
     protected boolean isAlive; // can be removed
     protected int gold;
-    protected TextureRegion[] EntityImages;
-    protected final Animation<TextureRegion> ENTITY_ANIMATION;
+    protected String direction;
+    protected TextureRegion[][] entityImages;
+    protected Animation<TextureRegion>[] animations;
 
     /* TODO a private arrylist of effects (buffs or debuffs) should be added when they are made */
 
@@ -20,11 +20,9 @@ public abstract class Entity extends Sprite {
     protected float stateTime = 0f;
     
 
-    public Entity(TextureRegion[] EntityImages, double health, float posX, float posY) {
-        this.EntityImages = EntityImages;
-        ENTITY_ANIMATION = new Animation<>(1f, EntityImages); /* can be changed later 
-        just a demo for now */
+    public Entity(double health, float posX, float posY) {
         MAX_HEALTH = health;
+        direction = "";
         this.health = MAX_HEALTH;
         setX(posX);
         setY(posY);
@@ -45,9 +43,6 @@ public abstract class Entity extends Sprite {
 
     public abstract void move();
 
-    public abstract void draw(SpriteBatch batch);
-
     public abstract void update(float deltaTime);
-
     
 }
