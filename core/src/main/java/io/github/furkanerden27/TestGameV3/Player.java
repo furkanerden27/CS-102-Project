@@ -2,23 +2,56 @@ package io.github.furkanerden27.TestGameV3;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity {
-    /*Implementation od this class is incomplete */
-    private final float GRAVITY = 10, FRICTION = 10, ACC = 10, MAX_SPEED = 200, FLIGTH_TIME = 5;
-    private float speedX, speedY;
+    /*Implementation of this class is incomplete */
+    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 25, MAX_SPEED = 200, JUMP_SPEED = 100;
+    
+    
+    private Texture playerTexture;
+    private TiledMapTileLayer collisionLayer;
 
-    public Player(TextureRegion[] EntityImages, double health, float posX, float posY) {
-        super(EntityImages, health, posX, posY);
-        /* TODO Images and the animations of the player will be initalized after they are decided */
+    private Animation<TextureRegion> standing;
+    
+    private float speedX, speedY;
+    private boolean isOnGround;
+
+    public Player(double health, float posX, float posY, TiledMap map) {
+        super(health, posX, posY);
+        /* TODO Animations of the player will be initalized after they are decided */
+        
+        playerTexture = new Texture("maincharacter.png");
+
+        entityImages = TextureRegion.split(playerTexture, 32, 32);
+        animations = new Animation[entityImages.length];
+
+        setRegion(entityImages[0][0]); // to test the code for now
+        setSize(32, 32);
+
+        collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
+        setAnimations();
         gold = 0;
         speedX = 0;
         speedY = 0;
+        isOnGround = false;
+        
     }
 
+    private void setAnimations() {
+        for (int i = 0; i < entityImages.length; i++) {
+            animations[i] = new Animation<>(0.1f, entityImages[i]); // frame duration can be changed
+        }
+        standing = animations[0];
+    }
+
+
     private void handleInput() {
+
         /* getting the input to update the speeds (S is not implemented yet)*/
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             speedX -= ACC;
@@ -26,9 +59,12 @@ public class Player extends Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             speedX += ACC;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            speedY += GRAVITY * FLIGTH_TIME / 2;
+        if (Gdx.input.isKeyPressed(Input.Keys.W) && isOnGround) {
+            speedY = JUMP_SPEED;
+            isOnGround = false;
+            
         }
+        //--------------------------------------------------------------------------
         /* limiting the speeds to a maximum value */
         
         if(Math.abs(speedX) > MAX_SPEED) {
@@ -43,43 +79,68 @@ public class Player extends Entity {
         else {
             speedX = 0;
         }
-        if(Math.abs(speedY) > GRAVITY) {
-            speedY -= GRAVITY * Math.signum(speedY);
-        } 
-        else {
-            speedY = 0;
+        //---------------------------------------------------------------------------------------
+        /* deciding on the direction of the player */
+        if(speedX == 0) {
+            direction = "still";
         }
-    }
-
-    private boolean isCollision(float nextX, float nextY) {
-        /*TODO will be done when tiled map is made */
-        return false;
-    }
-
-    @Override
-    public void draw(SpriteBatch batch) {
-        // TODO Auto-generated method stub
+        else if(speedX > 0) {
+            direction = "right";
+        }
+        else {
+            direction = "left";
+        }
+        //-----------------------------------------------------------------------------------------
         
+    }
+    
+    private boolean isCollision(float x, float y) {
+        float playerWidth = getWidth();
+        float playerHeight = getHeight();
+
+        return checkTile(x, y) || checkTile(x + playerWidth, y) || // left and right down
+            checkTile(x, y + playerHeight) || checkTile(x + playerWidth, y + playerHeight); // left and right up
+    }
+
+    private boolean checkTile(float x, float y) {
+        int tileX = (int) (x / collisionLayer.getTileWidth());
+        int tileY = (int) (y / collisionLayer.getTileHeight());
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        return (cell != null);
     }
 
     @Override
     public void move() {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void update(float deltaTime) {
         handleInput();
         speedY -= GRAVITY; 
+        
 
         float nextX = getX() + speedX * deltaTime;
         float nextY = getY() + speedY * deltaTime;
 
-        if (!isCollision(nextX, nextY)) {
-            setPosition(nextX, nextY);
+        /* updating the coorinates of the player 
+        two controlls are necessary to keeping the other movement when hitting a wall*/
+        // x coordinates
+        if (!isCollision(nextX, getY())) {
+            setX(nextX);
         } 
         else {
+            speedX = 0;
+        }
+        // y coordinates
+        if (!isCollision(getX(), nextY)) {
+            setY(nextY);
+            isOnGround = false;
+        } 
+        else {
+            if (speedY < 0) {
+                isOnGround = true;
+            }
             speedY = 0;
         }
 

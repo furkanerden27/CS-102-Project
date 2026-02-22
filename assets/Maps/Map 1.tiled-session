@@ -1,0 +1,42 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "Player.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Sky.tsx": {
+            "dynamicWrapping": false
+        },
+        "Wasteland.tsx": {
+            "dynamicWrapping": false
+        }
+    },
+    "last.imagePath": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets",
+    "map.height": 20,
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "2",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 300,
+    "openFiles": [
+    ],
+    "project": "Map 1.tiled-project",
+    "recentFiles": [
+        "Player.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 1
+}
