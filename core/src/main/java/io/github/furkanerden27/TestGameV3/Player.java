@@ -10,18 +10,19 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity {
     /*Implementation of this class is incomplete */
-    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 25, MAX_SPEED = 200, JUMP_SPEED = 100;
+    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 100;
     
     
     private Texture playerTexture;
     private TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer distanceLayer;
 
-    private Animation<TextureRegion> standing;
+    private Animation<TextureRegion> standing; /*TODO make it [] */
     
     private float speedX, speedY;
     private boolean isOnGround;
 
-    public Player(double health, float posX, float posY, TiledMap map) {
+    public Player(float health, float posX, float posY, TiledMap map) {
         super(health, posX, posY);
         /* TODO Animations of the player will be initalized after they are decided */
         
@@ -31,11 +32,11 @@ public class Player extends Entity {
         animations = new Animation[entityImages.length];
 
         setRegion(entityImages[0][0]); // to test the code for now
-        setSize(32, 32);
+        setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
         setAnimations();
-        gold = 0;
+        goldDropped = 0;
         speedX = 0;
         speedY = 0;
         isOnGround = false;
@@ -107,11 +108,6 @@ public class Player extends Entity {
         int tileY = (int) (y / collisionLayer.getTileHeight());
         TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
         return (cell != null);
-    }
-
-    @Override
-    public void move() {
-        // TODO Auto-generated method stub
     }
 
     @Override

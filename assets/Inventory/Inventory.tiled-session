@@ -1,0 +1,104 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx": {
+            "scale": 2,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 250.5,
+                "y": 173.25
+            }
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Mountains.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Mountains_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Sky.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Wasteland.tsx": {
+            "scaleInDock": 1
+        },
+        "Cards.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Cards_Final.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Cards_Tiled.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Inventory.tmx": {
+            "scale": 2.1355208333333335,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 391.0053168138139,
+                "y": 187.0738012779864
+            }
+        },
+        "Inventory.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Inventory1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "MergedCards.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "Stone_UI_Sprite_Sheet.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        }
+    },
+    "last.imagePath": "C:/Users/furkan/Downloads",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "Inventory1.tsx",
+        "Inventory.tmx",
+        "Stone_UI_Sprite_Sheet.tsx",
+        "Cards_Tiled.tsx",
+        "Cards_Final.tsx",
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx"
+    ],
+    "project": "Inventory.tiled-project",
+    "recentFiles": [
+        "Inventory1.tsx",
+        "Inventory.tmx",
+        "Stone_UI_Sprite_Sheet.tsx",
+        "Cards_Tiled.tsx",
+        "Cards_Final.tsx",
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx",
+        "MergedCards.tsx",
+        "Cards.tsx",
+        "Inventory.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 0
+}

@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Entity extends Sprite {
     /*Implementation of this class is incomplete */
-    protected final double MAX_HEALTH;
-    protected double health;
+    protected float maxHealth;
+    protected float health;
     protected boolean isAlive; // can be removed
-    protected int gold;
+    protected int goldDropped;
     protected String direction;
     protected TextureRegion[][] entityImages;
     protected Animation<TextureRegion>[] animations;
@@ -20,28 +20,30 @@ public abstract class Entity extends Sprite {
     protected float stateTime = 0f;
     
 
-    public Entity(double health, float posX, float posY) {
-        MAX_HEALTH = health;
+    public Entity(float health, float posX, float posY) {
+        maxHealth = health;
         direction = "";
-        this.health = MAX_HEALTH;
+        this.health = maxHealth;
         setX(posX);
         setY(posY);
         isAlive = true;
     }
 
-    public void getDamage(int damage) {
+    public void takeDamage(float  damage) {
         health = Math.max(0, health - damage);
         if(health == 0) {
             isAlive = false;
         }
     }
 
-    public void heal(int heal) {
-        health = Math.min(MAX_HEALTH, health + heal);
-        
+    public void heal(float  heal) {
+        health = Math.min(maxHealth, health + heal);
     }
 
-    public abstract void move();
+    public void addMaxHealth(float  heal) {
+        health += heal;
+        maxHealth += heal;
+    }
 
     public abstract void update(float deltaTime);
     

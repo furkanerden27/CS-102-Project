@@ -3,24 +3,76 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "background3.tsx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "Map 1.tmx": {
+            "scale": 2,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 2557.5,
+                "y": 188.75
+            }
+        },
+        "Map 2.tmx": {
+            "scale": 1,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 2715,
+                "y": 217.5
+            }
+        },
+        "Map 3.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 688,
+                "y": 262.99999999999994
+            }
+        },
+        "Mountains.tsx": {
+            "scaleInDock": 1
+        },
+        "Mountains_2.tsx": {
+            "scaleInDock": 1
+        },
         "Player.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Sky.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1
         },
         "Wasteland.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 2
+        },
+        "background3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "gothic-castle-background.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "gothic-castle-tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "main_lev_buildA.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "main_lev_buildB.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
-    "last.imagePath": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets",
+    "last.imagePath": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/environment/5-6",
     "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.renderOrder": "2",
@@ -28,9 +80,22 @@
     "map.tileWidth": 16,
     "map.width": 300,
     "openFiles": [
+        "Map 1.tmx",
+        "Map 2.tmx",
+        "main_lev_buildA.tsx",
+        "main_lev_buildB.tsx",
+        "background3.tsx"
     ],
     "project": "Map 1.tiled-project",
     "recentFiles": [
+        "Map 1.tmx",
+        "Map 2.tmx",
+        "main_lev_buildA.tsx",
+        "main_lev_buildB.tsx",
+        "background3.tsx",
+        "gothic-castle-tileset.tsx",
+        "gothic-castle-background.tsx",
+        "Map 3.tmx",
         "Player.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
@@ -38,5 +103,5 @@
         "height": 16,
         "width": 16
     },
-    "tileset.type": 1
+    "tileset.type": 0
 }
