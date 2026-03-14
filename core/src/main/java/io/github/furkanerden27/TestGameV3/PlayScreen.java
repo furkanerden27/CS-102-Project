@@ -30,16 +30,11 @@ public class PlayScreen implements Screen {
     public PlayScreen(Core game) {
         this.game = game;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(600, 400, camera);
+        viewport = new FitViewport(450, 250, camera);
         map = new TmxMapLoader().load("Maps/Map 1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map); 
-        player = new Player(100, 50, 50, map);
-        dice1 = new Dice(game.batch, -16, -16);
-        dice2 = new Dice(game.batch, 50, 50);
+        player = new Player(100, 200, 200, map);
         touchPoint = new Vector3();
-        dices = new ArrayList<>(); 
-        dices.add(dice1);
-        dices.add(dice2);
     }
 
     @Override
@@ -62,13 +57,6 @@ public class PlayScreen implements Screen {
         player.draw(game.batch); // Player Sprite olduğu için draw metoduna batch verebiliriz
         game.batch.end();
 
-        /*game.batch.setProjectionMatrix(viewport.getCamera().combined);
-        viewport.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-        game.batch.begin();
-        for (Dice dice : dices) {
-            dice.draw(touchPoint.x, touchPoint.y);
-        }
-        game.batch.end();*/
     }
 
     private void handleInput() {}
