@@ -1,7 +1,5 @@
 package io.github.furkanerden27.TestGameV3;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,14 +8,18 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity {
     /*Implementation of this class is incomplete */
-    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 100;
-    
+    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     
     private Texture playerTexture;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer distanceLayer;
-
-    private Animation<TextureRegion> standing; /*TODO make it [] */
+    
+    private Animation<TextureRegion> standingRight;
+    private Animation<TextureRegion> standingLeft;
+    private Animation<TextureRegion> walkingRight;
+    private Animation<TextureRegion> walkingLeft;
+    private Animation<TextureRegion> jumpingRight;
+    private Animation<TextureRegion> jumpingLeft;
     
     private float speedX, speedY;
     private boolean isOnGround;
@@ -26,16 +28,17 @@ public class Player extends Entity {
         super(health, posX, posY);
         /* TODO Animations of the player will be initalized after they are decided */
         
-        playerTexture = new Texture("maincharacter.png");
+        playerTexture = new Texture("Entities/maincharacter.png");
 
         entityImages = TextureRegion.split(playerTexture, 32, 32);
         animations = new Animation[entityImages.length];
 
-        setRegion(entityImages[0][0]); // to test the code for now
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-        setAnimations();
+        //distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
+        int[] frameCounts = {2, 2, 4, 8, 6, 8, 3, 8, 8};
+        setAnimations(frameCounts);
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
@@ -43,29 +46,37 @@ public class Player extends Entity {
         
     }
 
-    private void setAnimations() {
-        for (int i = 0; i < entityImages.length; i++) {
-            animations[i] = new Animation<>(0.1f, entityImages[i]); // frame duration can be changed
-        }
-        standing = animations[0];
+    @Override
+    protected void setAnimations(int[] frameCounts) {
+        super.setAnimations(frameCounts);
+        
+        standingRight = animations[0];
+        standingLeft = getFlippedAnimation(standingRight);
+        walkingRight = animations[3];
+        walkingLeft = getFlippedAnimation(walkingRight);
+        jumpingRight = animations[5];
+        jumpingLeft = getFlippedAnimation(jumpingRight);
     }
 
+    
 
-    private void handleInput() {
+    // to handle input in PlayScreen
+    public void moveLeft() {
+        speedX -= ACC;
+    }
 
-        /* getting the input to update the speeds (S is not implemented yet)*/
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            speedX -= ACC;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            speedX += ACC;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && isOnGround) {
+    public void moveRight() {
+        speedX += ACC;
+    }
+
+    public void jump() {
+        if (isOnGround) {
             speedY = JUMP_SPEED;
             isOnGround = false;
-            
         }
-        //--------------------------------------------------------------------------
+    }
+
+    private void handleInput() {
         /* limiting the speeds to a maximum value */
         
         if(Math.abs(speedX) > MAX_SPEED) {
@@ -79,20 +90,41 @@ public class Player extends Entity {
         } 
         else {
             speedX = 0;
-        }
-        //---------------------------------------------------------------------------------------
-        /* deciding on the direction of the player */
-        if(speedX == 0) {
-            direction = "still";
-        }
-        else if(speedX > 0) {
+        }    
+        handleAnimation();
+    }
+
+    private void handleAnimation() {
+        /* deciding on the direction and the animation of the player */
+        if(speedX > 0) {
             direction = "right";
         }
-        else {
+        else if(speedX < 0) {
             direction = "left";
         }
-        //-----------------------------------------------------------------------------------------
-        
+
+        if (!isOnGround) {
+            if (direction.equals("right")) {
+                currentAnimation = jumpingRight;
+            }
+            else {
+                currentAnimation = jumpingLeft;
+            }
+        }
+        else if (speedX == 0) {
+            if (direction.equals("right")) {
+                currentAnimation = standingRight;
+            }
+            else {
+                currentAnimation = standingLeft;
+            }
+        }
+        else if(direction.equals("right")) {
+            currentAnimation = walkingRight;
+        }
+        else {
+            currentAnimation = walkingLeft;
+        }
     }
     
     private boolean isCollision(float x, float y) {
@@ -120,7 +152,7 @@ public class Player extends Entity {
         float nextY = getY() + speedY * deltaTime;
 
         /* updating the coorinates of the player 
-        two controlls are necessary to keeping the other movement when hitting a wall*/
+        two controlls are necessary to keeping the other movement when hitting a wall */
         // x coordinates
         if (!isCollision(nextX, getY())) {
             setX(nextX);
@@ -131,7 +163,7 @@ public class Player extends Entity {
         // y coordinates
         if (!isCollision(getX(), nextY)) {
             setY(nextY);
-            isOnGround = false;
+            isOnGround = false; 
         } 
         else {
             if (speedY < 0) {
@@ -141,6 +173,5 @@ public class Player extends Entity {
         }
 
         stateTime += deltaTime;
-    }
-    
+    } 
 }
