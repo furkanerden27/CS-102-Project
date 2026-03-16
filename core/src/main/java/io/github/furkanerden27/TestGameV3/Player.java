@@ -1,6 +1,5 @@
 package io.github.furkanerden27.TestGameV3;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -9,8 +8,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 public class Player extends Entity {
     /*Implementation of this class is incomplete */
     private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
-    
-    private Texture playerTexture;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer distanceLayer;
     
@@ -20,30 +17,28 @@ public class Player extends Entity {
     private Animation<TextureRegion> walkingLeft;
     private Animation<TextureRegion> jumpingRight;
     private Animation<TextureRegion> jumpingLeft;
+    private Animation<TextureRegion> attackRight;
+    private Animation<TextureRegion> attackLeft;
+    private Animation<TextureRegion> dieRight;
+    private Animation<TextureRegion> dieLeft;
+    
     
     private float speedX, speedY;
     private boolean isOnGround;
 
     public Player(float health, float posX, float posY, TiledMap map) {
         super(health, posX, posY);
-        /* TODO Animations of the player will be initalized after they are decided */
-        
-        playerTexture = new Texture("Entities/maincharacter.png");
-
-        entityImages = TextureRegion.split(playerTexture, 32, 32);
-        animations = new Animation[entityImages.length];
-
+        // Animations are driven from the Atlas rather than loading a raw PNG.
+        initAnimationsFromAtlas("maincharacter", 
+            32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
         //distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
-        int[] frameCounts = {2, 2, 4, 8, 6, 8, 3, 8, 8};
-        setAnimations(frameCounts);
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
         isOnGround = false;
-        
     }
 
     @Override
@@ -56,9 +51,11 @@ public class Player extends Entity {
         walkingLeft = getFlippedAnimation(walkingRight);
         jumpingRight = animations[5];
         jumpingLeft = getFlippedAnimation(jumpingRight);
+        dieRight = animations[7];
+        dieLeft = getFlippedAnimation(dieRight);
+        attackRight = animations[8];
+        attackLeft = getFlippedAnimation(attackRight);
     }
-
-    
 
     // to handle input in PlayScreen
     public void moveLeft() {

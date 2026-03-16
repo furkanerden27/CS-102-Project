@@ -19,9 +19,7 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private Player player; 
     private OrthographicCamera camera;
-    private Gluttony gluttony;
     private ArrayList<Entity> entities;
-
     private float stateTime = 0;
 
 
@@ -39,8 +37,12 @@ public class PlayScreen implements Screen {
         entities = new ArrayList<>();
         player = new Player(100, 200, 200, map);
         entities.add(player);
-        gluttony = new Gluttony(1000, 100);
-        entities.add(gluttony);
+        Pride pride = new Pride(1000, 100);
+        entities.add(pride);
+        Envy envy = new Envy(1200, 60);
+        entities.add(envy);
+        Wrath wrath = new Wrath(1300, 60);
+        entities.add(wrath);
     }
 
     @Override
@@ -91,7 +93,5 @@ public class PlayScreen implements Screen {
     @Override public void hide() {} // when screen is changed
     @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void dispose() {
-
-    }
+    @Override public void dispose() {}
 }

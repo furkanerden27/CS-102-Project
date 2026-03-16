@@ -1,8 +1,10 @@
 package io.github.furkanerden27.TestGameV3;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class Entity extends Sprite {
@@ -30,6 +32,39 @@ public abstract class Entity extends Sprite {
         setY(posY);
         isAlive = true;
     }
+
+    protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("Atlas/Entities.atlas"));
+        TextureRegion region = atlas.findRegion(regionName);
+        initAnimationsFromRegion(region, tileWidth, tileHeight, frameCounts);
+    }
+
+    // Initialize animations from a single TextureRegion
+    private void initAnimationsFromRegion(TextureRegion region, int tileWidth, int tileHeight, int[] frameCounts) {
+        entityImages = splitRegion(region, tileWidth, tileHeight);
+        animations = new Animation[entityImages.length];
+        setAnimations(frameCounts);
+    }
+
+    
+    private static TextureRegion[][] splitRegion(TextureRegion region, int tileWidth, int tileHeight) {
+        int cols = region.getRegionWidth() / tileWidth;
+        int rows = region.getRegionHeight() / tileHeight;
+        TextureRegion[][] tiles = new TextureRegion[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                tiles[i][j] = new TextureRegion(
+                    region.getTexture(),
+                    region.getRegionX() + j * tileWidth,
+                    region.getRegionY() + i * tileHeight,
+                    tileWidth, tileHeight
+                );
+            }
+        }
+        return tiles;
+    }
+    
 
     public void takeDamage(float  damage) {
         health = Math.max(0, health - damage);
@@ -74,5 +109,5 @@ public abstract class Entity extends Sprite {
     public void draw(Batch batch) {
         batch.draw(currentAnimation.getKeyFrame(stateTime, true), getX(), getY(), getWidth(), getHeight());
     }
-    
+
 }
