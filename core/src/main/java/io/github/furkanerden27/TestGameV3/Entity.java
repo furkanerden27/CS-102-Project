@@ -60,7 +60,10 @@ public abstract class Entity extends Sprite {
     }
 
     public void applyEffects(){
-        //TODO
+        for(Effect e : effectsInFight){
+            e.applyEffect(this);
+        }
+        removeListedEffects();
     }
 
     public void addEffect(Effect e){
