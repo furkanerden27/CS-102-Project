@@ -107,5 +107,10 @@ public abstract class Entity extends Sprite {
             effectsInFight.remove(e);
         }
     }
-    
+    public int getGold(){
+        return goldDropped;
+    }
+    public void removeAllEffects(){
+        effectsInFight.clear();
+    }
 }

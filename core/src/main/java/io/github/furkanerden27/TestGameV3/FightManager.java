@@ -29,12 +29,20 @@ public class FightManager {
             mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
             player.setAttackModifier(0);
         }
+        endFight();
     }
 
     private void playerTurn(){
         //TODO
     }
     private void mobTurn(){
+        //TODO
+    }
+
+    private void endFight(){
+        mob.removeAllEffects();
+        player.removeAllEffects();
+        player.addGold(mob.getGold());
         //TODO
     }
     

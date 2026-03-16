@@ -177,6 +177,11 @@ public class Player extends Entity{
 
         stateTime += deltaTime;
     }
+
+    public void addGold(int gold){
+        goldDropped += gold;
+        //TODO INVENTORY EKLENINCE INVENTORYDEKI MONEYI ARTTIRACAK
+    }
     
     public void setAttackModifier(float m){
         attackModifier = m;
