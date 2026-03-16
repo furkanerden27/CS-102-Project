@@ -3,16 +3,39 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 499,
+                "y": 160.5
+            }
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Mountains.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Mountains_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Sky.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Wasteland.tsx": {
+            "scaleInDock": 1
+        }
     },
     "map.height": 40,
     "map.width": 600,
     "openFiles": [
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx"
     ],
     "project": "Level 1 Map.tiled-project",
     "recentFiles": [
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx"
     ]
 }

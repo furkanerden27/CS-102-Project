@@ -3,6 +3,7 @@ package io.github.furkanerden27.TestGameV3;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,6 +16,7 @@ public abstract class Entity extends Sprite {
     protected String direction;
     protected TextureRegion[][] entityImages;
     protected Animation<TextureRegion>[] animations;
+    protected Animation<TextureRegion> currentAnimation;
     protected boolean isStunned;
 
     /* TODO a private arrylist of effects (buffs or debuffs) should be added when they are made */
@@ -54,6 +56,32 @@ public abstract class Entity extends Sprite {
     }
 
     public abstract void update(float deltaTime);
+
+    public Animation<TextureRegion> getFlippedAnimation(Animation<TextureRegion> animation) {
+        Object[] originalFrames = animation.getKeyFrames();
+        TextureRegion[] flippedFrames = new TextureRegion[originalFrames.length];
+
+        for (int i = 0; i < originalFrames.length; i++) {
+            flippedFrames[i] = new TextureRegion((TextureRegion) originalFrames[i]);
+            flippedFrames[i].flip(true, false);
+        }
+        return new Animation<>(animation.getFrameDuration(), flippedFrames);
+    }
+
+    protected void setAnimations(int[] frameCounts) {
+        for (int i = 0; i < entityImages.length; i++) {
+            TextureRegion[] frames = new TextureRegion[frameCounts[i]];
+            for (int j = 0; j < frameCounts[i]; j++) {
+                frames[j] = entityImages[i][j];
+            }
+            animations[i] = new Animation<>(1f / frames.length, frames);
+        }
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        batch.draw(currentAnimation.getKeyFrame(stateTime, true), getX(), getY(), getWidth(), getHeight());
+    }
 
     public void setStun(boolean isStunned){
         this.isStunned = isStunned;
