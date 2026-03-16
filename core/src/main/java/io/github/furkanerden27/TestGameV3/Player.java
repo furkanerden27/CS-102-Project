@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
-public class Player extends Entity {
+public class Player extends Entity{
     /*Implementation of this class is incomplete */
     private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
@@ -26,6 +26,8 @@ public class Player extends Entity {
     private float speedX, speedY;
     private boolean isOnGround;
 
+    private float attackModifier; // TODO bu hasar veren kartların hassarına eklenecek. Strengthen ve Weaken Efektleri bunu değiştirecek. 
+
     public Player(float health, float posX, float posY, TiledMap map) {
         super(health, posX, posY);
         // Animations are driven from the Atlas rather than loading a raw PNG.
@@ -38,6 +40,7 @@ public class Player extends Entity {
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
+        
         isOnGround = false;
     }
 
@@ -170,5 +173,14 @@ public class Player extends Entity {
         }
 
         stateTime += deltaTime;
-    } 
+    }
+
+    public void addGold(int gold){
+        goldDropped += gold;
+        //TODO INVENTORY EKLENINCE INVENTORYDEKI MONEYI ARTTIRACAK
+    }
+    
+    public void setAttackModifier(float m){
+        attackModifier = m;
+    }
 }
