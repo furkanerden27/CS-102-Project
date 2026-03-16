@@ -1,10 +1,17 @@
 package io.github.furkanerden27.TestGameV3;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Sloth extends Boss {
+    
+    private Animation<TextureRegion> standing;
 
     public Sloth(float posX, float posY) {
         super(posX, posY);
-        //TODO Auto-generated constructor stub
+        initAnimationsFromAtlas("Sloth", 
+            64, 64, new int[]{16});
+        setSize(32,32);
     }
 
     @Override
@@ -15,8 +22,14 @@ public class Sloth extends Boss {
 
     @Override
     public void update(float deltaTime) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        stateTime += deltaTime;
+    }
+
+    @Override
+    protected void setAnimations(int[] frameCounts) {
+        super.setAnimations(frameCounts);
+        standing = getFlippedAnimation(animations[0]);
+        currentAnimation = standing;
     }
     
 }
