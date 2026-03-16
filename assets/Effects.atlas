@@ -1,0 +1,15 @@
+Effects.png
+size:2048,1024
+repeat:none
+Bleeding
+bounds:516,187,350,350
+Lure
+bounds:1392,549,378,380
+Poison
+bounds:2,417,512,512
+Strengthen
+bounds:516,539,443,390
+Stun
+bounds:961,580,429,349
+Weaken
+bounds:2,2,469,413
