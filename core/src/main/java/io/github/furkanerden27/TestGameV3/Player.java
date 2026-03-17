@@ -36,7 +36,7 @@ public class Player extends Entity{
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-        //distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
+        distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
@@ -127,18 +127,18 @@ public class Player extends Entity{
         }
     }
     
-    private boolean isCollision(float x, float y) {
+    private boolean isCollision(float x, float y, TiledMapTileLayer layer) {
         float playerWidth = getWidth();
         float playerHeight = getHeight();
 
-        return checkTile(x, y) || checkTile(x + playerWidth, y) || // left and right down
-            checkTile(x, y + playerHeight) || checkTile(x + playerWidth, y + playerHeight); // left and right up
+        return checkTile(x, y, layer) || checkTile(x + playerWidth, y, layer) || // left and right down
+            checkTile(x, y + playerHeight, layer) || checkTile(x + playerWidth, y + playerHeight, layer); // left and right up
     }
 
-    private boolean checkTile(float x, float y) {
-        int tileX = (int) (x / collisionLayer.getTileWidth());
-        int tileY = (int) (y / collisionLayer.getTileHeight());
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+    private boolean checkTile(float x, float y, TiledMapTileLayer layer) {
+        int tileX = (int) (x / layer.getTileWidth());
+        int tileY = (int) (y / layer.getTileHeight());
+        TiledMapTileLayer.Cell cell = layer.getCell(tileX, tileY);
         return (cell != null);
     }
 
@@ -154,14 +154,14 @@ public class Player extends Entity{
         /* updating the coorinates of the player 
         two controlls are necessary to keeping the other movement when hitting a wall */
         // x coordinates
-        if (!isCollision(nextX, getY())) {
+        if (!isCollision(nextX, getY(), collisionLayer)) {
             setX(nextX);
         } 
         else {
             speedX = 0;
         }
         // y coordinates
-        if (!isCollision(getX(), nextY)) {
+        if (!isCollision(getX(), nextY, collisionLayer)) {
             setY(nextY);
             isOnGround = false; 
         } 
