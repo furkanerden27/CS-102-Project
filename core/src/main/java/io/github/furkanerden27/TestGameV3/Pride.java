@@ -12,6 +12,7 @@ public class Pride extends Boss {
         initAnimationsFromAtlas("Pride", 
             160, 144, new int[]{6});
         setSize(160, 144);
+        name = "Pride";
     }
 
     @Override

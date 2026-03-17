@@ -1,13 +1,17 @@
 package io.github.furkanerden27.TestGameV3;
 
-import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public abstract class Entity extends Sprite {
     /*Implementation of this class is incomplete */
@@ -20,6 +24,7 @@ public abstract class Entity extends Sprite {
     protected Animation<TextureRegion>[] animations;
     protected Animation<TextureRegion> currentAnimation;
     protected boolean isStunned;
+    protected String name;
 
     /* TODO a private arrylist of effects (buffs or debuffs) should be added when they are made */
 
@@ -147,5 +152,14 @@ public abstract class Entity extends Sprite {
     }
     public void removeAllEffects(){
         effectsInFight.clear();
+    }
+
+    public void setEntity(TiledMap map) {
+        MapLayer objectLayer = map.getLayers().get("Entities");
+        MapObject playerObject = objectLayer.getObjects().get(name);
+        if (playerObject instanceof TextureMapObject) {
+            TextureMapObject texObj = (TextureMapObject) playerObject;
+            this.setPosition(texObj.getX(), texObj.getY());
+        }
     }
 }

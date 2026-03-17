@@ -12,6 +12,7 @@ public class Lust extends Boss {
         initAnimationsFromAtlas("Lust", 
             55, 93, new int[]{4});
         setSize(55, 93);
+        name = "Lust";
     }
 
     @Override

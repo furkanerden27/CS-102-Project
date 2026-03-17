@@ -19,6 +19,7 @@ public class BasicMob extends Mob {
         initAnimationsFromAtlas("BasicMob", 
             64, 64, new int[]{6});
         setSize(64, 64);
+        name = "BasicMob";
     }
 
     @Override

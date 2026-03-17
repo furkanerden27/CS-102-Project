@@ -12,6 +12,7 @@ public class Wrath extends Boss {
         initAnimationsFromAtlas("Wrath", 
             121, 110, new int[]{4});
         setSize(121,110);
+        name = "Wrath";
     }
 
     @Override

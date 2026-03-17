@@ -35,14 +35,21 @@ public class PlayScreen implements Screen {
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(100, 200, 200, map);
+        player = new Player(200, 100, 200, map);
         entities.add(player);
+        
         Pride pride = new Pride(1000, 100);
         entities.add(pride);
         Envy envy = new Envy(1200, 60);
         entities.add(envy);
         Wrath wrath = new Wrath(1300, 60);
         entities.add(wrath);
+        Gluttony gluttony = new Gluttony(1400, 60);
+        gluttony.setEntity(map);
+        entities.add(gluttony);
+        BasicMob mob1 = new BasicMob(1600, 60);
+        mob1.setEntity(map);
+        entities.add(mob1);
     }
 
     @Override
