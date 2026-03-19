@@ -91,8 +91,9 @@ public class PlayScreen implements Screen {
             player.jump();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
-            //game.setScreen(new BattleScreen1(viewport.getScreenX(), viewport.getScreenY()));
-            game.setScreen(new CombatScreen());
+            game.setScreen(new BattleScreen1(new FightManager(player, null), 800, 400));
+            //game.setScreen(new CombatScreen());
+            
         }
     }
 

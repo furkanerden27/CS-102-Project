@@ -1,4 +1,4 @@
-package io.github.furkanerden27.TestGameV3;
+package com.mygdx.LordOfTheDices;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

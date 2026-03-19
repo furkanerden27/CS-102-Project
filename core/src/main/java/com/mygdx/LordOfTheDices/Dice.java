@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Dice {
+public class Dice{
     private final TextureRegion[] dices;
     private final Animation<TextureRegion> diceAnimation;
     private TextureRegion currentFrame;
@@ -15,6 +15,8 @@ public class Dice {
     private final SpriteBatch batch;
     private final float posx;
     private final float posy;
+
+    private boolean isLocked;
 
 
     public Dice(SpriteBatch batch, float posx, float posy) {
@@ -51,4 +53,6 @@ public class Dice {
             }
         }
     }
+
+    
 }
