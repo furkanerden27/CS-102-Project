@@ -90,6 +90,10 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) { 
             player.jump();
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
+            //game.setScreen(new BattleScreen1(viewport.getScreenX(), viewport.getScreenY()));
+            game.setScreen(new CombatScreen());
+        }
     }
 
     @Override public void resize(int width, int height) { 

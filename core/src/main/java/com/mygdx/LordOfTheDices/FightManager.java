@@ -1,7 +1,5 @@
 package com.mygdx.LordOfTheDices;
 
-import java.util.ArrayList;
-
 public class FightManager {
 
     private Player player;
@@ -13,7 +11,7 @@ public class FightManager {
         this.player = player;
         this.mob = mob;
         
-        screen1 = new BattleScreen1();
+        //screen1 = new BattleScreen1();
         //TODO SCREENMANAGER'E BATTLLESCREEN1'e GEÇİRTÇEN
     }
 
