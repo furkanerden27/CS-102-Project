@@ -1,0 +1,370 @@
+
+cards.png
+size: 1024, 1024
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+card-clubs-1
+  rotate: false
+  xy: 2, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-10
+  rotate: false
+  xy: 296, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-11
+  rotate: false
+  xy: 2, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-12
+  rotate: false
+  xy: 100, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-13
+  rotate: false
+  xy: 198, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-2
+  rotate: false
+  xy: 2, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-3
+  rotate: false
+  xy: 100, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-4
+  rotate: false
+  xy: 2, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-5
+  rotate: false
+  xy: 100, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-6
+  rotate: false
+  xy: 198, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-7
+  rotate: false
+  xy: 2, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-8
+  rotate: false
+  xy: 100, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-clubs-9
+  rotate: false
+  xy: 198, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-1
+  rotate: false
+  xy: 296, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-10
+  rotate: false
+  xy: 100, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-11
+  rotate: false
+  xy: 100, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-12
+  rotate: false
+  xy: 198, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-13
+  rotate: false
+  xy: 296, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-2
+  rotate: false
+  xy: 394, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-3
+  rotate: false
+  xy: 2, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-4
+  rotate: false
+  xy: 2, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-5
+  rotate: false
+  xy: 100, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-6
+  rotate: false
+  xy: 198, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-7
+  rotate: false
+  xy: 296, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-8
+  rotate: false
+  xy: 394, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-diamonds-9
+  rotate: false
+  xy: 492, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-1
+  rotate: false
+  xy: 394, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-10
+  rotate: false
+  xy: 688, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-11
+  rotate: false
+  xy: 296, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-12
+  rotate: false
+  xy: 296, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-13
+  rotate: false
+  xy: 394, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-2
+  rotate: false
+  xy: 492, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-3
+  rotate: false
+  xy: 590, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-4
+  rotate: false
+  xy: 198, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-5
+  rotate: false
+  xy: 198, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-6
+  rotate: false
+  xy: 296, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-7
+  rotate: false
+  xy: 394, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-8
+  rotate: false
+  xy: 492, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-hearts-9
+  rotate: false
+  xy: 590, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-1
+  rotate: false
+  xy: 492, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-10
+  rotate: false
+  xy: 786, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-11
+  rotate: false
+  xy: 884, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-12
+  rotate: false
+  xy: 492, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-13
+  rotate: false
+  xy: 492, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-2
+  rotate: false
+  xy: 590, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-3
+  rotate: false
+  xy: 688, 732
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-4
+  rotate: false
+  xy: 786, 878
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-5
+  rotate: false
+  xy: 394, 148
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-6
+  rotate: false
+  xy: 394, 2
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-7
+  rotate: false
+  xy: 492, 294
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-8
+  rotate: false
+  xy: 590, 440
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
+card-spades-9
+  rotate: false
+  xy: 688, 586
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: -1
