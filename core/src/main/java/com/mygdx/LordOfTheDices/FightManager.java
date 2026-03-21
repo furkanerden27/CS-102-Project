@@ -13,7 +13,9 @@ public class FightManager {
         this.player = player;
         this.mob = mob;
         
-        screen1 = new BattleScreen1();
+
+
+        //screen1 = new BattleScreen1(this, 800, 400);
         //TODO SCREENMANAGER'E BATTLLESCREEN1'e GEÇİRTÇEN
     }
 
@@ -37,6 +39,18 @@ public class FightManager {
     }
     private void mobTurn(){
         //TODO
+    }
+
+    public void updateFight(){
+        //TODO
+    }
+
+    public void rollDice(){
+        //TODO
+    }
+
+    public ArrayList<Item> getSpritesOnScreen(){
+        return null;//TODO
     }
 
     private void endFight(){

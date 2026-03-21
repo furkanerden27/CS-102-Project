@@ -27,6 +27,7 @@ public class Envy extends Boss {
     @Override
     public void update(float deltaTime) {
         stateTime += deltaTime;
+        updateDamageEffect(deltaTime);
     }
 
     @Override

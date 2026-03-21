@@ -9,10 +9,14 @@ public class Pride extends Boss {
 
     public Pride(float posX, float posY) {
         super(posX, posY);
+        damageDuration = 0.5f; // Customize damage effect duration if needed
         initAnimationsFromAtlas("Pride", 
             160, 144, new int[]{6});
         setSize(160, 144);
         name = "Pride";
+        // these 2 lines are for testing purposes, remove them later
+        isTakingDamage = true; 
+        damageDuration = 5f;
     }
 
     @Override
@@ -24,6 +28,9 @@ public class Pride extends Boss {
     @Override
     public void update(float deltaTime) {
         stateTime += deltaTime;
+        currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        setRegion(currentFrame);
+        updateDamageEffect(deltaTime);
     }
 
     @Override
