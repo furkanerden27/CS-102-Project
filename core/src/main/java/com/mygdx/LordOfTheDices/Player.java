@@ -10,7 +10,8 @@ public class Player extends Entity{
     private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer distanceLayer;
-    
+
+    // animations
     private Animation<TextureRegion> standingRight;
     private Animation<TextureRegion> standingLeft;
     private Animation<TextureRegion> walkingRight;
@@ -27,6 +28,9 @@ public class Player extends Entity{
     private boolean isOnGround;
 
     private float attackModifier; // TODO bu hasar veren kartların hassarına eklenecek. Strengthen ve Weaken Efektleri bunu değiştirecek. 
+
+    private boolean isDead = false;
+    private float deathStateTime = 0;
 
     public Player(float health, float posX, float posY, TiledMap map) {
         super(health, posX, posY);
@@ -144,35 +148,54 @@ public class Player extends Entity{
 
     @Override
     public void update(float deltaTime) {
-        handleInput();
-        speedY -= GRAVITY; 
-        
-
-        float nextX = getX() + speedX * deltaTime;
-        float nextY = getY() + speedY * deltaTime;
-
-        /* updating the coorinates of the player 
-        two controlls are necessary to keeping the other movement when hitting a wall */
-        // x coordinates
-        if (!isCollision(nextX, getY(), collisionLayer)) {
-            setX(nextX);
-        } 
-        else {
-            speedX = 0;
+        //----controls the death of the player and the death animation----
+        if (!isAlive && !isDead) {
+            isDead = true;
+            deathStateTime = 0;
+            currentAnimation = direction.equals("right") ? dieRight : dieLeft;
         }
-        // y coordinates
-        if (!isCollision(getX(), nextY, collisionLayer)) {
-            setY(nextY);
-            isOnGround = false; 
-        } 
-        else {
-            if (speedY < 0) {
-                isOnGround = true;
+        if (isDead) {
+            deathStateTime += deltaTime;
+            if (deathStateTime >= currentAnimation.getAnimationDuration()) {
+                currentFrame = currentAnimation.getKeyFrame(currentAnimation.getAnimationDuration(), false);
+            } else {
+                stateTime += deltaTime;
+                currentFrame = currentAnimation.getKeyFrame(stateTime, false);
             }
-            speedY = 0;
-        }
+        } 
+        //----if the player is alive, handle the input and update the position and animation----
+        else {
+            handleInput();
+            speedY -= GRAVITY; 
+            
+            float nextX = getX() + speedX * deltaTime;
+            float nextY = getY() + speedY * deltaTime;
 
-        stateTime += deltaTime;
+            /* updating the coorinates of the player 
+            two controlls are necessary to keeping the other movement when hitting a wall */
+            // x coordinates
+            if (!isCollision(nextX, getY(), collisionLayer)) {
+                setX(nextX);
+            } 
+            else {
+                speedX = 0;
+            }
+            // y coordinates
+            if (!isCollision(getX(), nextY, collisionLayer)) {
+                setY(nextY);
+                isOnGround = false; 
+            } 
+            else {
+                if (speedY < 0) {
+                    isOnGround = true;
+                }
+                speedY = 0;
+            }
+
+            stateTime += deltaTime;
+            currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        }
+        updateDamageEffect(deltaTime);
     }
 
     public void addGold(int gold){

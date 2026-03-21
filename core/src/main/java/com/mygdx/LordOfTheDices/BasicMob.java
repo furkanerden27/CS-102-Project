@@ -25,6 +25,7 @@ public class BasicMob extends Mob {
     @Override
     public void update(float deltaTime) {
         stateTime += deltaTime;
+        updateDamageEffect(deltaTime);
     }
 
     @Override

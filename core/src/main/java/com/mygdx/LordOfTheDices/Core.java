@@ -18,9 +18,4 @@ public class Core extends Game {
         // Super.render() must always stay, it calls the render of the active screen
         super.render();
     }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-    }
 }

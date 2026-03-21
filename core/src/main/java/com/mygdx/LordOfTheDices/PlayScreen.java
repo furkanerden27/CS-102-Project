@@ -38,18 +38,20 @@ public class PlayScreen implements Screen {
         player = new Player(200, 100, 200, map);
         entities.add(player);
         
-        Pride pride = new Pride(1000, 100);
+        Pride pride = new Pride(300, 100);
         entities.add(pride);
         Envy envy = new Envy(1200, 60);
         entities.add(envy);
         Wrath wrath = new Wrath(1300, 60);
         entities.add(wrath);
-        Gluttony gluttony = new Gluttony(1400, 60);
-        gluttony.setEntity(map);
-        entities.add(gluttony);
+        //Gluttony gluttony = new Gluttony(1400, 60);
+        //gluttony.setEntity(map);
+        //entities.add(gluttony);
         BasicMob mob1 = new BasicMob(1600, 60);
         mob1.setEntity(map);
         entities.add(mob1);
+        Gluttony gluttony2 = new Gluttony(1000, 100);
+        entities.add(gluttony2);
     }
 
     @Override
@@ -58,7 +60,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         handleInput();
-        // Update all entities, not just player
         for (Entity e : entities) {
             e.update(delta);
         }
@@ -94,6 +95,16 @@ public class PlayScreen implements Screen {
             game.setScreen(new BattleScreen1(new FightManager(player, null), 800, 400));
             //game.setScreen(new CombatScreen());
             
+        }
+        // Test Gluttony's special attack remove after testing
+        if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
+            
+            for (Entity e : entities) {
+                if (e instanceof Gluttony) {
+                    ((Gluttony) e).specialAttack(player);
+                    break;
+                }
+            }
         }
     }
 
