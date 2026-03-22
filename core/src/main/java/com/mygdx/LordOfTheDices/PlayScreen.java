@@ -92,8 +92,11 @@ public class PlayScreen implements Screen {
             player.jump();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
+            //TODO THIS IS JUST FOR TESTING REMOVE LATER
+            
             game.setScreen(new BattleScreen1(new FightManager(player, null), 800, 400));
             //game.setScreen(new CombatScreen());
+            
             
         }
         // Test Gluttony's special attack remove after testing
