@@ -10,8 +10,6 @@ public class Gluttony extends Boss {
     private Animation<TextureRegion> standing;
     private Animation<TextureRegion> attack;
     private double hitProb;
-    private boolean isAttacking = false;
-    private float attackStateTime = 0;
     private boolean showMissText = false;
 
     public Gluttony(float posX, float posY) {

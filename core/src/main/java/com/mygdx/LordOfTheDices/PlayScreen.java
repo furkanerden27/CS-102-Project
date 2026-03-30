@@ -30,7 +30,6 @@ public class PlayScreen implements Screen {
         map = new TmxMapLoader().load("Maps/Map 1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map); 
         initialiseEntities();
-
     }
 
     private void initialiseEntities() {
@@ -50,8 +49,8 @@ public class PlayScreen implements Screen {
         BasicMob mob1 = new BasicMob(1600, 60);
         mob1.setEntity(map);
         entities.add(mob1);
-        Gluttony gluttony2 = new Gluttony(1000, 100);
-        entities.add(gluttony2);
+        Lust lust = new Lust(1000, 100);
+        entities.add(lust);
     }
 
     @Override
@@ -103,8 +102,8 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
             
             for (Entity e : entities) {
-                if (e instanceof Gluttony) {
-                    ((Gluttony) e).specialAttack(player);
+                if (e instanceof BasicMob) {
+                    ((BasicMob) e).specialAttack(player);
                     break;
                 }
             }
