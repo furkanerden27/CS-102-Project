@@ -1,0 +1,9 @@
+Story_buttons.png
+size:2048,512
+repeat:none
+Story_End_button
+bounds:503,2,499,255
+Story_Next_Button
+bounds:1004,2,499,255
+Story_Previous_Button
+bounds:2,2,499,255
