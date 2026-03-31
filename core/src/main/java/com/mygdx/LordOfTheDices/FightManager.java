@@ -56,6 +56,9 @@ public class FightManager {
 
     public void actSelectedCard(Card selectedCard){
         //TODO secilen kartin etkilerini uygulayacak. 
+        if(mob instanceof Envy){
+            ((Envy) mob).setLastPlayedCard(selectedCard);
+        }
         System.out.println(selectedCard.name);
         System.out.println(selectedCard.description);
     }
