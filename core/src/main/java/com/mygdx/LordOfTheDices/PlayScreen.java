@@ -15,10 +15,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class PlayScreen implements Screen {
     private final Core game; // to reach to the Core class
+    private final Assets assets;
+    private final ScreenManager screenManager;
     private FitViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
-    private Player player; 
+    private Player player;
     private OrthographicCamera camera;
     private ArrayList<Entity> entities;
     private float stateTime = 0;
@@ -27,10 +29,12 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(Core game) {
         this.game = game;
+        this.assets = game.getAssets();
+        this.screenManager = game.screen;
         camera = new OrthographicCamera();
         viewport = new FitViewport(450, 250, camera);
-        map = new TmxMapLoader().load("Maps/Map 1.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(map); 
+        map = assets.getMap(Assets.MAP_1);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
         initialiseEntities();
     }
 
@@ -52,14 +56,14 @@ public class PlayScreen implements Screen {
         mob1.setEntity(map);
         entities.add(mob1);
         Lust lust = new Lust(1000, 100);
-        entities.add(lust);
+        entities.add(lust); 
         Sloth sloth = new Sloth(1100, 100);
         entities.add(sloth);   
 
         goldDisplay = new FloatingText("Gold: 0", 0, 0, Color.GOLD);
         goldDisplay.setImmovable();
         goldDisplay.setDurationIndefinite(); 
-    }
+        }
 
     @Override
     public void render(float delta) {
@@ -70,7 +74,7 @@ public class PlayScreen implements Screen {
         for (Entity e : entities) {
             e.update(delta);
         }
-        
+
         camera.position.set(player.getX() + (player.getWidth() / 2), 
                             player.getY() + (player.getHeight() / 2), 0);
         camera.update();
@@ -90,7 +94,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         for (Entity e : entities) {
             e.draw(game.batch);
-        }
+        }        
         if (goldDisplay != null) {
             goldDisplay.render(game.batch); 
         }
@@ -112,10 +116,13 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
             //TODO THIS IS JUST FOR TESTING REMOVE LATER
             
-            game.setScreen(new BattleScreen1(new FightManager(player, null), 800, 400));
+            screenManager.showScreen(Screens.BATTLE, new FightManager(player, null));
             //game.setScreen(new CombatScreen());
             
             
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            screenManager.showScreen(Screens.INVENTORY, player.getInventory());
         }
         // Test Gluttony's special attack remove after testing
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
@@ -128,7 +135,7 @@ public class PlayScreen implements Screen {
             }
         }
     }
-
+        
     private void removeDeadEntities() {
         ArrayList<Entity> toRemove = new ArrayList<>();
         for (Entity e : entities) {
