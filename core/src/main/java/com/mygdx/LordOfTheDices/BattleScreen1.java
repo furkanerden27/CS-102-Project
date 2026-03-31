@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -29,7 +31,8 @@ public class BattleScreen1 implements Screen{
     
     private Image inverseArrowImage, arrowImage;
 
-    private Table cardsTable1, cardsTable2;
+    private Label toolTipLabel;
+    private Table cardsTable1, cardsTable2, toolTipTable;
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
@@ -47,6 +50,11 @@ public class BattleScreen1 implements Screen{
         rollAllTexture = new Texture("RollAllButton.png");
         arrowTexture = new Texture("Arrow.png");
         inverseArrowTexture = new Texture("InverseArrow.png");
+
+        toolTipLabel = new Label("", new LabelStyle());
+        toolTipTable.add(toolTipLabel);
+        toolTipTable.setVisible(false);
+        toolTipLabel.getStyle().font.getData().markupEnabled = true;
 
         cardSlots = new Table[]{new Table(), new Table(), new Table(), new Table(), new Table(), new Table()};
         Gdx.input.setInputProcessor(stage);
@@ -123,8 +131,13 @@ public class BattleScreen1 implements Screen{
         spadesImage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                selectedSuit = Suit.SPADES;
-                switchToSecondView();
+                if(manager.isPlayerTurn()){
+                    selectedSuit = Suit.SPADES;
+                    switchToSecondView();
+                }
+                else{
+                    //TODO siranin oyuncuda olmadigibi belirtmek lazim
+                }
             }
         });
         
@@ -132,8 +145,11 @@ public class BattleScreen1 implements Screen{
         clubsImage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                selectedSuit = Suit.CLUBS;
-                switchToSecondView();
+                if(manager.isPlayerTurn()){
+                    selectedSuit = Suit.CLUBS;
+                    switchToSecondView();
+                }
+                
             }
         });
 
@@ -141,8 +157,10 @@ public class BattleScreen1 implements Screen{
         diamondsImage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                selectedSuit = Suit.DIAMONDS;
-                switchToSecondView();
+                if(manager.isPlayerTurn()){
+                    selectedSuit = Suit.DIAMONDS;
+                    switchToSecondView();
+                }
             }
         });
 
@@ -150,8 +168,10 @@ public class BattleScreen1 implements Screen{
         heartsImage.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                selectedSuit = Suit.HEARTS;
-                switchToSecondView();
+                if(manager.isPlayerTurn()){
+                    selectedSuit = Suit.HEARTS;
+                    switchToSecondView();
+                }
             }
 
 
@@ -188,6 +208,8 @@ public class BattleScreen1 implements Screen{
         for(int i = 1; i < 6; i ++){
             cardsTable2.add(cardSlots[i]).padLeft(10).size(60, 90);
         }
+
+        toolTipTable.add(toolTipLabel);
 
         switchToFirstView();
     }
@@ -239,8 +261,8 @@ public class BattleScreen1 implements Screen{
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    //manager.cardSelected(); TODO INDEXINE GORE MANAGER'E SECILEN KARTI BILDIRECEK;
                     manager.actSelectedCard(cards[0]);
+                    switchToFirstView();
                 }
             });  
             cardSlots[1].add(addedImage);      
@@ -257,8 +279,8 @@ public class BattleScreen1 implements Screen{
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    //manager.cardSelected(); TODO INDEXINE GORE MANAGER'E SECILEN KARTI BILDIRECEK;
                     manager.actSelectedCard(cards[1]);
+                    switchToFirstView();
                 }
             });  
             cardSlots[2].add(addedImage);      
@@ -274,8 +296,8 @@ public class BattleScreen1 implements Screen{
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    //manager.cardSelected(); TODO INDEXINE GORE MANAGER'E SECILEN KARTI BILDIRECEK;
                     manager.actSelectedCard(cards[2]);
+                    switchToFirstView();
                 }
             });  
             cardSlots[3].add(addedImage);      
@@ -291,8 +313,8 @@ public class BattleScreen1 implements Screen{
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    //manager.cardSelected(); TODO INDEXINE GORE MANAGER'E SECILEN KARTI BILDIRECEK;
                     manager.actSelectedCard(cards[3]);
+                    switchToFirstView();
                 }
             });  
             cardSlots[4].add(addedImage);      
@@ -308,8 +330,8 @@ public class BattleScreen1 implements Screen{
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    //manager.cardSelected(); TODO INDEXINE GORE MANAGER'E SECILEN KARTI BILDIRECEK;
                     manager.actSelectedCard(cards[4]);
+                    switchToFirstView();
                 }
             });  
             cardSlots[5].add(addedImage);      

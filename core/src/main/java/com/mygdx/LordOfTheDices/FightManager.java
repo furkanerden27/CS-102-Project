@@ -7,14 +7,14 @@ public class FightManager {
     private Player player;
     private Mob mob;
     private BattleScreen1 screen1;
+    private boolean isPlayerTurn;
     
 
     public FightManager(Player player, Mob mob){
         this.player = player;
         this.mob = mob;
-        
-
-
+        isPlayerTurn = false;
+        //fightLoop();
         //screen1 = new BattleScreen1(this, 800, 400);
         //TODO SCREENMANAGER'E BATTLLESCREEN1'e GEÇİRTÇEN
     }
@@ -36,9 +36,11 @@ public class FightManager {
 
     private void playerTurn(){
         //TODO
+        isPlayerTurn = true;
     }
     private void mobTurn(){
         //TODO
+        isPlayerTurn = false;
     }
 
     public void updateFight(){
@@ -69,7 +71,9 @@ public class FightManager {
         return new Dice[6];
     }
 
-    
+    public boolean isPlayerTurn(){
+        return isPlayerTurn;
+    }
 
     public ArrayList<Item> getSpritesOnScreen(){
         return null;//TODO
