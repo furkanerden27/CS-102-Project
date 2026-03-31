@@ -36,6 +36,10 @@ public class Card extends Item {
         return region;
     }
 
+    public TextureRegion getTextureRegion() {
+        return new TextureRegion(getTexture(), getRegionX(), getRegionY(), getRegionWidth(), getRegionHeight());
+    }
+
     // 
     // ENUMS
     // 

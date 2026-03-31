@@ -41,4 +41,11 @@ public abstract class Item extends Sprite{
         setSize(width, height);
         draw(batch);
     }
+
+    public boolean isClicked(float mouseX, float mouseY){
+        //returns if the given coordinates are in between the boundaries of the sprite 
+        float deltaX = getX() - mouseX;
+        float deltaY = getY() - mouseY;
+        return ((deltaX >= 0 && deltaX <= getWidth()) && (deltaY >= 0 && deltaY <= getHeight()));
+    }
 }

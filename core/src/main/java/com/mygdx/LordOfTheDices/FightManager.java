@@ -45,9 +45,34 @@ public class FightManager {
         //TODO
     }
 
-    public void rollDice(){
-        //TODO
+    public void diceClicked(Dice clickedDice){
+        //TODO Rolls the clicked dice
     }
+
+    public void rollAllDice(){
+        //TODO rolls all dice
+    }
+    
+
+    public void actSelectedCard(Card selectedCard){
+        //TODO secilen kartin etkilerini uygulayacak. 
+        if(mob instanceof Envy){
+            ((Envy) mob).setLastPlayedCard(selectedCard);
+        }
+        System.out.println(selectedCard.name);
+        System.out.println(selectedCard.description);
+    }
+    public Card[] getHand(Card.Suit selectedSuit){
+        //TODO player'in savasa soktugu kartlari cekecek, inventorden 
+        Card[] cards = new Card[]{new Card(selectedSuit, Card.Rank.SIX), new Card(selectedSuit, Card.Rank.SEVEN), new Card(selectedSuit, Card.Rank.EIGHT), new Card(selectedSuit, Card.Rank.NINE), new Card(selectedSuit, Card.Rank.TEN)};
+        return cards;
+    }
+    public Dice[] getDices(){
+        //TODO player'in envanterinden dice alinacak
+        return new Dice[6];
+    }
+
+    
 
     public ArrayList<Item> getSpritesOnScreen(){
         return null;//TODO

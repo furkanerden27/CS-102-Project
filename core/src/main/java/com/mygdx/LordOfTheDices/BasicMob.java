@@ -20,12 +20,31 @@ public class BasicMob extends Mob {
             64, 64, new int[]{6});
         setSize(64, 64);
         name = "BasicMob";
+        baseAttackDamage = 10 * level; // may be changed later
+    }
+
+    @Override
+    public void specialAttack(Player player) {
+        isAttacking = true;
+        attackStateTime = 0;
+        float damage = baseAttackDamage;
+        player.takeDamage(damage);
     }
 
     @Override
     public void update(float deltaTime) {
+        if (!isAlive) { return; }
         stateTime += deltaTime;
-        updateDamageEffect(deltaTime);
+        if (isAttacking) {
+            if(attackStateTime == 0) {
+                translate(-20, 0);
+            }
+            attackStateTime += deltaTime;
+            if (attackStateTime >= 2f) {
+                isAttacking = false;
+                translate(20, 0);
+            }
+        }
     }
 
     @Override
@@ -33,6 +52,5 @@ public class BasicMob extends Mob {
         super.setAnimations(frameCounts);
         standing = getFlippedAnimation(animations[0]);
         currentAnimation = standing;
-    }
-    
+    } 
 }
