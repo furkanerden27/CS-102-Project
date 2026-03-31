@@ -41,6 +41,8 @@ public abstract class Entity extends Sprite {
     // Damage effect fields
     protected boolean isTakingDamage = false;
     protected boolean isShaking = false;
+    protected boolean isAttacking = false;
+    protected float attackStateTime = 0;
     protected float damageTime = 0;
     protected float waitTime = 1f;
     protected float damageDuration = 0.5f;
@@ -113,6 +115,10 @@ public abstract class Entity extends Sprite {
     public void addMaxHealth(float  heal) {
         health += heal;
         maxHealth += heal;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     public void showFloatingText(String text, Color color) {

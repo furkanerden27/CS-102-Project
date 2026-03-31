@@ -9,6 +9,7 @@ public class Core extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        Card.loadAtlas();// Bu ne yapiyor anlamadim ama yapman lazim diyor konsol
         // Setting the first screen
         this.setScreen(new PlayScreen(this));
     }

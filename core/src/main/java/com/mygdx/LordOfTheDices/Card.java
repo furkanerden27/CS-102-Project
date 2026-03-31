@@ -26,6 +26,10 @@ public class Card extends Item {
         return atlas.findRegion("card-" + suitName + "-" + rank.getNumericValue());
     }
 
+    public TextureRegion getTextureRegion() {
+        return new TextureRegion(getTexture(), getRegionX(), getRegionY(), getRegionWidth(), getRegionHeight());
+    }
+
     // 
     // ENUMS
     // 

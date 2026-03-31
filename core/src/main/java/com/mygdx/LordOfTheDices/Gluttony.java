@@ -10,8 +10,6 @@ public class Gluttony extends Boss {
     private Animation<TextureRegion> standing;
     private Animation<TextureRegion> attack;
     private double hitProb;
-    private boolean isAttacking = false;
-    private float attackStateTime = 0;
     private boolean showMissText = false;
 
     public Gluttony(float posX, float posY) {
@@ -44,14 +42,20 @@ public class Gluttony extends Boss {
         if (!isAlive) { return; }
         stateTime += deltaTime;
         if (isAttacking) {
+            if(attackStateTime == 0) {
+                translate(-20, 0);
+            }
             attackStateTime += deltaTime;
             if (attackStateTime >= attack.getAnimationDuration()) {
-                isAttacking = false;
                 currentAnimation = standing;
                 if (showMissText) {
                     showFloatingText("Missed!", Color.RED);
                     showMissText = false;
                 }
+            }
+            if(attackStateTime >= 2f) {
+                translate(20, 0);
+                isAttacking = false;
             }
         }
         updateDamageEffect(deltaTime);
