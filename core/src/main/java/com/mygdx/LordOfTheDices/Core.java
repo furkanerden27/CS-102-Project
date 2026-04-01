@@ -20,7 +20,7 @@ public class Core extends Game {
         assets.finishLoading();
 
         Card.init(assets.getAtlas(Assets.ATLAS_CARDS));
-        Dice.init(assets.getTexture(Assets.TEXTURE_DICE));
+        // Dice.init(assets.getTexture(Assets.TEXTURE_DICE));
         Effect.effects = assets.getAtlas(Assets.ATLAS_EFFECTS);
 
         screen = new ScreenManager(this);

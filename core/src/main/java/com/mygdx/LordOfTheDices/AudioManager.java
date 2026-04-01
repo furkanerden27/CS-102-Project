@@ -21,6 +21,8 @@ public class AudioManager {
         sfxVolume   = prefs.getFloat(PREF_SFX,   0.6f);
     }
 
+    // ── Müzik ────────────────────────────────────────────────────────────────
+
     public void playMenuMusic() {
         if (menuMusic == null) {
             menuMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/menu_music.mp3"));
@@ -53,6 +55,9 @@ public class AudioManager {
         return menuMusic;
     }
 
+    // ── SFX ──────────────────────────────────────────────────────────────────
+
+    /** Herhangi bir ses efektini mevcut sfxVolume ile çalar. */
     public void playSfx(Sound sound) {
         if (sound != null && sfxVolume > 0f) {
             sound.play(sfxVolume);
@@ -66,6 +71,8 @@ public class AudioManager {
     public float getSfxVolume() {
         return sfxVolume;
     }
+
+    // ── Temizlik ─────────────────────────────────────────────────────────────
 
     public void dispose(){
         if (menuMusic != null) {

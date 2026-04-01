@@ -1,85 +1,58 @@
 package com.mygdx.LordOfTheDices;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Dice extends Item {
+public class Dice{
+    private final TextureRegion[] dices;
+    private final Animation<TextureRegion> diceAnimation;
+    private TextureRegion currentFrame;
+    private float stateTime = 0;
+    private boolean isRolling = true; 
+    private final SpriteBatch batch;
+    private final float posx;
+    private final float posy;
 
-    private static TextureRegion[] frames;
-    private static Animation<TextureRegion> diceAnimation;
-
-    // Call once in AssetManager
-    public static void init(Texture diceAsset) {
-        frames = TextureRegion.split(diceAsset, 32, 32)[0];
-        diceAnimation = new Animation<>(0.05f, frames);
-        diceAnimation.setPlayMode(Animation.PlayMode.LOOP);
-    }
-
-    private int value;
-    private float stateTime;
-    private boolean isRolling; 
     private boolean isLocked;
 
-    public Dice(String name) {
-        super(name);
-        value = 1;
-        isLocked = false;
-        isRolling = false;
-        this.stateTime = 0f;
+
+    public Dice(SpriteBatch batch, float posx, float posy) {
+        dices = TextureRegion.split(new Texture("dice.png"), 32, 32)[0];
+        diceAnimation = new Animation<>(0.05f, dices);
+        diceAnimation.setPlayMode(Animation.PlayMode.LOOP);
+        this.batch = batch;
+        this.posx = posx;
+        this.posy = posy;
     }
 
-    //returns a random num from 1 to 6, call it to stop rolling animation
-    public int roll() {
-        if(isLocked) {
-            return value;
+    public void draw(float worldX, float worldY) {
+        update(worldX, worldY);
+        currentFrame = diceAnimation.getKeyFrame(stateTime);
+        batch.draw(currentFrame, posx, posy); 
+    }
+
+    private void update(float worldX, float worldY) {
+        handleInput(worldX, worldY);
+        if (isRolling) {
+            stateTime += Gdx.graphics.getDeltaTime();
         }
-        value = (int) (Math.random() * 6) + 1;
-        stateTime = (value - 1) * diceAnimation.getFrameDuration();
-        isRolling = false;
-        return value;
+        currentFrame = diceAnimation.getKeyFrame(stateTime);
     }
 
-    //call after roll all button is clicked
-    public void startRolling() {
-        if (isLocked) return;
-        isRolling = true;
-        stateTime = (float) Math.random() * 10;
-    }
-
-    //use when rendering
-    public void update(float deltaTime) {
-        if(isRolling) {
-            stateTime += deltaTime;
+    private void handleInput(float worldX, float worldY) {
+        if (Gdx.input.justTouched() && 
+            (worldX >= posx && worldX <= posx + currentFrame.getRegionWidth()) && 
+            (worldY >= posy && worldY <= posy + currentFrame.getRegionHeight())) {
+            isRolling = !isRolling;
+            
+            if (isRolling) {
+                stateTime = (float) Math.random() * 10;
+            }
         }
     }
 
-    //use when rendering to display dice
-    public TextureRegion getCurrentFrame() {
-        return diceAnimation.getKeyFrame(stateTime);
-    }
-
-    public int getValue() { 
-        return value; 
-    }
-
-    public boolean isLocked() { 
-        return isLocked; 
-    }
-
-    public void setLocked(boolean l) { 
-        this.isLocked = l; 
-    }
-
-    public boolean isRolling() { 
-        return isRolling; 
-    }
-
-    @Override
-    public String getDescription() {
-        return "A six-sided dice. Current value: " + value;
-    }
-
-    @Override
-    protected void loadTexture() {}
+    
 }
