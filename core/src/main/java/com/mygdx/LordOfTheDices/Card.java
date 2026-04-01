@@ -1,6 +1,7 @@
 package com.mygdx.LordOfTheDices;
 
-import com.badlogic.gdx.Gdx;
+import java.util.Locale;
+
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -10,34 +11,19 @@ public class Card extends Item {
     // ATLAS PROPERTIES
     //
 
-    private static final String ATLAS_PATH = "cards.atlas";
     private static TextureAtlas atlas;
 
-    /* Call once in Core.create() before any Card is constructed */
-    public static void loadAtlas() {
-        if (atlas == null)
-            atlas = new TextureAtlas(Gdx.files.internal(ATLAS_PATH));
+    /* Call once in AssetManager */
+    public static void init(TextureAtlas cardAtlas) {
+        atlas = cardAtlas;
     }
 
-    /* Call once in Core.dispose() */
-    public static void disposeAtlas() {
-        if (atlas != null) { 
-            atlas.dispose(); 
-            atlas = null; 
-        }
-    }
-
-    /** Returns the 96×144 region for a suit+rank from cards.atlas. */
+    /* Returns the 96×144 region for a suit+rank from cards.atlas. */
     private static TextureRegion getAtlasRegion(Suit suit, Rank rank) {
         if (atlas == null)
-            throw new IllegalStateException("Call Card.loadAtlas() in Core.create() first.");
-        String name = "card-" + suit.name().toLowerCase() + "-" + rank.getNumericValue();
-        TextureAtlas.AtlasRegion region = atlas.findRegion(name);
-        return region;
-    }
-
-    public TextureRegion getTextureRegion() {
-        return new TextureRegion(getTexture(), getRegionX(), getRegionY(), getRegionWidth(), getRegionHeight());
+            throw new IllegalStateException("Call Card.init() first.");
+        String suitName = suit.name().toLowerCase(Locale.ENGLISH);
+        return atlas.findRegion("card-" + suitName + "-" + rank.getNumericValue());
     }
 
     // 
@@ -73,6 +59,7 @@ public class Card extends Item {
 
     private final Suit suit;
     private final Rank rank;
+    private TextureRegion cachedRegion;
 
     /* Effect scale: damage dealt / HP healed / buff-debuff magnitude. */
     private int power;
@@ -110,8 +97,23 @@ public class Card extends Item {
         loadTexture();
     }
 
+    /* Protected constructor for SpecialCard to set expendable = true. */
+    protected Card(Suit suit, Rank rank, boolean expendable) {
+        super(suit.name() + " " + rank.name());
+        this.suit            = suit;
+        this.rank            = rank;
+        this.power           = calculateStartingPower();
+        this.diceRequirement = rank.getNumericValue();
+        this.expendable      = expendable;
+        this.selected        = false;
+        this.buyingValue     = computeBuyPrice();
+        this.sellingValue    = computeSellPrice();
+        this.description     = buildDescription();
+        loadTexture();
+    }
+
     // 
-    // ITEM OVERRIDES
+    // PUBLIC DISPLAY METHODS
     // 
 
     @Override
@@ -120,12 +122,17 @@ public class Card extends Item {
         if (region != null) {
             setRegion(region);
             setSize(region.getRegionWidth(), region.getRegionHeight());
+            cachedRegion = region;
         }
     }
 
     @Override
     public String getDescription() { 
         return description; 
+    }
+
+    public TextureRegion getTextureRegion() {
+        return cachedRegion;
     }
 
     // 
@@ -162,21 +169,48 @@ public class Card extends Item {
         return computeBuyPrice() / 2; 
     }
 
-    // 
-    // GETTERS AND HELPERS
-    // 
+    //
+    // GAMEPLAY
+    //
 
     public boolean checkPlay(int diceTotal) {
         return diceTotal >= diceRequirement;
     }
 
+    /* Applies the card's effect based on its suit. */
+    public void apply(Player player, Mob mob) {
+        switch (suit) {
+            case SPADES:
+                mob.takeDamage(power);
+                break;
+            case HEARTS:
+                player.heal(power);
+                break;
+            case CLUBS:
+                mob.addEffect(new Weaken(power, 1));
+                break;
+            case DIAMONDS:
+                player.addEffect(new Strengthen(power, 1));
+                break;
+        }
+    }
+
+    // will implement later to balance the gameplay
+    //public void increasePower() {}
+    //public void increaseDiceRequirement() {}
+    //public void increaseBuyingValue() {}
+    //public void increaseSellingValue() {}
+
     public void select() { 
         selected = true; 
     }
-
     public void unselect() { 
         selected = false; 
     }
+
+    // 
+    // GETTERS AND HELPERS
+    // 
 
     public Suit    getSuit()              { return suit; }
     public Rank    getRank()              { return rank; }

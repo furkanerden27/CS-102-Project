@@ -1,0 +1,15 @@
+uic.png
+size:2048,256
+repeat:none
+Button_New_Game_Normal
+bounds:1399,8,450,181
+offsets:121,107,612,408
+button_2_normal-removebg-preview
+bounds:2,2,469,187
+offsets:70,107,612,408
+button_3_normal-removebg-preview
+bounds:944,9,453,180
+offsets:121,166,612,408
+button_4_normal-removebg-preview
+bounds:473,7,469,182
+offsets:70,166,612,408
