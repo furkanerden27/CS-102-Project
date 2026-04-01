@@ -1,24 +1,19 @@
-package com.mygdx.LordOfTheDices;
+package io.github.furkanerden27.TestGameV3;
 
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public abstract class Entity extends Sprite {
     /*Implementation of this class is incomplete */
     protected float maxHealth;
     protected float health;
-    protected boolean isAlive;
+    protected boolean isAlive; // can be removed
     protected int goldDropped;
     protected String direction;
     protected TextureRegion[][] entityImages;
@@ -34,19 +29,6 @@ public abstract class Entity extends Sprite {
     
     private ArrayList<Effect> effectsInFight;
     private ArrayList<Effect> effectsRemoveList;
-    
-    // Floating text fields
-    private ArrayList<FloatingText> floatingTexts;
-    
-    // Damage effect fields
-    protected boolean isTakingDamage = false;
-    protected boolean isShaking = false;
-    protected boolean isAttacking = false;
-    protected float attackStateTime = 0;
-    protected float damageTime = 0;
-    protected float waitTime = 1f;
-    protected float damageDuration = 0.5f;
-    protected Color originalColor = Color.WHITE;
 
     public Entity(float health, float posX, float posY) {
         maxHealth = health;
@@ -58,7 +40,6 @@ public abstract class Entity extends Sprite {
         isStunned = false;
         effectsInFight = new ArrayList<>();
         effectsRemoveList= new ArrayList<>();
-        floatingTexts = new ArrayList<>();
     }
 
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
@@ -99,13 +80,6 @@ public abstract class Entity extends Sprite {
         if(health == 0) {
             isAlive = false;
         }
-        // Activate damage effect
-        if (health > 0) {
-            isTakingDamage = true;
-            isShaking = false;
-            damageTime = 0;
-            originalColor = getColor().cpy();
-        }
     }
 
     public void heal(float  heal) {
@@ -117,41 +91,7 @@ public abstract class Entity extends Sprite {
         maxHealth += heal;
     }
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void showFloatingText(String text, Color color) {
-        float textX = getX() + getWidth() / 2;
-        float textY = getY() + getHeight();
-        floatingTexts.add(new FloatingText(text, textX, textY, color));
-    }
-
     public abstract void update(float deltaTime);
-    
-    // Update damage effect - call this in your subclass update method
-    protected void updateDamageEffect(float deltaTime) {
-        if (isTakingDamage) {
-            damageTime += deltaTime;
-            if (damageTime >= waitTime) {
-                isShaking = true;
-                setColor(1f, 0.3f, 0.3f, 1);
-                if (damageTime >= waitTime + damageDuration) {
-                    isTakingDamage = false;
-                    isShaking = false;
-                    setColor(originalColor);
-                }
-            }
-        }
-    }
-
-    // Update floating texts - call this in your subclass update method
-    protected void updateFloatingTexts(float deltaTime) {
-        floatingTexts.removeIf(text -> !text.isAlive());
-        for (FloatingText text : floatingTexts) {
-            text.update(deltaTime);
-        }
-    }
 
     public Animation<TextureRegion> getFlippedAnimation(Animation<TextureRegion> animation) {
         Object[] originalFrames = animation.getKeyFrames();
@@ -176,29 +116,7 @@ public abstract class Entity extends Sprite {
 
     @Override
     public void draw(Batch batch) {
-        TextureRegion frameToDraw = (currentFrame != null) ? currentFrame : currentAnimation.getKeyFrame(stateTime, true);
-        if (isShaking) {
-            // Apply shake effect when taking damage
-            float shakeX = (float) (Math.random() * 8 - 4);
-            float shakeY = (float) (Math.random() * 8 - 4);
-            
-            float origX = getX();
-            float origY = getY();
-            
-            setX(origX + shakeX);
-            setY(origY + shakeY);
-            batch.draw(frameToDraw, getX(), getY(), getWidth(), getHeight());
-            setX(origX);
-            setY(origY);
-        } 
-        else {
-            batch.draw(frameToDraw, getX(), getY(), getWidth(), getHeight());
-        }
-
-        // Draw floating texts
-        for (FloatingText text : floatingTexts) {
-            text.render(batch);
-        }
+        batch.draw(currentAnimation.getKeyFrame(stateTime, true), getX(), getY(), getWidth(), getHeight());
     }
 
     public void setStun(boolean isStunned){
@@ -230,14 +148,5 @@ public abstract class Entity extends Sprite {
     }
     public void removeAllEffects(){
         effectsInFight.clear();
-    }
-
-    public void setEntity(TiledMap map) {
-        MapLayer objectLayer = map.getLayers().get("Entities");
-        MapObject playerObject = objectLayer.getObjects().get(name);
-        if (playerObject instanceof TextureMapObject) {
-            TextureMapObject texObj = (TextureMapObject) playerObject;
-            this.setPosition(texObj.getX(), texObj.getY());
-        }
     }
 }

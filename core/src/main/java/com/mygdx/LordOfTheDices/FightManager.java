@@ -7,13 +7,14 @@ public class FightManager {
     private Player player;
     private Mob mob;
     private BattleScreen screen1;
+
     private boolean isPlayerTurn;
     
 
     public FightManager(Player player, Mob mob){
         this.player = player;
         this.mob = mob;
-        isPlayerTurn = false;
+        isPlayerTurn = true;
         //fightLoop();
         //screen1 = new BattleScreen1(this, 800, 400);
         //TODO SCREENMANAGER'E BATTLLESCREEN1'e GEÇİRTÇEN
@@ -49,6 +50,7 @@ public class FightManager {
 
     public void diceClicked(Dice clickedDice){
         //TODO Rolls the clicked dice
+        System.out.println("Zar Atildi");
     }
 
     public void rollAllDice(){
@@ -68,6 +70,7 @@ public class FightManager {
     }
     public Dice[] getDices(){
         //TODO player'in envanterinden dice alinacak
+        //return player.getInventory().getDice();
         return new Dice[6];
     }
 

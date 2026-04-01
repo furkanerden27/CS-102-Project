@@ -1,4 +1,4 @@
-package com.mygdx.LordOfTheDices;
+package io.github.furkanerden27.TestGameV3;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -14,5 +14,7 @@ public abstract class Boss extends Mob {
         goldDropped = MIN * level + (int)(Math.random() * (MAX - MIN) * level + 1);
         level++;
     }
+
+    public abstract void specialAttack(Player player);
     
 }
