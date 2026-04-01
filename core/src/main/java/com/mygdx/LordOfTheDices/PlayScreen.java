@@ -31,15 +31,15 @@ public class PlayScreen implements Screen {
         this.assets = game.getAssets();
         this.screenManager = game.screen;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(450, 250, camera);
-        map = assets.getMap(Assets.MAP_1);
+        viewport = new FitViewport(405, 225, camera);
+        map = assets.getMap(Assets.MAP_2);
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initialiseEntities();
     }
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 100, 200, map);
+        player = new Player(200, 300, 400, map);
         entities.add(player);
         
         Pride pride = new Pride(300, 100);
@@ -52,7 +52,7 @@ public class PlayScreen implements Screen {
         //gluttony.setEntity(map);
         //entities.add(gluttony);
         BasicMob mob1 = new BasicMob(1600, 60);
-        mob1.setEntity(map);
+        //mob1.setEntity(map);
         entities.add(mob1);
         Lust lust = new Lust(1000, 100);
         entities.add(lust);
