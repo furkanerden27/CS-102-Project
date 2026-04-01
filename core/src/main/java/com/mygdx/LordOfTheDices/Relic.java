@@ -1,10 +1,7 @@
 package com.mygdx.LordOfTheDices;
-//
-// NO ASSETS YET, WILL UPDATE IT LATER
-//
+
 public class Relic extends Item {
-    
-    //types can change later on
+
     public enum RelicType {
         DISCOUNT,
         MAXHEALTH,
@@ -26,11 +23,11 @@ public class Relic extends Item {
         this.description = buildDescription();
     }
 
-    /* activates the relic and applies its permanent effect on the player */
+    /** Activates the relic and applies its permanent effect on the player. */
     public void apply(Player player) {
         if (isActive) return;
-        
         isActive = true;
+
         switch (type) {
             case MAXHEALTH:
                 float bonus = player.maxHealth * effectMagnitude;
@@ -40,26 +37,19 @@ public class Relic extends Item {
                 player.setAttackModifier(effectMagnitude);
                 break;
             case DISCOUNT:
-                //TODO
-                break;
             case GOLD_BOOST:
-                //TODO - IDK
+                // These are checked passively by Shop / gold logic
                 break;
         }
     }
 
     private String buildDescription() {
         switch (type) {
-            case DISCOUNT:     
-                return "Reduces shop prices by " + (int)(effectMagnitude * 100) + "%";
-            case MAXHEALTH:    
-                return "Increases max health by " + (int)(effectMagnitude * 100) + "%";
-            case GOLD_BOOST:   
-                return "Earn " + (int)(effectMagnitude * 100) + "% more gold";
-            case DAMAGE_BOOST: 
-                return "Increases attack damage by " + (int)(effectMagnitude * 100) + "%";
-            default:           
-                return "";
+            case DISCOUNT:     return "Reduces shop prices by " + (int)(effectMagnitude * 100) + "%";
+            case MAXHEALTH:    return "Increases max health by " + (int)(effectMagnitude * 100) + "%";
+            case GOLD_BOOST:   return "Earn " + (int)(effectMagnitude * 100) + "% more gold";
+            case DAMAGE_BOOST: return "Increases attack damage by " + (int)(effectMagnitude * 100) + "%";
+            default:           return "";
         }
     }
 
@@ -70,10 +60,10 @@ public class Relic extends Item {
 
     @Override
     protected void loadTexture() {
-        // TODO
+        // Relic textures will be loaded from atlas when assets are ready
     }
 
-    public RelicType getRelicType()        { return type; }
+    public RelicType getType()        { return type; }
     public float getEffectMagnitude() { return effectMagnitude; }
     public boolean isActive()         { return isActive; }
     public int getBuyingValue()       { return buyingValue; }
