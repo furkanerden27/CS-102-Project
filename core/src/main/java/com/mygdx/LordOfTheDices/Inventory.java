@@ -33,14 +33,14 @@ public class Inventory {
         cards.add(new Card(Suit.HEARTS, Rank.TWO));
         Collections.sort(cards);
 
-        dice.add(new Dice());
+        dice.add(new Dice("Dice of Greed"));
         gold = 100;
     }
 
     // ── Dice ─────────────────────────────────────────────────────────────
 
-    public void addDice() {
-        dice.add(new Dice());
+    public void addDice(String str) {
+        dice.add(new Dice(str));
     }
 
     public ArrayList<Dice> getDice() { return dice; }
@@ -108,7 +108,7 @@ public class Inventory {
 
     public boolean hasRelic(Relic relic) {
         for (Relic r : relics) {
-            if (r.getType() == relic.getType()) {
+            if (r.getRelicType() == relic.getRelicType()) {
                 return true;
             }
         }

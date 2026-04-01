@@ -5,7 +5,17 @@ import java.util.Locale;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Card extends Item {
+public class Card extends Item implements Comparable<Card> {
+
+     @Override
+     public int compareTo(Card other) {
+         if (this.rank.getNumericValue() != other.rank.getNumericValue()) {
+             return Integer.compare(this.rank.getNumericValue(), other.rank.getNumericValue());
+         } 
+         else {
+             return this.suit.compareTo(other.suit);
+         }
+     }
 
     // 
     // ATLAS PROPERTIES
