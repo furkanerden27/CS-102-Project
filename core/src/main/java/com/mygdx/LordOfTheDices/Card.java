@@ -5,7 +5,7 @@ import java.util.Locale;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Card extends Item {
+public class Card extends Item implements Comparable<Card>{
 
     // 
     // ATLAS PROPERTIES
@@ -195,6 +195,14 @@ public class Card extends Item {
         }
     }
 
+    @Override
+    public int compareTo(Card o) {
+        if(suit.ordinal() == o.getSuit().ordinal()){
+            return Integer.compare(rank.getNumericValue(), o.getRank().getNumericValue());
+        }
+        return Integer.compare(suit.ordinal(), o.getSuit().ordinal());
+    }
+    
     // will implement later to balance the gameplay
     //public void increasePower() {}
     //public void increaseDiceRequirement() {}
