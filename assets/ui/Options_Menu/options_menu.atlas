@@ -1,0 +1,13 @@
+options_menu.png
+size:2048,1024
+repeat:none
+Options_bg
+bounds:1566,300,480,520
+checkbox_empty
+bounds:616,292,473,528
+checkbox_filled
+bounds:1091,292,473,528
+returnToMenuButton
+bounds:2,412,612,408
+returnToMenuButtonHover
+bounds:2,2,612,408

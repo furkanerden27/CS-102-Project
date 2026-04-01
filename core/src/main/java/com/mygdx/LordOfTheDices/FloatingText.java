@@ -54,8 +54,8 @@ public class FloatingText {
             isAlive = false;
         }
     }
-
-    public void setImmovable() {
+    
+        public void setImmovable() {
         this.velocityY = 0;
     }
 

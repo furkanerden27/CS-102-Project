@@ -10,6 +10,7 @@ public class Player extends Entity{
     private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer distanceLayer;
+    private Inventory inventory;
 
     // animations
     private Animation<TextureRegion> standingRight;
@@ -41,10 +42,11 @@ public class Player extends Entity{
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
         distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
+        inventory = new Inventory();
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
-        
+
         isOnGround = false;
     }
 
@@ -199,10 +201,13 @@ public class Player extends Entity{
     }
 
     public void addGold(int gold){
-        goldDropped += gold;
-        //TODO INVENTORY EKLENINCE INVENTORYDEKI MONEYI ARTTIRACAK
+        inventory.addGold(gold);
     }
-    
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     public void setAttackModifier(float m){
         attackModifier = m;
     }
