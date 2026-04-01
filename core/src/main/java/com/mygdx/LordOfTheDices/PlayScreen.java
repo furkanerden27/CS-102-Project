@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -22,6 +23,7 @@ public class PlayScreen implements Screen {
     private OrthographicCamera camera;
     private ArrayList<Entity> entities;
     private float stateTime = 0;
+    private FloatingText goldDisplay;
 
 
     public PlayScreen(Core game) {
@@ -54,6 +56,12 @@ public class PlayScreen implements Screen {
         entities.add(mob1);
         Lust lust = new Lust(1000, 100);
         entities.add(lust);
+        Sloth sloth = new Sloth(1100, 100);
+        entities.add(sloth);
+
+        goldDisplay = new FloatingText("Gold: 0", 0, 0, Color.GOLD);
+        goldDisplay.setImmovable();
+        goldDisplay.setDurationIndefinite(); 
     }
 
     @Override
@@ -73,12 +81,25 @@ public class PlayScreen implements Screen {
         mapRenderer.setView(camera);
         mapRenderer.render();
 
+        // --- Updating gold text ---
+        float goldX = camera.position.x - (viewport.getWorldWidth() / 2) + 20;
+        float goldY = camera.position.y + (viewport.getWorldHeight() / 2) - 15;
+
+        goldDisplay.setPosition(goldX, goldY);
+        goldDisplay.setText("Gold: " + player.getGold());
+        // ----------------------------
+
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         for (Entity e : entities) {
             e.draw(game.batch);
         }
+
+        if (goldDisplay != null) {
+            goldDisplay.render(game.batch); 
+        }
         game.batch.end();
+        removeDeadEntities();
 
     }
 
@@ -108,11 +129,23 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
             
             for (Entity e : entities) {
-                if (e instanceof BasicMob) {
-                    ((BasicMob) e).specialAttack(player);
+                if (e instanceof Sloth) {
+                    ((Sloth) e).specialAttack(player);
                     break;
                 }
             }
+        }
+    }
+
+     private void removeDeadEntities() {
+        ArrayList<Entity> toRemove = new ArrayList<>();
+        for (Entity e : entities) {
+            if (!e.isAlive()) {
+                toRemove.add(e);
+            }
+        }
+        for (Entity e : toRemove) {
+            entities.remove(e);
         }
     }
 
