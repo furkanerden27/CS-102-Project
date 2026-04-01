@@ -1,0 +1,880 @@
+{
+  "version": "1.0.0",
+  "producer": "Java AppCAT CLI",
+  "metadata": {
+    "analysisStartTime": "2026-03-16T09:15:54.0714278Z",
+    "analysisEndTime": "2026-03-16T09:17:29.8166702Z",
+    "status": "completed",
+    "privacyMode": "Protected",
+    "privacyModeHelpUrl": "https://aka.ms/appcat-privacy-mode",
+    "targetIds": [
+      "azure-aks",
+      "azure-appservice",
+      "azure-container-apps"
+    ],
+    "targetDisplayNames": [
+      "Azure Kubernetes Service",
+      "Azure App Service",
+      "Azure Container Apps"
+    ],
+    "capabilities": [],
+    "os": [],
+    "id": "20260316121554",
+    "name": "Report_20260316121554",
+    "domains": [
+      "cloud-readiness",
+      "java-upgrade"
+    ],
+    "mode": "issue-only"
+  },
+  "summary": {
+    "totalProjects": 1,
+    "totalIssues": 6,
+    "totalIncidents": 24,
+    "totalEffort": 88,
+    "charts": {
+      "severity": {
+        "mandatory": 8,
+        "optional": 15,
+        "potential": 1,
+        "information": 0
+      },
+      "category": {
+        "configuration-management": 15,
+        "containerization": 1,
+        "default-encoding": 1,
+        "file-system-management": 2,
+        "java-native-code": 2,
+        "java-version-upgrade": 3
+      }
+    },
+    "security": {}
+  },
+  "projects": [
+    {
+      "path": ".",
+      "issues": 6,
+      "storyPoints": 88,
+      "properties": {
+        "appName": "CS-102-Project",
+        "jdkVersion": "8",
+        "frameworks": null,
+        "languages": [
+          "Java",
+          "TypeScript"
+        ],
+        "tools": [
+          "Gradle"
+        ]
+      },
+      "incidents": [
+        {
+          "ruleId": "azure-java-version-02000",
+          "incidentId": "3ec4460f-2d2d-4253-8115-dd419d6654ad",
+          "location": "build.gradle",
+          "locationKind": "File",
+          "line": 30,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 5,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-java-version-02000",
+          "incidentId": "6e824ed9-97f5-4e81-bcb8-25ac50a3dc4d",
+          "location": "lwjgl3/build.gradle",
+          "locationKind": "File",
+          "line": 24,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 5,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-java-version-02000",
+          "incidentId": "f75621e2-14de-404e-b321-32bae88ddf9f",
+          "location": "lwjgl3/build.gradle",
+          "locationKind": "File",
+          "line": 25,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 5,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 5,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "efbf6946-7519-4639-9328-3d0d24f16ce8",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 86,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "540a82e5-30db-424e-9420-0ae317603902",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 114,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "c453dfbe-8c66-4d67-809e-cbf0aa44839d",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 146,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "653b82bb-2ec7-4a6c-8da8-8e0e9d4879d1",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 77,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "785df760-4e85-4ab2-a345-5d6ab4345581",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 88,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "85085397-2b9c-4b4d-a04d-5ae961152b14",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 89,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "ee6a82a6-40f9-4c99-9043-5e2c5342b9c6",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 100,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "7ad1d057-3c4a-4b6c-b105-de6633dab407",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 120,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "c635a95a-1102-4223-ab1c-8c89a03505c6",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 128,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "d678ce09-5fe8-4410-b838-8dc9fdeeddad",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 130,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "5669f7e6-383c-44ae-9487-655a495c47ea",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 145,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "8756ac4e-b614-41c0-aeae-20df7f73741d",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 90,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "14a2a30f-d54b-4c7c-8709-2f415657c8e9",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 91,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "2b7dd9da-4d25-4ecc-8ef9-85093636c255",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 93,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-system-config-01000",
+          "incidentId": "d0383286-0980-41e6-8a37-64f315d95c40",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 94,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "local-storage-00001",
+          "incidentId": "fc3249af-14e9-46ef-9687-82ab40b5e2ab",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 24,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "local-storage-00001",
+          "incidentId": "70d94bc8-2ef6-4901-8ae7-f114f149890c",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 25,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "jni-native-code-00001",
+          "incidentId": "f80317da-adce-4c84-b6b2-083d3382b06d",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 163,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 8,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 8,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 8,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "jni-native-code-00001",
+          "incidentId": "4eac658f-d329-4099-80f6-6f96083ea7e8",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 160,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 8,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 8,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 8,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "dockerfile-00000",
+          "incidentId": "24c80342-6ebd-44bb-985c-95c7ec3f5a5b",
+          "location": "",
+          "locationKind": "",
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "utf-8-by-default-00000",
+          "incidentId": "d8a44aea-863a-402f-af02-32943fe68ea7",
+          "location": "lwjgl3/src/main/java/io/github/furkanerden27/TestGameV3/lwjgl3/StartupHelper.java",
+          "locationKind": "File",
+          "line": 166,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "potential"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "potential"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "potential"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=openjdk21/openjdk17"
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "azure-java-version-02000": {
+      "id": "azure-java-version-02000",
+      "description": "The application is using an old Java version. It is strongly recommended to plan and execute a migration strategy to upgrade your application to the latest stable Java version.\nOlder Java versions may have known security vulnerabilities that can expose your application and infrastructure to potential attacks. Migrating to a supported version ensures that you benefit from the latest security patches and updates.",
+      "title": "Legacy Java version",
+      "severity": "mandatory",
+      "effort": 5,
+      "labels": [
+        "target=azure-appservice",
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "source",
+        "domain=java-upgrade",
+        "category=java-version-upgrade",
+        "version",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "azure-system-config-01000": {
+      "id": "azure-system-config-01000",
+      "description": "The application uses environment variables/system properties.\n To migrate a Java application that uses environment variables/system properties to Azure, you can follow these recommendations:\n \n * **Identify environment variables and system properties**: Review the usage of environment variables and system properties and externalize them.\n\n * **Add environment variables in Azure**: You can inject any per-service configuration settings into each service as environment variables.\n\n * **Define system properties in JVM options**: Any system properties that the code depends on will need to be defined in JVM options.\n\n * Consider using**Azure App Configuration**: You can also replace the usage of environment variables with **Azure App Configuration**. By migrating to Azure App Configuration, you can centralize and manage your application's configuration settings, making it easier to maintain and update them. Azure App Configuration provides features like versioning, dynamic updates, and integration with Azure Key Vault for secure storage of sensitive configuration values.",
+      "title": "Environment variables/system properties",
+      "severity": "optional",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://learn.microsoft.com/azure/azure-app-configuration",
+          "title": "Azure App Configuration documentation"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/key-vault",
+          "title": "Azure Key Vault documentation"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/developer/java/migration/migrate-spring-boot-to-azure-container-apps#configure-per-service-secrets-and-externalized-settings",
+          "title": "Configure per-service secrets and externalized settings"
+        }
+      ],
+      "labels": [
+        "target=azure-appservice",
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=configuration-management",
+        "config",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "dockerfile-00000": {
+      "id": "dockerfile-00000",
+      "description": "No Dockerfile was found in the project. This suggests the application may not yet be containerized. \nConsider creating a Dockerfile to enable container-based replatforming to Azure services such as Azure Container Apps or AKS.",
+      "title": "No Dockerfile found",
+      "severity": "mandatory",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://www.baeldung.com/java-dockerize-app",
+          "title": "Dockerizing a Java Application"
+        }
+      ],
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=containerization",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "jni-native-code-00001": {
+      "id": "jni-native-code-00001",
+      "description": "When migrating an application that uses native processes to Azure, it's important to consider that native processes might not run in a cloud or container environment. Instead, you can refactor your application to use cloud-compatible alternatives or managed services.\n\n * **Identify native process dependencies**: Review all native processes used in your application and understand the purpose of each process.\n\n * **Evaluate and use cloud-compatible alternatives**: For each native process, look for alternative libraries, services, or APIs that provide similar functionality and are compatible with cloud environments. Replace instances of native process usage with the chosen cloud-compatible alternatives.\n\n * **Leverage Azure managed services**: Evaluate the use of Azure-managed services to replace certain native process functionalities.\n\n * **Test and validate**: Thoroughly test the updated application to ensure it works correctly with the new libraries or services. Perform functional, performance, and stress tests to validate that the application meets its requirements and can handle the expected workload.",
+      "title": "Java Native Processes",
+      "severity": "mandatory",
+      "effort": 8,
+      "links": [
+        {
+          "url": "https://docs.microsoft.com/en-us/visualstudio/install/advanced-build-tools-container?view=vs-2019",
+          "title": "Advanced example for containers"
+        },
+        {
+          "url": "https://stackoverflow.com/questions/54502335/how-to-register-com-components-inside-docker-as-regsvr32-command-executes-succes",
+          "title": "how to register com components inside docker as regsvr32 command"
+        },
+        {
+          "url": "https://github.com/dotnet-architecture/eShopModernizing/wiki/02.-How-to-containerize-the-.NET-Framework-web-apps-with-Windows-Containers-and-Docker",
+          "title": "How to containerize the .NET Framework web apps with Windows Containers and Docker"
+        },
+        {
+          "url": "https://forums.docker.com/t/windows-application-32-bit-com-dll-registration/47205/8",
+          "title": "Windows Application 32 bit COM dll registration"
+        }
+      ],
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=java-native-code",
+        "jni",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "local-storage-00001": {
+      "id": "local-storage-00001",
+      "description": "When migrating an application that relies on the file system to Azure, it's important to consider the limitations of local storage in a cloud environment.\n An application running inside a container could lose access to a file in local storage.\n\n The following recommendations depend on the function of the file in local storage:\n * Determine the **storage needs** for your application: Ephemeral storage or persistent storage. Ephemeral storage only persists until the cloud environment is restarted. Persistent storage is required for data that needs to persist across restarts.\n \n * If persistent storage is needed, consider **mounting Azure File Share** or **using Azure Blob Storage**. Mount Azure file share allows your application to access files via the mount location. Azure blob storage is a scalable object store for data objects, such as text or binary files.\n\n * **Logging**: Log to standard output and use Azure Monitor to collect and analyze the logs.\n\n * **Caching**: Use Azure Cache for Redis as a cache backing service.\n\n * **Configuration**: Store configuration in Azure App Configuration instead of using the file system. Also store configuration settings in environment variables so that they can be updated without code changes.",
+      "title": "File system - Java IO",
+      "severity": "mandatory",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://learn.microsoft.com/azure/storage",
+          "title": "Azure Storage documentation"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/container-apps/storage-mounts-azure-files",
+          "title": "Create an Azure Files volume mount in Azure Container Apps"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/container-apps/storage-mounts",
+          "title": "Use storage mounts in Azure Container Apps"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/azure-monitor/logs/data-platform-logs",
+          "title": "Azure Monitor Logs overview"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/azure-cache-for-redis",
+          "title": "Azure Cache for Redis documentation"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/azure-app-configuration",
+          "title": "Azure App Configuration documentation"
+        }
+      ],
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=file-system-management",
+        "storage",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "utf-8-by-default-00000": {
+      "id": "utf-8-by-default-00000",
+      "description": "If not supplied, the `java.io.{{className}}` constructor uses UTF-8 by default. \n If you haven't provided the character set, and UTF-8 is not appropriate for your class, then supply the appropriate character set to the constructor call.",
+      "title": "The 'java.io' constructor defaults to UTF-8",
+      "severity": "potential",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://openjdk.org/jeps/400",
+          "title": "JEP 400: UTF-8 by Default"
+        }
+      ],
+      "labels": [
+        "capability=openjdk18+",
+        "capability=openjdk",
+        "source",
+        "domain=cloud-readiness",
+        "category=default-encoding",
+        "os=windows",
+        "os=linux",
+        "target=azure-appservice",
+        "target=azure-aks",
+        "target=azure-container-apps"
+      ]
+    }
+  },
+  "security": []
+}

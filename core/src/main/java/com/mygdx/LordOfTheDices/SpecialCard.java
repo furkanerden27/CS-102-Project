@@ -1,32 +1,26 @@
 package com.mygdx.LordOfTheDices;
 
-/**
- * Expendable face cards (Jack, Queen, King, Ace) with unique effects
- * and more complex dice requirements than regular cards.
- */
 public class SpecialCard extends Card {
-
+    
     private final Effect effect;
     private final DiceCondition condition;
 
+    // conditions might change later to balance the game
     public enum DiceCondition {
         ALL_EVEN,       // All dice must show even numbers
         ALL_ODD,        // All dice must show odd numbers
         ALL_SAME,       // All dice must show the same value
-        STRAIGHT,       // Dice values form a consecutive sequence
+        ALL_DIFFERENT,       // Dice values form a consecutive sequence
         TOTAL_ABOVE_20  // Sum of all dice must exceed 20
     }
 
     public SpecialCard(Suit suit, Rank rank, Effect effect, DiceCondition condition) {
-        super(suit, rank);
+        super(suit, rank, true);
         this.effect = effect;
         this.condition = condition;
     }
 
-    /**
-     * Checks if the dice values meet this special card's unique condition.
-     * Overrides the simple total-based check from Card.
-     */
+    /* checks if the dice values meet this cards unique condition.*/
     public boolean checkSpecialPlay(int[] diceValues) {
         switch (condition) {
             case ALL_EVEN:
@@ -47,17 +41,13 @@ public class SpecialCard extends Card {
                 }
                 return true;
 
-            case STRAIGHT:
-                int min = Integer.MAX_VALUE;
-                int max = Integer.MIN_VALUE;
+            case ALL_DIFFERENT:
                 boolean[] seen = new boolean[7]; // 1-6
                 for (int v : diceValues) {
                     if (v < 1 || v > 6 || seen[v]) return false;
                     seen[v] = true;
-                    if (v < min) min = v;
-                    if (v > max) max = v;
                 }
-                return (max - min) == (diceValues.length - 1);
+                return true;
 
             case TOTAL_ABOVE_20:
                 int sum = 0;
@@ -69,7 +59,6 @@ public class SpecialCard extends Card {
         }
     }
 
-    /** Applies the special card's effect. */
     @Override
     public void apply(Player player, Mob mob) {
         if (effect != null) {

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Entites.tsx",
+    "activeFile": "C:/Users/furkan/Desktop/CS proje/assets/Maps/Map 1.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -33,6 +33,29 @@
         },
         "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Wasteland.tsx": {
             "scaleInDock": 2
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Entites.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Map 1.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 202.66666666666666,
+                "y": 152.33333333333337
+            }
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Mountains.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Mountains_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Sky.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Wasteland.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.exportedFilePath": "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps",
@@ -42,13 +65,14 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 600,
     "openFiles": [
-        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx",
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Map 1.tmx",
         "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Entites.tsx"
     ],
     "project": "Level 1 Map.tiled-project",
     "recentFiles": [
-        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx",
-        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Entites.tsx"
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Entites.tsx",
+        "C:/Users/furkan/Desktop/CS proje/assets/Maps/Map 1.tmx",
+        "C:/Users/furkan/Desktop/Bilkent 1.2/cs 102/Cs 102 Project/CS-102-Project/assets/Maps/Map 1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1

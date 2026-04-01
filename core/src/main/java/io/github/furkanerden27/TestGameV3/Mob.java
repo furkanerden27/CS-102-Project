@@ -1,4 +1,4 @@
-package com.mygdx.LordOfTheDices;
+package io.github.furkanerden27.TestGameV3;
 
 public abstract class Mob extends Entity {
     
@@ -15,6 +15,4 @@ public abstract class Mob extends Entity {
     public float getBaseAttackDamage(){
         return baseAttackDamage;
     }
-
-    public abstract void specialAttack(Player player);
 }

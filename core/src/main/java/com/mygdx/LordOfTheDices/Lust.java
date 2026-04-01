@@ -28,6 +28,7 @@ public class Lust extends Boss {
         player.takeDamage(damage);
         if (Math.random() < lureProb) {
             player.addEffect(new Lure(1, damage)); // henüz çalışıyor mu emin değilim, duration ve baseValue değerleri değişebilir
+            player.addEffect(new Bleeding(1, damage)); 
             showLureText = true;
         }
     }
