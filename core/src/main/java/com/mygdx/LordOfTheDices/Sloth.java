@@ -30,6 +30,9 @@ public class Sloth extends Boss {
             player.addEffect(new Lure(1, damage)); // henüz çalışıyor mu emin değilim, duration ve baseValue değerleri değişebilir
             showstunText = true;
         }
+        else {
+            showFloatingText("zzz...", Color.BLUE);
+        }
     }
 
     @Override

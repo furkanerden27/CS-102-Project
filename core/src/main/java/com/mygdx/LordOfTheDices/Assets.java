@@ -42,6 +42,7 @@ public class Assets {
     public static final String SFX_HOVER = "audio/hoverSound.mp3";
 
     public static final String MAP_1 = "Maps/Map 1.tmx";
+    public static final String MAP_2 = "Maps/Map 2.tmx";
 
     public void load() {
         // TiledMap loader
@@ -78,6 +79,7 @@ public class Assets {
         manager.load(SFX_HOVER, Sound.class);
 
         manager.load(MAP_1, TiledMap.class);
+        manager.load(MAP_2, TiledMap.class);
     }
 
     public void finishLoading() {

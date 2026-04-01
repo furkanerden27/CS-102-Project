@@ -16,6 +16,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public abstract class Entity extends Sprite {
     /*Implementation of this class is incomplete */
+    protected static TextureAtlas atlas = new TextureAtlas(Gdx.files.internal(Assets.ATLAS_ENTITIES));
+
     protected float maxHealth;
     protected float health;
     protected boolean isAlive;
@@ -62,7 +64,6 @@ public abstract class Entity extends Sprite {
     }
 
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("Atlas/Entities.atlas"));
         TextureRegion region = atlas.findRegion(regionName);
         initAnimationsFromRegion(region, tileWidth, tileHeight, frameCounts);
     }
@@ -73,7 +74,6 @@ public abstract class Entity extends Sprite {
         animations = new Animation[entityImages.length];
         setAnimations(frameCounts);
     }
-
     
     private static TextureRegion[][] splitRegion(TextureRegion region, int tileWidth, int tileHeight) {
         int cols = region.getRegionWidth() / tileWidth;
@@ -92,7 +92,6 @@ public abstract class Entity extends Sprite {
         }
         return tiles;
     }
-    
 
     public void takeDamage(float  damage) {
         health = Math.max(0, health - damage);

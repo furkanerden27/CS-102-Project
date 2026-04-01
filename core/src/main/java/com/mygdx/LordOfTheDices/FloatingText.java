@@ -55,7 +55,7 @@ public class FloatingText {
         }
     }
     
-        public void setImmovable() {
+    public void setImmovable() {
         this.velocityY = 0;
     }
 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
     /*Implementation of this class is incomplete */
-    private final float GRAVITY = 1, FRICTION = 2.5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
+    private final float GRAVITY = 2f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer distanceLayer;
     private Inventory inventory;
