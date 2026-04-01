@@ -22,6 +22,7 @@ public class MainMenuScreen implements Screen {
     private FitViewport viewport;
     private SpriteBatch batch;
 
+    // AssetManager'dan alınan referanslar (dispose ETME)
     private Texture backgroundTexture;
     private Sound hoverSound;
     private TextureRegion btnNewNormal, btnLoadNormal, btnOptionsNormal, btnExitNormal;
@@ -86,15 +87,16 @@ public class MainMenuScreen implements Screen {
         float gap = -10f;
         float startY = 273f;
 
-        btnExit = new Rectangle(VIRTUAL_WIDTH / 2f - exitW / 2f + gap,  startY, exitW, exitH);
-        btnOptions = new Rectangle(VIRTUAL_WIDTH / 2f - optW / 2f + gap,   btnExit.y + exitH + gap, optW, optH);
+        btnExit     = new Rectangle(VIRTUAL_WIDTH / 2f - exitW / 2f + gap,  startY, exitW, exitH);
+        btnOptions  = new Rectangle(VIRTUAL_WIDTH / 2f - optW / 2f + gap,   btnExit.y + exitH + gap, optW, optH);
         btnLoadGame = new Rectangle(VIRTUAL_WIDTH / 2f - loadW / 2f + gap,  btnOptions.y + optH + gap, loadW, loadH);
-        btnNewGame = new Rectangle(VIRTUAL_WIDTH / 2f - newW / 2f + gap,   btnLoadGame.y + loadH + gap, newW, newH);
+        btnNewGame  = new Rectangle(VIRTUAL_WIDTH / 2f - newW / 2f + gap,   btnLoadGame.y + loadH + gap, newW, newH);
 
-        hitExit = bannerHit(btnExit);
-        hitOptions = bannerHit(btnOptions);
+        // Hit rectangle'lar: sadece banner kısmı (alt %55), sivri çıkıntı hariç
+        hitExit     = bannerHit(btnExit);
+        hitOptions  = bannerHit(btnOptions);
         hitLoadGame = bannerHit(btnLoadGame);
-        hitNewGame = bannerHit(btnNewGame);
+        hitNewGame  = bannerHit(btnNewGame);
     }
 
     private Rectangle bannerHit(Rectangle draw) {
@@ -117,10 +119,10 @@ public class MainMenuScreen implements Screen {
             batch.draw(backgroundTexture, 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
         }
 
-        drawButton(btnExit, btnExitNormal, btnExitHover, hoveredButton == 3);
-        drawButton(btnOptions, btnOptionsNormal, btnOptionsHover, hoveredButton == 2);
-        drawButton(btnLoadGame, btnLoadNormal, btnLoadHover, hoveredButton == 1);
-        drawButton(btnNewGame, btnNewNormal, btnNewHover, hoveredButton == 0);
+        drawButton(btnExit,     btnExitNormal,    btnExitHover,    hoveredButton == 3);
+        drawButton(btnOptions,  btnOptionsNormal, btnOptionsHover, hoveredButton == 2);
+        drawButton(btnLoadGame, btnLoadNormal,    btnLoadHover,    hoveredButton == 1);
+        drawButton(btnNewGame,  btnNewNormal,     btnNewHover,     hoveredButton == 0);
 
         batch.end();
     }
@@ -164,13 +166,13 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override public void resize(int w, int h){ viewport.update(w, h, true); }
-    @Override public void pause(){}
+    @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void hide(){}
+    @Override public void hide() {}
 
     @Override
     public void dispose() {
         if (batch != null) batch.dispose();
-        // Asset'ler AssetManager tarafından yönetilecek burada dispose etme!
+        // Asset'ler AssetManager tarafından yönetilir, burada dispose edilmez
     }
 }

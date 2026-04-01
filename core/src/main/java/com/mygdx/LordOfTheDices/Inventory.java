@@ -2,11 +2,12 @@ package com.mygdx.LordOfTheDices;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import com.mygdx.LordOfTheDices.Card.Rank;
 import com.mygdx.LordOfTheDices.Card.Suit;
 
-public class Inventory {
+public class Inventory implements Comparator<Card>{
 
     private ArrayList<Dice> dice;
     private ArrayList<Card> cards;
@@ -21,7 +22,7 @@ public class Inventory {
         this.gold = gold;
     }
 
-    /** Creates a default new-game inventory. */
+    // Creates a default new-game inventory. 
     public Inventory() {
         dice = new ArrayList<>();
         cards = new ArrayList<>();
@@ -31,37 +32,37 @@ public class Inventory {
         cards.add(new Card(Suit.SPADES, Rank.TWO));
         cards.add(new Card(Suit.DIAMONDS, Rank.TWO));
         cards.add(new Card(Suit.HEARTS, Rank.TWO));
-        Collections.sort(cards);
+        Collections.sort(cards, this);
 
         dice.add(new Dice("Dice of Greed"));
         gold = 100;
     }
 
-    // ── Dice ─────────────────────────────────────────────────────────────
+    //Dice ------------------------------------------------------------------------------------
 
     public void addDice(String str) {
         dice.add(new Dice(str));
     }
 
-    public ArrayList<Dice> getDice() { return dice; }
+    // public ArrayList<Dice> getDice() { return dice; }
 
-    public Dice getDice(int i) { return dice.get(i); }
+    // public Dice getDice(int i) { return dice.get(i); }
 
-    public int getDiceCount() { return dice.size(); }
+    // public int getDiceCount() { return dice.size(); }
 
-    // ── Cards ────────────────────────────────────────────────────────────
+    //Cards --------------------------------------------------------------------------------------
 
-    /** Adds a card. Face cards (rank > 10) cannot be duplicated. Returns false if duplicate. */
+    // Adds a card. Noral cards (rank < 11) can't be stacked. Returns false if duplicate. 
     public boolean addCard(Card card) {
-        if (card.getRank().getNumericValue() > 10 && hasCard(card)) {
+        if (card.getRank().getNumericValue() < 11 && hasCard(card)) {
             return false;
         }
         cards.add(card);
-        Collections.sort(cards);
+        Collections.sort(cards, this);
         return true;
     }
 
-    /** Removes a card. Rank TWO cards (starter cards) cannot be removed. */
+    //Removes a card. Rank TWO cards (starter cards) can't be removed.
     public boolean removeCard(Card card) {
         if (card.getRank().getNumericValue() == 2) {
             return false;
@@ -69,6 +70,7 @@ public class Inventory {
         return cards.remove(card);
     }
 
+    //Checks if a card already exists in the inventory.
     public boolean hasCard(Card card) {
         for (Card c : cards) {
             if (c.getSuit() == card.getSuit() && c.getRank() == card.getRank()) {
@@ -84,7 +86,7 @@ public class Inventory {
 
     public int getCardCount() { return cards.size(); }
 
-    /** Returns all cards of a given suit. */
+    //Returns all cards of a given suit.
     public ArrayList<Card> getCardsBySuit(Suit suit) {
         ArrayList<Card> result = new ArrayList<>();
         for (Card c : cards) {
@@ -95,9 +97,9 @@ public class Inventory {
         return result;
     }
 
-    // ── Relics ───────────────────────────────────────────────────────────
+    //Relics-------------------------------------------------
 
-    /** Adds a relic. Duplicate relics are not allowed. */
+    /** Adds a relic. Relics can't be stacked. */
     public boolean addRelic(Relic relic) {
         if (hasRelic(relic)) {
             return false;
@@ -106,6 +108,7 @@ public class Inventory {
         return true;
     }
 
+    //checks if a relic already exists in the inventory
     public boolean hasRelic(Relic relic) {
         for (Relic r : relics) {
             if (r.getRelicType() == relic.getRelicType()) {
@@ -121,21 +124,31 @@ public class Inventory {
 
     public int getRelicCount() { return relics.size(); }
 
-    // ── Gold ─────────────────────────────────────────────────────────────
-
+    //Gold------------------------------------------------------
     public int getGold() { return gold; }
 
     public void setGold(int gold) { this.gold = gold; }
 
     public void addGold(int amount) { this.gold += amount; }
 
-    /** Returns true if the player can afford the cost. */
+
     public boolean canAfford(int cost) { return gold >= cost; }
 
-    /** Spends gold. Returns false if insufficient funds. */
+    // Spends gold. Returns false if insufficient funds.
     public boolean spendGold(int amount) {
         if (gold < amount) return false;
         gold -= amount;
         return true;
+    }
+
+    //The sort method uses this. This is needed to properly sort cards so that
+    //They can be shown in a specific way in the inventory screen.
+    public int compare(Card card1, Card card2) {
+        if(card1.getSuit() != card2.getSuit()){
+            return card1.getSuit().getNumericValue() - card2.getSuit().getNumericValue();
+        }
+        else{
+            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();
+        }
     }
 }
