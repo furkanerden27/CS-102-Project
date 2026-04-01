@@ -3,7 +3,7 @@ package com.mygdx.LordOfTheDices;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Card extends Item implements Comparable<Card> {
+public class Card extends Item implements Comparable<Card>{
 
     //
     // ATLAS — set once via Card.init(atlas) from Core.create()
@@ -181,8 +181,19 @@ public class Card extends Item implements Comparable<Card> {
         }
     }
 
-    public void select()   { selected = true; }
-    public void unselect() { selected = false; }
+    @Override
+    public int compareTo(Card o) {
+        if(suit.ordinal() == o.getSuit().ordinal()){
+            return Integer.compare(rank.getNumericValue(), o.getRank().getNumericValue());
+        }
+        return Integer.compare(suit.ordinal(), o.getSuit().ordinal());
+    }
+    
+    // will implement later to balance the gameplay
+    //public void increasePower() {}
+    //public void increaseDiceRequirement() {}
+    //public void increaseBuyingValue() {}
+    //public void increaseSellingValue() {}
 
     //
     // GETTERS

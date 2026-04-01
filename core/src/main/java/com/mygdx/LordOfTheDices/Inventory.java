@@ -34,15 +34,15 @@ public class Inventory implements Comparator<Card>{
         cards.add(new Card(Suit.HEARTS, Rank.TWO));
         Collections.sort(cards, this);
 
-        // dice.add(new Dice());
+        dice.add(new Dice("31"));
         gold = 100;
     }
 
     //Dice ------------------------------------------------------------------------------------
 
-    // public void addDice() {
-    //     dice.add(new Dice());
-    // }
+    public void addDice() {
+        dice.add(new Dice("32"));
+    }
 
     // public ArrayList<Dice> getDice() { return dice; }
 
@@ -111,7 +111,7 @@ public class Inventory implements Comparator<Card>{
     //checks if a relic already exists in the inventory
     public boolean hasRelic(Relic relic) {
         for (Relic r : relics) {
-            if (r.getType() == relic.getType()) {
+            if (r.getRelicType() == relic.getRelicType()) {
                 return true;
             }
         }
