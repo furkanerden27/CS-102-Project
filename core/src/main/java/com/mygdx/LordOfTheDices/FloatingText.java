@@ -1,7 +1,6 @@
 package com.mygdx.LordOfTheDices;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -20,15 +19,9 @@ public class FloatingText {
 
     public FloatingText(String text, float x, float y, Color color) {
         this(text, x, y, color, defaultFont);
-        defaultFont.setUseIntegerPositions(false);
-        defaultFont.getData().setScale(0.7f);
-        defaultFont.getRegion().getTexture().setFilter(
-            Texture.TextureFilter.Linear,
-            Texture.TextureFilter.Linear
-        );
     }
 
-    private FloatingText(String text, float x, float y, Color color, BitmapFont font) {
+    public FloatingText(String text, float x, float y, Color color, BitmapFont font) {
         this.text = text;
         this.x = x;
         this.y = y;
@@ -53,23 +46,6 @@ public class FloatingText {
         if (timeElapsed >= duration) {
             isAlive = false;
         }
-    }
-    
-        public void setImmovable() {
-        this.velocityY = 0;
-    }
-
-    public void setDurationIndefinite() {
-        this.duration = Float.MAX_VALUE;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
     }
 
     public void render(Batch batch) {

@@ -117,10 +117,6 @@ public abstract class Entity extends Sprite {
         maxHealth += heal;
     }
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
     public void showFloatingText(String text, Color color) {
         float textX = getX() + getWidth() / 2;
         float textY = getY() + getHeight();
