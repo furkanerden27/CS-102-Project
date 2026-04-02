@@ -28,9 +28,9 @@ public class BattleScreen implements Screen{
     private Texture cardSpades;
     private Texture cardClubs;
     private Texture cardHearts;
-    private Texture cardDiamonds;// TODO burasi atlasla degistirilecek? nasil olcak bilmiyom ama bisiler yapilcak
+    private Texture cardDiamonds;
     private Texture background, lockedDice, rollAllTexture, arrowTexture, inverseArrowTexture;
-    
+
     private Image inverseArrowImage, arrowImage;
 
     private Label toolTipLabel;
@@ -38,20 +38,19 @@ public class BattleScreen implements Screen{
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
-    public BattleScreen(Assets assets,FightManager manager, int sizeX, int sizeY) {
+    public BattleScreen(Assets assets, FightManager manager, int sizeX, int sizeY) {
         stage = new Stage(new FitViewport(sizeX, sizeY));
         this.manager = manager;
 
-        //TODO get these to atlas or smth
-        cardSpades = new Texture("Cards\\card-spades.png");
-        cardClubs = new Texture("Cards\\card-clubs.png");
-        cardHearts = new Texture("Cards\\card-hearts.png");
-        cardDiamonds = new Texture("Cards\\card-diamonds.png");
-        background = new Texture("FightBackground.png");
-        lockedDice = new Texture("LockedDice.png");
-        rollAllTexture = new Texture("RollAllButton.png");
-        arrowTexture = new Texture("Arrow.png");
-        inverseArrowTexture = new Texture("InverseArrow.png");
+        cardSpades = assets.getTexture(Assets.TEX_CARD_SPADES);
+        cardClubs = assets.getTexture(Assets.TEX_CARD_CLUBS);
+        cardHearts = assets.getTexture(Assets.TEX_CARD_HEARTS);
+        cardDiamonds = assets.getTexture(Assets.TEX_CARD_DIAMONDS);
+        background = assets.getTexture(Assets.TEXTURE_FIGHT_BG);
+        lockedDice = assets.getTexture(Assets.TEX_LOCKED_DICE);
+        rollAllTexture = assets.getTexture(Assets.TEX_ROLL_ALL_BTN);
+        arrowTexture = assets.getTexture(Assets.TEX_ARROW);
+        inverseArrowTexture = assets.getTexture(Assets.TEX_INVERSE_ARROW);
 
 
         toolTipTable = new Table();
@@ -370,15 +369,6 @@ public class BattleScreen implements Screen{
     public void hide() {}
     @Override
     public void dispose() {
-        cardClubs.dispose();
-        cardDiamonds.dispose();
-        cardHearts.dispose();
-        cardSpades.dispose();
-        lockedDice.dispose();   
-        background.dispose();
-        rollAllTexture.dispose();
-        inverseArrowTexture.dispose();
-        arrowTexture.dispose();
-        
+        stage.dispose();
     }
 }
