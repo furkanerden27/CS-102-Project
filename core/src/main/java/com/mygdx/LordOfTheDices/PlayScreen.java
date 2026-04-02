@@ -52,7 +52,7 @@ public class PlayScreen implements Screen {
         //gluttony.setEntity(map);
         //entities.add(gluttony);
         BasicMob mob1 = new BasicMob(1600, 60);
-        //mob1.setEntity(map);
+        mob1.setEntity(map);
         entities.add(mob1);
         Lust lust = new Lust(1000, 100);
         entities.add(lust);
@@ -129,8 +129,8 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
             
             for (Entity e : entities) {
-                if (e instanceof Sloth) {
-                    ((Sloth) e).specialAttack(player);
+                if (e instanceof BasicMob) {
+                    ((BasicMob) e).specialAttack(player);
                     break;
                 }
             }
