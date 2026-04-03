@@ -1,8 +1,6 @@
 package com.mygdx.LordOfTheDices;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.sun.org.apache.xerces.internal.impl.xs.ElementPSVImpl;
 
 public class ScreenManager {
 
@@ -46,10 +44,10 @@ public class ScreenManager {
 
     }
 
-    public void showScreen(Screens screen, FightManager fightManager) {
-        if (screen == Screens.BATTLE) {
-            game.setScreen(new BattleScreen(game.getAssets(), fightManager, 800, 400));
-        }
+    public BattleScreen showBattleScreen(FightManager fightManager) {
+        BattleScreen battleScreen =new BattleScreen(game.getAssets(), fightManager, 800, 400);
+        game.setScreen(battleScreen);
+        return battleScreen;
     }
 
     public void showScreen(Screens screen, Inventory inventory) {

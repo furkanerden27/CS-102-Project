@@ -117,9 +117,7 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
             //TODO THIS IS JUST FOR TESTING REMOVE LATER
             
-            screenManager.showScreen(Screens.BATTLE, new FightManager(player, null));
-            //game.setScreen(new CombatScreen());
-            
+            new FightManager(player, null, screenManager);
             
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
