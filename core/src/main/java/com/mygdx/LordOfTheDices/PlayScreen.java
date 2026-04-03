@@ -32,14 +32,14 @@ public class PlayScreen implements Screen {
         this.screenManager = game.screen;
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
-        map = assets.getMap(Assets.MAP_2);
+        map = assets.getMap(Assets.MAP_1);
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         initialiseEntities();
     }
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 300, 400, map);
+        player = new Player(200, 300, 350, map);
         entities.add(player);
         
         Pride pride = new Pride(300, 100);
