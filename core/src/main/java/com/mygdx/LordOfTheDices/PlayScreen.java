@@ -159,7 +159,10 @@ public class PlayScreen implements Screen {
             player.jump();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            screenManager.showScreen(Screens.BATTLE, new FightManager(player, null));
+            Mob nearestMob = findNearestMob();
+            if (nearestMob != null) {
+                new FightManager(player, nearestMob, screenManager);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.showScreen(Screens.INVENTORY, player.getInventory());
@@ -174,7 +177,23 @@ public class PlayScreen implements Screen {
         }
     }
 
-     private void removeDeadEntities() {
+    private Mob findNearestMob() {
+        float interactionRange = 50f;
+        Mob nearest = null;
+        float minDist = Float.MAX_VALUE;
+        for (Entity e : entities) {
+            if (e instanceof Mob && e.isAlive()) {
+                float dist = Math.abs(e.getX() - player.getX());
+                if (dist < interactionRange && dist < minDist) {
+                    minDist = dist;
+                    nearest = (Mob) e;
+                }
+            }
+        }
+        return nearest;
+    }
+
+    private void removeDeadEntities() {
         ArrayList<Entity> toRemove = new ArrayList<>();
         for (Entity e : entities) {
             if (!e.isAlive()) {
