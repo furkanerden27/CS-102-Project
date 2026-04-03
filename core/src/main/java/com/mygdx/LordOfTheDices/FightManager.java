@@ -7,17 +7,17 @@ public class FightManager {
     private Player player;
     private Mob mob;
     private BattleScreen screen1;
+    private ScreenManager screenManager;
 
     private boolean isPlayerTurn;
     
 
-    public FightManager(Player player, Mob mob){
+    public FightManager(Player player, Mob mob, ScreenManager screenManager){
         this.player = player;
         this.mob = mob;
         isPlayerTurn = true;
-        //fightLoop();
-        //screen1 = new BattleScreen1(this, 800, 400);
-        //TODO SCREENMANAGER'E BATTLLESCREEN1'e GEÇİRTÇEN
+        this.screenManager = screenManager;
+        screen1 = screenManager.showBattleScreen(this);
     }
 
     private void fightLoop(){
