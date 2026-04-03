@@ -36,14 +36,18 @@ public class ScreenManager {
 
         else if(screen == Screens.LOAD_SAVE)        game.setScreen(new LoadGameScreen(game, this));
 
-        else if(screen == Screens.OPTIONS)      game.setScreen(new OptionsScreen(game, this));
+        else if(screen == Screens.OPTIONS) {
+            previousScreen = game.getScreen();
+            game.setScreen(new OptionsScreen(game, this));
+        }
 
         else if(screen == Screens.PLAY)         game.setScreen(new PlayScreen(game));
+    }
 
-        // else if(screen == Screens.PAUSE)    game.setScreen(new PauseScreen(game, this));
-
-        // else if(screen == Screens.MENU_PAUSE)    game.setScreen(new MenuPauseScreen(game, this));
-
+    public void showScreen(Screens screen, int gold, String saveName, Level level) {
+        if (screen == Screens.PLAY) {
+            game.setScreen(new PlayScreen(game, gold, saveName, level));
+        }
     }
 
     public void showScreen(Screens screen, FightManager fightManager) {
@@ -56,6 +60,12 @@ public class ScreenManager {
         if (screen == Screens.INVENTORY) {
             previousScreen = game.getScreen();
             game.setScreen(new InventoryScreen(this, inventory));
+        }
+    }
+
+    public void showScreen(Screens screen, Screen playScreen) {
+        if (screen == Screens.PAUSE) {
+            game.setScreen(new PauseScreen(game, this, playScreen));
         }
     }
 

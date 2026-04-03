@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-//Inventory screen, shows the inventory and the items' descriptions
 public class InventoryScreen implements Screen {
 
     private static final float VIRTUAL_WIDTH = 800f;
@@ -142,14 +141,12 @@ public class InventoryScreen implements Screen {
         chosenStyle = new Label.LabelStyle(font2, Color.GOLD);
         titleStyle = new Label.LabelStyle(font, Color.GOLD);
 
-        //Root table----------------------------------------------
         Table rootTable = new Table();
         rootTable.top().left();
         rootTable.setFillParent(true);
         rootTable.pad(15);
         stage.addActor(rootTable);
 
-        //Left panel: descriptions----------------------------------
         
         leftPanel = new Table();
         leftPanel.bottom().left();
@@ -161,21 +158,17 @@ public class InventoryScreen implements Screen {
         descriptionLabel.setWrap(true);
         leftPanel.add(descriptionLabel).width(200).left().padTop(50).padLeft(18).expandY().top();
 
-        //Right panel: inventory---------------------------------------------------
         rightPanel = new Table();
         rightPanel.top();
 
-        // Gold display-------------------------------------
         goldLabel = new Label("Gold: " + inventory.getGold(), titleStyle);
         rightPanel.add(goldLabel).left().padBottom(10).padRight(70).colspan(2).row();
 
-        //Reminder display--------------------------------------------
         Table remindTable = new Table();
         remindTable.top().left();
         reminderLabel = new Label("Press ESC to exit ", labelStyle);
         remindTable.add(reminderLabel).top().left().padRight(300).row();
 
-        //Button texts----------------------------------------------
         buttonText = (mode) ? new Label("Cards", labelStyle) : new Label("Cards", chosenStyle);
         buttonText.setPosition(160, 336);
         buttonText.setTouchable(Touchable.disabled);
@@ -188,11 +181,7 @@ public class InventoryScreen implements Screen {
 
         
 
-        // Dice count
-        // Label diceLabel = new Label("Dice: " + inventory.getDiceCount(), labelStyle);
-        // rightPanel.add(diceLabel).left().padBottom(15).colspan(2).row();
 
-        // Cards section(Visible by default)---------------------------
 
             cardsTitle = new Label("Cards ", titleStyle);
             rightPanel.add(cardsTitle).center().padLeft(20).padTop(-10).colspan(2).row();
@@ -202,7 +191,6 @@ public class InventoryScreen implements Screen {
             cardsScroll.setFadeScrollBars(false);
 
         
-        // Relics section(Not visible by default)---------------------
 
             relicsTitle = new Label("Relics", titleStyle);
             rightPanel.add(relicsTitle).center().padLeft(20).padTop(-40).colspan(2).row();
@@ -232,7 +220,6 @@ public class InventoryScreen implements Screen {
         rootTable.add(rightPanel).expand().fill();
     }
 
-    //Builds the card table.
     private Table buildCardsTable(Label.LabelStyle style) {
         Table table = new Table();
         table.top().left().padLeft(70).padTop(30);
@@ -273,7 +260,6 @@ public class InventoryScreen implements Screen {
         return table;
     }
 
-    //Builds the relic table.
     private Table buildRelicsTable(Label.LabelStyle style) {
         Table table = new Table();
          table.top().left().padLeft(70).padTop(30);
@@ -310,7 +296,6 @@ public class InventoryScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // ESC or I to go back
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.goBack();
             return;

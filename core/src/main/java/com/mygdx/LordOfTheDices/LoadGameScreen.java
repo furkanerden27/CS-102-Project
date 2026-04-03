@@ -30,7 +30,6 @@ public class LoadGameScreen implements Screen {
     private static final String FIREBASE_URL =
         "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves.json";
 
-    // Renk paleti
     private static final Color COL_PANEL_BG   = new Color(0.08f, 0.06f, 0.12f, 0.85f);
     private static final Color COL_ROW_EVEN   = new Color(0.14f, 0.11f, 0.20f, 0.90f);
     private static final Color COL_ROW_ODD    = new Color(0.10f, 0.08f, 0.16f, 0.90f);
@@ -44,7 +43,6 @@ public class LoadGameScreen implements Screen {
     private static final Color COL_BTN_CAN_BOT = new Color(0.28f, 0.28f, 0.30f, 1f);
     private static final Color COL_TEXT_BTN   = new Color(0.98f, 0.90f, 0.50f, 1f);
 
-    // Panel boyutları
     private static final float PANEL_W = 900f;
     private static final float PANEL_H = 560f;
     private static final float ROW_H   = 55f;
@@ -63,21 +61,17 @@ public class LoadGameScreen implements Screen {
     private GlyphLayout layout;
     private Sound hoverSound;
 
-    // Panel pozisyonu
     private float panelX, panelY;
     private float tableX, tableY, tableW, tableH;
 
-    // Butonlar
     private Rectangle btnLoad, btnDelete, btnBack;
     private int hoveredBtn = -1;
     private int lastHoveredBtn = -1;
 
-    // Veri
     private List<SaveEntry> saves = new ArrayList<>();
     private boolean loading = true;
     private String errorMsg = null;
 
-    // Scroll & seçim
     private float scrollOffset = 0f;
     private float pendingScroll = 0f;
     private int selectedIndex = -1;
@@ -110,13 +104,11 @@ public class LoadGameScreen implements Screen {
         panelX = (VIRTUAL_WIDTH - PANEL_W) / 2f;
         panelY = (VIRTUAL_HEIGHT - PANEL_H) / 2f;
 
-        // Tablo alanı (panel içinde, başlık ve butonlar hariç)
         tableX = panelX + 20f;
-        tableY = panelY + 70f;  // butonların üstü
+        tableY = panelY + 70f;
         tableW = PANEL_W - 40f;
-        tableH = PANEL_H - 150f; // başlık + buton alanı çıkartılmış
+        tableH = PANEL_H - 150f;
 
-        // Butonlar
         float btnW = 150f, btnH = 42f;
         float btnY = panelY + 15f;
         float cx = VIRTUAL_WIDTH / 2f;
@@ -124,7 +116,6 @@ public class LoadGameScreen implements Screen {
         btnDelete = new Rectangle(cx - btnW / 2f,         btnY, btnW, btnH);
         btnBack   = new Rectangle(cx + btnW * 0.5f + 16f, btnY, btnW, btnH);
 
-        // Scroll input
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean scrolled(float amountX, float amountY) {
@@ -136,7 +127,6 @@ public class LoadGameScreen implements Screen {
         fetchSaves();
     }
 
-    // ── Firebase'den save'leri çek ───────────────────────────────────────────
     private void fetchSaves() {
         loading = true;
         errorMsg = null;
@@ -180,27 +170,21 @@ public class LoadGameScreen implements Screen {
         });
     }
 
-    // ── Basit JSON parser (Firebase response) ────────────────────────────────
-    // Format: {"key1":{...},"key2":{...}}
     private List<SaveEntry> parseJson(String json) {
         List<SaveEntry> list = new ArrayList<>();
         if (json == null || json.length() < 2) return list;
 
-        // Dış süslü parantezleri kaldır
         json = json.trim();
         if (json.startsWith("{")) json = json.substring(1);
         if (json.endsWith("}")) json = json.substring(0, json.length() - 1);
 
-        // Her bir save objesini bul
         int i = 0;
         while (i < json.length()) {
-            // Key'i bul: "saveName":
             int keyStart = json.indexOf('"', i);
             if (keyStart == -1) break;
             int keyEnd = json.indexOf('"', keyStart + 1);
             if (keyEnd == -1) break;
 
-            // Value objesini bul: {...}
             int objStart = json.indexOf('{', keyEnd);
             if (objStart == -1) break;
             int objEnd = json.indexOf('}', objStart);
@@ -260,7 +244,6 @@ public class LoadGameScreen implements Screen {
         catch (NumberFormatException ex) { return 0; }
     }
 
-    // ── render ───────────────────────────────────────────────────────────────
     @Override
     public void render(float delta) {
         update(delta);
@@ -270,13 +253,11 @@ public class LoadGameScreen implements Screen {
 
         viewport.apply();
 
-        // 1. Arka plan
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(bgTexture, 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
         batch.end();
 
-        // 2. Panel arka planı
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.setProjectionMatrix(camera.combined);
@@ -286,30 +267,24 @@ public class LoadGameScreen implements Screen {
         sr.rect(panelX, panelY, PANEL_W, PANEL_H);
         sr.end();
 
-        // 3. Tablo satırları (scissor ile kırpılmış)
         drawTableRows();
 
-        // 4. Butonlar
         drawShapeButton(btnLoad,   hoveredBtn == 0, COL_BTN_TOP, COL_BTN_BOT);
         drawShapeButton(btnDelete, hoveredBtn == 1, COL_BTN_TOP, COL_BTN_BOT);
         drawShapeButton(btnBack,   hoveredBtn == 2, COL_BTN_CAN_TOP, COL_BTN_CAN_BOT);
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        // 5. Metin
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         drawTexts();
         batch.end();
     }
 
-    // ── Tablo satırlarını çiz ────────────────────────────────────────────────
     private void drawTableRows() {
-        // Scissor: sadece tablo alanında çiz
         Rectangle scissors = new Rectangle();
         Rectangle clip = new Rectangle(tableX, tableY, tableW, tableH);
 
-        // Viewport-based scissor hesapla
         com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(
             camera, viewport.getScreenX(), viewport.getScreenY(),
             viewport.getScreenWidth(), viewport.getScreenHeight(),
@@ -318,20 +293,17 @@ public class LoadGameScreen implements Screen {
         if (com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.pushScissors(scissors)) {
             sr.setProjectionMatrix(camera.combined);
 
-            // Header satırı
             float headerY = tableY + tableH - HEADER_H;
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(0.20f, 0.15f, 0.28f, 0.95f);
             sr.rect(tableX, headerY, tableW, HEADER_H);
             sr.end();
 
-            // Veri satırları
             float dataTop = headerY;
             int visibleCount = saves.size();
             for (int i = 0; i < visibleCount; i++) {
                 float rowY = dataTop - (i + 1) * ROW_H + scrollOffset;
 
-                // Görünür mü?
                 if (rowY + ROW_H < tableY || rowY > dataTop) continue;
 
                 sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -350,16 +322,13 @@ public class LoadGameScreen implements Screen {
         }
     }
 
-    // ── Metin çizimleri ──────────────────────────────────────────────────────
     private void drawTexts() {
         float cx = VIRTUAL_WIDTH / 2f;
 
-        // Başlık
         titleFont.setColor(COL_HEADER);
         layout.setText(titleFont, "Load Game");
         titleFont.draw(batch, "Load Game", cx - layout.width / 2f, panelY + PANEL_H - 15f);
 
-        // Tablo header metinleri
         float headerY = tableY + tableH - HEADER_H;
         float colName  = tableX + 20f;
         float colLevel = tableX + tableW * 0.45f;
@@ -372,7 +341,6 @@ public class LoadGameScreen implements Screen {
         bodyFont.draw(batch, "HP",         colHP,    headerY + HEADER_H * 0.65f);
         bodyFont.draw(batch, "Gold",       colGold,  headerY + HEADER_H * 0.65f);
 
-        // Loading / Error / Empty mesajları
         if (loading) {
             bodyFont.setColor(COL_TEXT);
             layout.setText(bodyFont, "Loading...");
@@ -387,9 +355,7 @@ public class LoadGameScreen implements Screen {
             layout.setText(bodyFont, msg);
             bodyFont.draw(batch, msg, cx - layout.width / 2f, tableY + tableH / 2f);
         } else {
-            // Veri satır metinleri (scissor bölgesinde)
             float dataTop = headerY;
-            // Scissor tekrar uygula (metin için)
             Rectangle scissors = new Rectangle();
             Rectangle clip = new Rectangle(tableX, tableY, tableW, tableH - HEADER_H);
             com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(
@@ -417,13 +383,11 @@ public class LoadGameScreen implements Screen {
             }
         }
 
-        // Buton metinleri
         bodyFont.setColor(COL_TEXT_BTN);
         drawCentered("Load",   btnLoad);
         drawCentered("Delete", btnDelete);
         drawCentered("Back",   btnBack);
 
-        // Scrollbar göstergesi
         if (!saves.isEmpty()) {
             float totalContentH = saves.size() * ROW_H;
             float visibleH = tableH - HEADER_H;
@@ -445,7 +409,6 @@ public class LoadGameScreen implements Screen {
             r.y + (r.height + layout.height) / 2f + 2f);
     }
 
-    // ── Buton çizimi ─────────────────────────────────────────────────────────
     private void drawShapeButton(Rectangle r, boolean hov, Color topC, Color botC) {
         Color t = hov ? topC.cpy().lerp(Color.WHITE, 0.18f) : topC;
         Color b = hov ? botC.cpy().lerp(Color.WHITE, 0.14f) : botC;
@@ -460,12 +423,10 @@ public class LoadGameScreen implements Screen {
         sr.end();
     }
 
-    // ── update ───────────────────────────────────────────────────────────────
     private void update(float delta) {
         Vector3 mouse = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(mouse);
 
-        // Buton hover
         hoveredBtn = -1;
         if      (btnLoad.contains(mouse.x, mouse.y))   hoveredBtn = 0;
         else if (btnDelete.contains(mouse.x, mouse.y)) hoveredBtn = 1;
@@ -476,7 +437,6 @@ public class LoadGameScreen implements Screen {
         }
         lastHoveredBtn = hoveredBtn;
 
-        // Satır hover
         hoveredRow = -1;
         float headerY = tableY + tableH - HEADER_H;
         float dataTop = headerY;
@@ -492,10 +452,8 @@ public class LoadGameScreen implements Screen {
             }
         }
 
-        // Scroll (mouse wheel)
         handleScroll();
 
-        // Tıklama
         if (Gdx.input.justTouched()) {
             if (hoveredRow != -1) {
                 selectedIndex = hoveredRow;
@@ -505,7 +463,6 @@ public class LoadGameScreen implements Screen {
             if (hoveredBtn == 2) onBack();
         }
 
-        // Klavye
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) onBack();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER))  onLoad();
         if (Gdx.input.isKeyJustPressed(Input.Keys.DEL) || Gdx.input.isKeyJustPressed(Input.Keys.FORWARD_DEL))
@@ -551,12 +508,10 @@ public class LoadGameScreen implements Screen {
         clampScroll();
     }
 
-    // ── Aksiyonlar ───────────────────────────────────────────────────────────
     private void onLoad() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
         SaveEntry entry = saves.get(selectedIndex);
-        // TODO: Oyunu yükle — şimdilik story begin'e gönder
-        screenManager.showScreen(Screens.STORY_BEGIN);
+        screenManager.showScreen(Screens.PLAY, entry.currentMoney, entry.saveName, Level.fromNumber(entry.currentLevel));
     }
 
     private void onDelete() {
@@ -586,7 +541,6 @@ public class LoadGameScreen implements Screen {
         screenManager.showScreen(Screens.MAIN_MENU);
     }
 
-    // ── Screen lifecycle ─────────────────────────────────────────────────────
     @Override
     public void resize(int w, int h) {
         viewport.update(w, h, true);
@@ -602,10 +556,8 @@ public class LoadGameScreen implements Screen {
         if (sr        != null) sr.dispose();
         if (titleFont != null) titleFont.dispose();
         if (bodyFont  != null) bodyFont.dispose();
-        // bgTexture ve hoverSound AssetManager tarafından yönetilir
     }
 
-    // ── Veri modeli ──────────────────────────────────────────────────────────
     private static class SaveEntry {
         String saveName = "";
         int currentLevel;
