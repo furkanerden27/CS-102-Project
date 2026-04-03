@@ -11,6 +11,7 @@ public abstract class Boss extends Mob {
 
     public Boss(float posX, float posY) {
         super(posX, posY);
+        name = "Boss";
         goldDropped = MIN * level + (int)(Math.random() * (MAX - MIN) * level + 1);
         level++;
     }

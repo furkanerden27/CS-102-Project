@@ -7,9 +7,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
     /*Implementation of this class is incomplete */
-    private final float GRAVITY = 2f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
+    private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
-    private TiledMapTileLayer distanceLayer;
+    private TiledMapTileLayer interactionLayer;
     private Inventory inventory;
 
     // animations
@@ -41,7 +41,7 @@ public class Player extends Entity{
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-        distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
+        interactionLayer = (TiledMapTileLayer) map.getLayers().get("Interaction");
         inventory = new Inventory();
         goldDropped = 0;
         speedX = 0;
