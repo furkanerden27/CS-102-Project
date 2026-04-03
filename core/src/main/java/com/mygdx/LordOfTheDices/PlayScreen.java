@@ -45,7 +45,7 @@ public class PlayScreen implements Screen {
         this.level = level;
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
-        map = assets.getMap(Assets.MAP_1);
+        map = assets.getMap(level.getMapFile());
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
         initialiseEntities();
@@ -56,31 +56,17 @@ public class PlayScreen implements Screen {
         player = new Player(200, 300, 350, map);
         player.getInventory().setGold(startingGold);
         entities.add(player);
-        
-        Pride pride = new Pride(300, 100);
-        entities.add(pride);
-        Envy envy = new Envy(1200, 60);
-        entities.add(envy);
-        Wrath wrath = new Wrath(1300, 60);
-        entities.add(wrath);
-        //Gluttony gluttony = new Gluttony(1400, 60);
-        //gluttony.setEntity(map);
-        //entities.add(gluttony);
-        BasicMob mob1 = new BasicMob(1600, 60);
-        mob1.setEntity(map);
-        entities.add(mob1);
-        Lust lust = new Lust(1000, 100);
-        entities.add(lust);
-        Sloth sloth = new Sloth(1100, 100);
-        entities.add(sloth);
 
-        BasicMob mob = new BasicMob(800, 60);
+        BasicMob mob = new BasicMob(0, 0);
         mob.setEntity(map);
         entities.add(mob);
 
-        Boss boss = createBoss(level.getBossName(), 1500, 60);
+        Boss boss = createBoss(level.getBossName(), 0, 0);
         if (boss != null) {
+            String originalName = boss.name;
+            boss.name = "Boss";
             boss.setEntity(map);
+            boss.name = originalName;
             entities.add(boss);
         }
 
