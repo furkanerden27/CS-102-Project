@@ -126,11 +126,6 @@ public class Card extends Item {
         }
     }
 
-    @Override
-    public String getDescription() { 
-        return description; 
-    }
-
     public TextureRegion getTextureRegion() {
         return cachedRegion;
     }
