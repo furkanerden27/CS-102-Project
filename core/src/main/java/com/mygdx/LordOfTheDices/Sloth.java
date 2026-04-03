@@ -15,7 +15,6 @@ public class Sloth extends Boss {
         initAnimationsFromAtlas("Sloth", 
             64, 64, new int[]{16});
         setSize(32,32);
-        name = "Sloth";
         baseAttackDamage = 15; // can be changed
         health = maxHealth = 100; // can be changed
     }

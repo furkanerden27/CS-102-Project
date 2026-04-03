@@ -45,7 +45,7 @@ public class PlayScreen implements Screen {
         this.level = level;
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
-        map = assets.getMap(level.getMapFile());
+        map = assets.getMap(Assets.MAP_1);
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
         initialiseEntities();
@@ -53,9 +53,26 @@ public class PlayScreen implements Screen {
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 300, 400, map);
+        player = new Player(200, 300, 350, map);
         player.getInventory().setGold(startingGold);
         entities.add(player);
+        
+        Pride pride = new Pride(300, 100);
+        entities.add(pride);
+        Envy envy = new Envy(1200, 60);
+        entities.add(envy);
+        Wrath wrath = new Wrath(1300, 60);
+        entities.add(wrath);
+        //Gluttony gluttony = new Gluttony(1400, 60);
+        //gluttony.setEntity(map);
+        //entities.add(gluttony);
+        BasicMob mob1 = new BasicMob(1600, 60);
+        mob1.setEntity(map);
+        entities.add(mob1);
+        Lust lust = new Lust(1000, 100);
+        entities.add(lust);
+        Sloth sloth = new Sloth(1100, 100);
+        entities.add(sloth);
 
         BasicMob mob = new BasicMob(800, 60);
         mob.setEntity(map);
@@ -163,8 +180,8 @@ public class PlayScreen implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
             for (Entity e : entities) {
-                if (e instanceof Sloth) {
-                    ((Sloth) e).specialAttack(player);
+                if (e instanceof BasicMob) {
+                    ((BasicMob) e).specialAttack(player);
                     break;
                 }
             }

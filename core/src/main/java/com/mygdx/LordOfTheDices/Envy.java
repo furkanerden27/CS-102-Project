@@ -20,7 +20,6 @@ public class Envy extends Boss {
         initAnimationsFromAtlas("Envy", 
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
-        name = "Envy";
         baseAttackDamage = 10; // Base attack damage for Envy (can be changed)
     }
 
