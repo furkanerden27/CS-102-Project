@@ -262,18 +262,13 @@ public class setSaveNameScreen implements Screen {
     }
 
     private void saveToFirebase(String name) {
+        PlayerData data = PlayerData.newSave(name, currentLevel, currentHealth, currentMoney);
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + name + ".json";
-
-        String json = "{\"saveName\":\"" + name + "\"," +
-                      "\"currentLevel\":"  + currentLevel  + "," +
-                      "\"currentHealth\":" + currentHealth + "," +
-                      "\"currentMoney\":"  + currentMoney  + "," +
-                      "\"timestamp\":"     + System.currentTimeMillis() + "}";
 
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.PUT);
         req.setUrl(url);
         req.setHeader("Content-Type", "application/json");
-        req.setContent(json);
+        req.setContent(data.toJson());
 
         Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
             @Override
@@ -306,19 +301,4 @@ public class setSaveNameScreen implements Screen {
         if (bodyFont != null) bodyFont.dispose();
     }
 
-    public static class SaveData {
-        public String saveName;
-        public int    currentLevel;
-        public int    currentHealth;
-        public int    currentMoney;
-        public long   timestamp;
-        public SaveData() {}
-        public SaveData(String n, int level, int health, int money) {
-            this.saveName      = n;
-            this.currentLevel  = level;
-            this.currentHealth = health;
-            this.currentMoney  = money;
-            this.timestamp     = System.currentTimeMillis();
-        }
-    }
 }

@@ -95,7 +95,7 @@ public class ShopScreen implements Screen{
         Texture invTexture = new Texture("ui/shop/ShopScreen.png");
         Texture descTexture = new Texture("ui/shop/ShopScreen2.png");
         Texture buttonTexture = new Texture("ui/shop/ShopScreenButton.png");
-        Texture selectTexture = new Texture("ui/selected.png");
+        Texture selectTexture = new Texture("ui/Shop/selected.png");
 
         buySound = Gdx.audio.newSound(Gdx.files.internal("audio/buySound.mp3"));
         buzz = Gdx.audio.newSound(Gdx.files.internal("audio/buzz.mp3"));

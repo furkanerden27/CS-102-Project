@@ -43,7 +43,7 @@ public abstract class Entity extends Sprite {
     }
 
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("Atlas/Entities.atlas"));
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("entities/Entities.atlas"));
         TextureRegion region = atlas.findRegion(regionName);
         initAnimationsFromRegion(region, tileWidth, tileHeight, frameCounts);
     }

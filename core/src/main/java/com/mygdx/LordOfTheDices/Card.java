@@ -23,7 +23,8 @@ public class Card extends Item {
         if (atlas == null)
             throw new IllegalStateException("Call Card.init() first.");
         String suitName = suit.name().toLowerCase(Locale.ENGLISH);
-        return atlas.findRegion("card-" + suitName + "-" + rank.getNumericValue());
+        int atlasValue = (rank == Rank.ACE) ? 1 : rank.getNumericValue();
+        return atlas.findRegion("card-" + suitName + "-" + atlasValue);
     }
 
     // 

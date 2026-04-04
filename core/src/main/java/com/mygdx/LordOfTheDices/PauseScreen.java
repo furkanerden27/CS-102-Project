@@ -178,28 +178,14 @@ public class PauseScreen implements Screen {
         String saveName = ps.getSaveName();
         if (saveName == null || saveName.isEmpty()) return;
 
-        int gold = ps.getCurrentGold();
-        int levelNum = ps.getLevel().getNumber();
-        int health = (int) ps.getPlayerHealth();
-        int playerX = (int) ps.getPlayerX();
-        int playerY = (int) ps.getPlayerY();
+        PlayerData data = PlayerData.fromPlayScreen(saveName, ps.getLevel().getNumber(),
+            ps.getPlayerHealth(), ps.getPlayerX(), ps.getPlayerY(), ps.getPlayerInventory());
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
-        Inventory inv = ps.getPlayerInventory();
-        String json = "{\"saveName\":\"" + saveName + "\"," +
-                      "\"currentLevel\":" + levelNum + "," +
-                      "\"currentHealth\":" + health + "," +
-                      "\"currentMoney\":" + gold + "," +
-                      "\"playerX\":" + playerX + "," +
-                      "\"playerY\":" + playerY + "," +
-                      "\"cards\":\"" + inv.serializeCards() + "\"," +
-                      "\"dice\":\"" + inv.serializeDice() + "\"," +
-                      "\"relics\":\"" + inv.serializeRelics() + "\"," +
-                      "\"timestamp\":" + System.currentTimeMillis() + "}";
 
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.PUT);
         req.setUrl(url);
         req.setHeader("Content-Type", "application/json");
-        req.setContent(json);
+        req.setContent(data.toJson());
 
         Gdx.net.sendHttpRequest(req, new Net.HttpResponseListener() {
             @Override
