@@ -23,7 +23,7 @@ public class Dice extends Item {
 
     public Dice(String name) {
         super(name);
-        description = "A six-sided dice. Current value: " + value;
+        description = this.getDescription();
         value = 1;
         isLocked = false;
         isRolling = false;
@@ -58,6 +58,11 @@ public class Dice extends Item {
     //use when rendering to display dice
     public TextureRegion getCurrentFrame() {
         return diceAnimation.getKeyFrame(stateTime);
+    }
+
+    @Override
+    public String getDescription() {
+        return name + "\nValue: " + value + "\n" + (isLocked ? "Locked" : "Unlocked");  
     }
 
     public int getValue() { 

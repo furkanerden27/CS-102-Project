@@ -40,13 +40,12 @@ public class Relic extends Item {
     private final int buyingValue;
     private TextureRegion textureRegion;
 
-    //I WILL REMOVE EFFECT MAGNITUDE AND BUYING VALUE LATER, THEY ARE JUST FOR TESTING PURPOSES
-    public Relic(String name, RelicType type, float effectMagnitude, int buyingValue) {
-        super(name);
+    public Relic(RelicType type) {
+        super(type.name() + " RELIC");  //placeholder name, open to suggestions
         this.type = type;
-        this.effectMagnitude = effectMagnitude;
+        this.effectMagnitude = assignEffectMagnitude(type);
         this.isActive = false;
-        this.buyingValue = buyingValue;
+        this.buyingValue = (int) (Math.random() * 100) + 200;
         this.description = buildDescription();
         loadTexture();
     }
@@ -71,7 +70,7 @@ public class Relic extends Item {
                 //TODO
                 break;
             case DISCOUNT:
-                //TODO - IDK
+                //TODO
                 break;
             case GOLD:
                 //TODO
@@ -110,6 +109,21 @@ public class Relic extends Item {
                 return "Revive with " + (int)(effectMagnitude * 100) + "% of max health after dying";
             default:           
                 return "";
+        }
+    }
+
+    private float assignEffectMagnitude(RelicType type) {
+        switch (type) {
+            case DISCOUNT:     return 0.25f;
+            case ARMOUR:       return 0.1f;
+            case BUFF:         return 0.1f;
+            case DAMAGE:       return 0.1f;
+            case DEBUFF:       return 0.1f;
+            case GOLD:         return 0.2f;
+            case HEALTH:       return 0.25f;
+            case POTION:       return 0.1f;
+            case REBIRTH:      return 0.5f;
+            default:           return 0f;
         }
     }
 

@@ -9,15 +9,15 @@ public class SpecialCard extends Card {
     public enum DiceCondition {
         ALL_EVEN,       // All dice must show even numbers
         ALL_ODD,        // All dice must show odd numbers
-        ALL_SAME,       // All dice must show the same value
-        ALL_DIFFERENT,       // Dice values form a consecutive sequence
+        ALL_DIFFERENT,  // Dice values form a consecutive sequence
         TOTAL_ABOVE_20  // Sum of all dice must exceed 20
     }
 
-    public SpecialCard(Suit suit, Rank rank, Effect effect, DiceCondition condition) {
+    public SpecialCard(Suit suit, Rank rank) {
         super(suit, rank, true);
-        this.effect = effect;
-        this.condition = condition;
+        this.effect = buildEffect();
+        description = buildDescription();
+        this.condition = assignCondition();
     }
 
     /* checks if the dice values meet this cards unique condition.*/
@@ -32,12 +32,6 @@ public class SpecialCard extends Card {
             case ALL_ODD:
                 for (int v : diceValues) {
                     if (v % 2 == 0) return false;
-                }
-                return true;
-
-            case ALL_SAME:
-                for (int i = 1; i < diceValues.length; i++) {
-                    if (diceValues[i] != diceValues[0]) return false;
                 }
                 return true;
 
@@ -62,17 +56,61 @@ public class SpecialCard extends Card {
     @Override
     public void apply(Player player, Mob mob) {
         if (effect != null) {
-            effect.applyEffect(mob);
-        } else {
+            mob.addEffect(effect);
+        } 
+        else {
             super.apply(player, mob);
         }
+    }
+
+    private Effect buildEffect() {
+        switch (suit) {
+            case SPADES:
+                return new Bleeding(4, getEffectMagnitude());
+            case HEARTS:
+                return new Lure(4, getEffectMagnitude());
+            case CLUBS:
+                return new Poison(4, getEffectMagnitude());
+            case DIAMONDS:
+                return new Stun(4, getEffectMagnitude());
+            default:
+                return null;
+        }
+    }
+
+    private float getEffectMagnitude() {
+        switch (rank) {
+            case JACK:   return 0.25f;
+            case QUEEN:  return 0.5f;
+            case KING:   return 0.75f;
+            case ACE:    return 1.0f;
+            default:     return 0.25f; // default fallback
+        }
+    }
+
+    private DiceCondition assignCondition() {
+        switch (rank) {
+            case JACK:   return DiceCondition.ALL_EVEN;
+            case QUEEN: return DiceCondition.ALL_ODD;
+            case KING:  return DiceCondition.ALL_DIFFERENT;
+            case ACE:  return DiceCondition.TOTAL_ABOVE_20;
+            default:    return DiceCondition.ALL_EVEN; // default fallback
+        }
+    }
+
+    private String buildDescription() {
+        String effectDesc;
+        switch (suit) {
+            case SPADES:   effectDesc = "Deals bleeding damage for " + effect.durationLeft + " turns";     break;
+            case HEARTS:   effectDesc = "Lures the enemy for " + effect.durationLeft + " turns";     break;
+            case CLUBS:    effectDesc = "Poisons the enemy for " + effect.durationLeft + " turns";   break;
+            case DIAMONDS: effectDesc = "Stuns the enemy for " + effect.durationLeft + " turns";   break;
+            default:       effectDesc = "";
+        }
+        return effectDesc + "\nRequired rolls: " + condition.name() + (expendable ? "\n[Discarded when used]" : "");
     }
 
     public Effect getEffect()           { return effect; }
     public DiceCondition getCondition()  { return condition; }
 
-    @Override
-    public String getDescription() {
-        return super.getDescription() + "\n[Special: " + condition.name() + "]";
-    }
 }
