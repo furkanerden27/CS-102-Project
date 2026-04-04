@@ -14,7 +14,7 @@ public class Inventory implements Comparator<Card> {
     private ArrayList<Relic> relics;
     private int gold;
 
-    /** For loading a saved game. */
+    // For loading a saved game. 
     public Inventory(ArrayList<Dice> dice, ArrayList<Card> cards, ArrayList<Relic> relics, int gold) {
         this.dice = dice;
         this.cards = cards;
@@ -37,7 +37,7 @@ public class Inventory implements Comparator<Card> {
         gold = 100; //can be changed
     }
 
-    // Dice-------------------------------------------
+    // Dice
 
     public void addDice(String str) {
         dice.add(new Dice(str));
@@ -49,7 +49,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getDiceCount() { return dice.size(); }
 
-    // Cards------------------------------------------------------------
+    // Cards
 
     // Adds a card. Cards that are not special cards can't be stacked. Returns false if duplicate. 
     public boolean addCard(Card card) {
@@ -66,7 +66,15 @@ public class Inventory implements Comparator<Card> {
         if (card.getRank().getNumericValue() == 2) {
             return false;
         }
-        return cards.remove(card);
+        
+        for (Card c : cards) {
+            if (c.getSuit() == card.getSuit() && c.getRank() == card.getRank()) {
+            cards.remove(c);
+            return true;
+            }
+        }
+        
+        return false;
     }
 
     public boolean hasCard(Card card) {
@@ -95,7 +103,7 @@ public class Inventory implements Comparator<Card> {
         return result;
     }
 
-    //Relics-------------------------------------------------------
+    //Relics
 
     //Adds a relic. Relics can't be stacked.
     // public boolean addRelic(Relic relic) {
@@ -121,7 +129,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getRelicCount() { return relics.size(); }
 
-    //Gold----------------------------------------------
+    //Gold
 
     public int getGold() { return gold; }
 
@@ -140,17 +148,119 @@ public class Inventory implements Comparator<Card> {
     }
 
 
-    //Other-----------------------------------------------------------------------
+    //Other
 
     //The sort method uses this. This is needed to properly sort cards so that
     //They can be shown in a specific way in the inventory screen.
     public int compare(Card card1, Card card2) {
-        if(card1.getSuit() != card2.getSuit()){
-            //return card1.getSuit().getNumericValue() - card2.getSuit().getNumericValue();
-            return 0;
+        if(card1.getRank() != card2.getRank()){
+            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();      
         }
         else{
-            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();
+            Suit[] suitArr = new Suit[4];
+            suitArr[0] = Card.Suit.SPADES;
+            suitArr[1] = Card.Suit.HEARTS;
+            suitArr[2] = Card.Suit.CLUBS;
+            suitArr[3] = Card.Suit.DIAMONDS;
+
+            int cardVal1 = 0;
+            int cardVal2 = 0;
+
+            for(int i = 0; i < 4; i++){
+                if(suitArr[i] == card1.getSuit()){
+                    cardVal1 = i;
+                }
+                if(suitArr[i] == card2.getSuit()){
+                    cardVal2 = i;
+                }
+            }
+
+            return cardVal1 - cardVal2;
+            
         }
     }
+    //Returns five random cards of a suit
+    //Requested for the battle system
+    public ArrayList<Card> getFiveCards(Suit suit) {
+        ArrayList<Card> list = getCardsBySuit(suit);
+        Collections.shuffle(list);
+        ArrayList<Card> fiveList = new ArrayList<Card>();
+        for(int i = 0; i < list.size(); i++){
+            if(i < 5){
+                fiveList.add(list.get(i));
+            }
+        }
+        return fiveList;
+    }
+
+    public String serializeCards() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cards.size(); i++) {
+            Card c = cards.get(i);
+            if (i > 0) sb.append(",");
+            sb.append(c.getSuit().name()).append("-").append(c.getRank().getNumericValue());
+        }
+        return sb.toString();
+    }
+
+    public String serializeDice() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < dice.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(dice.get(i).getName());
+        }
+        return sb.toString();
+    }
+
+    public String serializeRelics() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < relics.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(relics.get(i).getRelicType().name());
+        }
+        return sb.toString();
+    }
+
+    public static Inventory deserialize(String cardsStr, String diceStr, String relicsStr, int gold) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        ArrayList<Dice> diceList = new ArrayList<Dice>();
+        ArrayList<Relic> relicList = new ArrayList<Relic>();
+
+        if (cardsStr != null && !cardsStr.isEmpty()) {
+            String[] parts = cardsStr.split(",");
+            for (String part : parts) {
+                String[] split = part.split("-");
+                if (split.length == 2) {
+                    Suit suit = Suit.valueOf(split[0]);
+                    int rankVal = Integer.parseInt(split[1]);
+                    Rank rank = intToRank(rankVal);
+                    if (rank != null) cards.add(new Card(suit, rank));
+                }
+            }
+        }
+
+        if (diceStr != null && !diceStr.isEmpty()) {
+            String[] parts = diceStr.split(",");
+            for (String part : parts) {
+                diceList.add(new Dice(part));
+            }
+        }
+
+        if (relicsStr != null && !relicsStr.isEmpty()) {
+            String[] parts = relicsStr.split(",");
+            for (String part : parts) {
+                relicList.add(new Relic(Relic.RelicType.valueOf(part)));
+            }
+        }
+
+        return new Inventory(diceList, cards, relicList, gold);
+    }
+
+    private static Rank intToRank(int val) {
+        for (Rank r : Rank.values()) {
+            if (r.getNumericValue() == val) return r;
+        }
+        return null;
+    }
 }
+

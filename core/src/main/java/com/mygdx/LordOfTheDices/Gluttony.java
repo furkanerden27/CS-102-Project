@@ -17,7 +17,6 @@ public class Gluttony extends Boss {
         initAnimationsFromAtlas("Gluttony", 
             144, 80, new int[]{6, 4, 8});
         setSize(144, 80);
-        name = "Gluttony";
         hitProb = 0.3;
         baseAttackDamage = 10; // Base attack damage for Gluttony (can be changed)
     }

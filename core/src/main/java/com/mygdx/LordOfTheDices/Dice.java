@@ -24,6 +24,7 @@ public class Dice extends Item {
 
     public Dice(String name) {
         super(name);
+        description = this.getDescription();
         value = 1;
         isLocked = false;
         isRolling = false;
@@ -61,6 +62,11 @@ public class Dice extends Item {
         return diceAnimation.getKeyFrame(stateTime);
     }
 
+    @Override
+    public String getDescription() {
+        return name + "\nValue: " + value + "\n" + (isLocked ? "Locked" : "Unlocked");  
+    }
+
     public int getValue() { 
         return value; 
     }
@@ -75,11 +81,6 @@ public class Dice extends Item {
 
     public boolean isRolling() { 
         return isRolling; 
-    }
-
-    @Override
-    public String getDescription() {
-        return "A six-sided dice. Current value: " + value;
     }
 
     @Override

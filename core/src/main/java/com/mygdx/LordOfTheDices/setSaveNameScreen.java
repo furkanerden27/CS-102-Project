@@ -20,48 +20,33 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/**
- * setSaveNameScreen
- *
- * SetSaveNamePanel.atlas kullanılır:
- *   - NameYourSavePanelBg  → panel arkaplanı (boyut atlas'tan dinamik alınır)
- *   - yaziAlaniSon         → input kutusu texture'ı
- *
- * ShapeRenderer yalnızca buton çizimi için kullanılır.
- */
 public class setSaveNameScreen implements Screen {
 
     private static final float VIRTUAL_WIDTH  = 1366f;
     private static final float VIRTUAL_HEIGHT = 768f;
     private static final int   MAX = 20;
 
-    // Renk paleti
     private static final Color COL_BTN_CNF_TOP = new Color(0.85f, 0.38f, 0.05f, 1f);
     private static final Color COL_BTN_CNF_BOT = new Color(0.50f, 0.16f, 0.02f, 1f);
     private static final Color COL_BTN_CAN_TOP = new Color(0.60f, 0.60f, 0.63f, 1f);
     private static final Color COL_BTN_CAN_BOT = new Color(0.28f, 0.28f, 0.30f, 1f);
     private static final Color COL_TEXT_BTN    = new Color(0.98f, 0.90f, 0.50f, 1f);
 
-    // ── AssetManager'dan alınan referanslar (dispose ETME) ───────────────────
     private Texture       bgTexture;
     private TextureRegion regionPanel;
     private TextureRegion regionInput;
     private Sound         hoverSound;
 
-    // ── Font (ekran bazlı, dispose edilir) ───────────────────────────────────
     private BitmapFont  bodyFont;
     private GlyphLayout layout = new GlyphLayout();
 
-    // ── Panel konumu ─────────────────────────────────────────────────────────
     private float PANEL_W, PANEL_H;
     private float panelX,  panelY;
 
-    // ── UI alanları ──────────────────────────────────────────────────────────
     private Rectangle inputBox;
     private Rectangle btnConfirm;
     private Rectangle btnCancel;
 
-    // ── Durum ────────────────────────────────────────────────────────────────
     private StringBuilder saveName       = new StringBuilder();
     private boolean       inputFocused   = true;
     private float         cursorTimer    = 0f;
@@ -93,7 +78,6 @@ public class setSaveNameScreen implements Screen {
         this.currentMoney  = money;
     }
 
-    // ── show ─────────────────────────────────────────────────────────────────
     @Override
     public void show() {
         camera   = new OrthographicCamera();
@@ -114,14 +98,12 @@ public class setSaveNameScreen implements Screen {
         bodyFont = new BitmapFont();
         bodyFont.getData().setScale(1.9f);
 
-        // Panel boyutlarını atlas region'ından al
         PANEL_W = regionPanel.getRegionWidth();
         PANEL_H = regionPanel.getRegionHeight();
 
         layoutUI();
     }
 
-    // ── Layout ───────────────────────────────────────────────────────────────
     private void layoutUI() {
         panelX = (VIRTUAL_WIDTH  - PANEL_W) / 2f;
         panelY = (VIRTUAL_HEIGHT - PANEL_H) / 2f;
@@ -140,7 +122,6 @@ public class setSaveNameScreen implements Screen {
         btnCancel  = new Rectangle(cx + 12f,        btnY, btnW, btnH);
     }
 
-    // ── render ───────────────────────────────────────────────────────────────
     @Override
     public void render(float delta) {
         update(delta);
@@ -221,7 +202,6 @@ public class setSaveNameScreen implements Screen {
                 r.y + (r.height + layout.height) / 2f + 2f);
     }
 
-    // ── update ───────────────────────────────────────────────────────────────
     private void update(float delta) {
         cursorTimer += delta;
         if (cursorTimer >= 0.5f) { cursorTimer = 0; showCursor = !showCursor; }
@@ -271,7 +251,6 @@ public class setSaveNameScreen implements Screen {
             saveName.append(' ');
     }
 
-    // ── Kaydet / İptal ───────────────────────────────────────────────────────
     private void onConfirm() {
         String name = saveName.toString().trim();
         if (name.isEmpty()) { showStatus("Error: Name cannot be empty!", 2.5f); return; }
@@ -315,7 +294,6 @@ public class setSaveNameScreen implements Screen {
 
     private void showStatus(String msg, float dur) { statusMsg = msg; statusTimer = dur; }
 
-    // ── Screen ───────────────────────────────────────────────────────────────
     @Override public void resize(int w, int h) { viewport.update(w, h, true); }
     @Override public void pause()  {}
     @Override public void resume() {}
@@ -326,10 +304,8 @@ public class setSaveNameScreen implements Screen {
         if (batch    != null) batch.dispose();
         if (sr       != null) sr.dispose();
         if (bodyFont != null) bodyFont.dispose();
-        // Asset'ler AssetManager tarafından yönetilir, burada dispose edilmez
     }
 
-    // ── Firebase POJO ────────────────────────────────────────────────────────
     public static class SaveData {
         public String saveName;
         public int    currentLevel;

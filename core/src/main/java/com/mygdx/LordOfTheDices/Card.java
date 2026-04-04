@@ -47,7 +47,7 @@ public class Card extends Item {
             this.value = v; 
         }
 
-        /* Returns the numeric value of this rank (1–13). */
+        /* Returns the numeric value of this rank (2–14). */
         public int getNumericValue() { 
             return value; 
         }
@@ -57,12 +57,12 @@ public class Card extends Item {
     // PROPERTIES
     // 
 
-    private final Suit suit;
-    private final Rank rank;
+    protected final Suit suit;
+    protected final Rank rank;
     private TextureRegion cachedRegion;
 
     /* Effect scale: damage dealt / HP healed / buff-debuff magnitude. */
-    private int power;
+    protected float power;
 
     /* Minimum total dice roll needed to play this card. */
     private int diceRequirement;
@@ -71,7 +71,7 @@ public class Card extends Item {
     private boolean selected;
 
     /* True for SpecialCard face-cards that are consumed on use. */
-    private final boolean expendable;
+    protected final boolean expendable;
 
     /* Gold cost when buying from a merchant. */
     private int buyingValue;
@@ -126,11 +126,6 @@ public class Card extends Item {
         }
     }
 
-    @Override
-    public String getDescription() { 
-        return description; 
-    }
-
     public TextureRegion getTextureRegion() {
         return cachedRegion;
     }
@@ -139,12 +134,12 @@ public class Card extends Item {
     // PRIVATE HELPERS
     // 
 
-    private int calculateStartingPower() {
+    private float calculateStartingPower() {
         switch (suit) {
-            case SPADES:   return rank.getNumericValue() * 2;
-            case HEARTS:   return rank.getNumericValue();
-            case CLUBS:    return rank.getNumericValue();
-            case DIAMONDS: return rank.getNumericValue();
+            case SPADES:   return (float)(rank.getNumericValue() * 2);
+            case HEARTS:   return (float)rank.getNumericValue();
+            case CLUBS:    return (float)rank.getNumericValue();
+            case DIAMONDS: return (float)rank.getNumericValue();
             default:       return 0;
         }
     }
@@ -187,10 +182,10 @@ public class Card extends Item {
                 player.heal(power);
                 break;
             case CLUBS:
-                mob.addEffect(new Weaken(power, 1));
+                mob.addEffect(new Weaken(rank.getNumericValue(), 0.25f));
                 break;
             case DIAMONDS:
-                player.addEffect(new Strengthen(power, 1));
+                player.addEffect(new Strengthen(rank.getNumericValue(), 0.25f));
                 break;
         }
     }
@@ -214,7 +209,7 @@ public class Card extends Item {
 
     public Suit    getSuit()              { return suit; }
     public Rank    getRank()              { return rank; }
-    public int     getPower()             { return power; }
+    public float   getPower()             { return power; }
     public int     getDiceRequirement()   { return diceRequirement; }
     public boolean isSelected()           { return selected; }
     public boolean isExpendable()         { return expendable; }

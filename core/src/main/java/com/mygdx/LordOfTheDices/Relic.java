@@ -1,29 +1,53 @@
 package com.mygdx.LordOfTheDices;
-//
-// NO ASSETS YET, WILL UPDATE IT LATER
-//
+
+import java.util.Locale;
+
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Relic extends Item {
+   
     
-    //types can change later on
+    private static TextureAtlas atlas;
+
+    /* Call once in AssetManager */
+    public static void init(TextureAtlas relicAtlas) {
+        atlas = relicAtlas;
+    }
+
+    private static TextureRegion getAtlasRegion(RelicType type) {
+        if (atlas == null)
+            throw new IllegalStateException("Call Relic.init() first.");
+        String typeName = type.name().toLowerCase(Locale.ENGLISH);
+        return atlas.findRegion(typeName + "-relic");
+    }
+
     public enum RelicType {
+        ARMOUR,
+        BUFF,
+        DAMAGE,
+        DEBUFF,
         DISCOUNT,
-        MAXHEALTH,
-        GOLD_BOOST,
-        DAMAGE_BOOST
+        GOLD,
+        HEALTH,
+        POTION,
+        REBIRTH
     }
 
     private final RelicType type;
     private final float effectMagnitude;
     private boolean isActive;
     private final int buyingValue;
+    private TextureRegion textureRegion;
 
-    public Relic(String name, RelicType type, float effectMagnitude, int buyingValue) {
-        super(name);
+    public Relic(RelicType type) {
+        super(type.name() + " RELIC");  //placeholder name, open to suggestions
         this.type = type;
-        this.effectMagnitude = effectMagnitude;
+        this.effectMagnitude = assignEffectMagnitude(type);
         this.isActive = false;
-        this.buyingValue = buyingValue;
+        this.buyingValue = (int) (Math.random() * 100) + 200;
         this.description = buildDescription();
+        loadTexture();
     }
 
     /* activates the relic and applies its permanent effect on the player */
@@ -32,19 +56,34 @@ public class Relic extends Item {
         
         isActive = true;
         switch (type) {
-            case MAXHEALTH:
+            case ARMOUR: // will change later
                 float bonus = player.maxHealth * effectMagnitude;
                 player.addMaxHealth(bonus);
                 break;
-            case DAMAGE_BOOST:
+            case BUFF:
                 player.setAttackModifier(effectMagnitude);
+                break;
+            case DAMAGE:
+                //TODO
+                break;
+            case DEBUFF:
+                //TODO
                 break;
             case DISCOUNT:
                 //TODO
                 break;
-            case GOLD_BOOST:
-                //TODO - IDK
+            case GOLD:
+                //TODO
                 break;
+            case HEALTH:
+                //TODO
+                break;
+            case POTION:
+                //TODO
+                break;
+            case REBIRTH:
+                //TODO
+                break;  
         }
     }
 
@@ -52,29 +91,55 @@ public class Relic extends Item {
         switch (type) {
             case DISCOUNT:     
                 return "Reduces shop prices by " + (int)(effectMagnitude * 100) + "%";
-            case MAXHEALTH:    
-                return "Increases max health by " + (int)(effectMagnitude * 100) + "%";
-            case GOLD_BOOST:   
-                return "Earn " + (int)(effectMagnitude * 100) + "% more gold";
-            case DAMAGE_BOOST: 
+            case ARMOUR:    
+                return "Reduces incoming damage by " + (int)(effectMagnitude * 100) + "%";
+            case BUFF:   
+                return "Increases buff cards' magnitude by " + (int)(effectMagnitude * 100) + "%";
+            case DAMAGE: 
                 return "Increases attack damage by " + (int)(effectMagnitude * 100) + "%";
+            case DEBUFF: 
+                return "Increases debuff cards' magnitude by " + (int)(effectMagnitude * 100) + "%";
+            case GOLD:
+                return "Gain " + (int)(effectMagnitude * 100) + "% more gold from battles";
+            case HEALTH:
+                return "Increases max health by " + (int)(effectMagnitude * 100) + "%";
+            case POTION:
+                return "Increases healing effectiveness by " + (int)(effectMagnitude * 100) + "%";
+            case REBIRTH:
+                return "Revive with " + (int)(effectMagnitude * 100) + "% of max health after dying";
             default:           
                 return "";
         }
     }
 
-    @Override
-    public String getDescription() {
-        return description;
+    private float assignEffectMagnitude(RelicType type) {
+        switch (type) {
+            case DISCOUNT:     return 0.25f;
+            case ARMOUR:       return 0.1f;
+            case BUFF:         return 0.1f;
+            case DAMAGE:       return 0.1f;
+            case DEBUFF:       return 0.1f;
+            case GOLD:         return 0.2f;
+            case HEALTH:       return 0.25f;
+            case POTION:       return 0.1f;
+            case REBIRTH:      return 0.5f;
+            default:           return 0f;
+        }
     }
 
     @Override
     protected void loadTexture() {
-        // TODO
+        TextureRegion region = getAtlasRegion(type);
+        if (region != null) {
+            setRegion(region);
+            setSize(region.getRegionWidth(), region.getRegionHeight());
+            textureRegion = region;
+        }
     }
 
     public RelicType getRelicType()        { return type; }
     public float getEffectMagnitude() { return effectMagnitude; }
     public boolean isActive()         { return isActive; }
     public int getBuyingValue()       { return buyingValue; }
+    public TextureRegion getTextureRegion() { return textureRegion; }
 }

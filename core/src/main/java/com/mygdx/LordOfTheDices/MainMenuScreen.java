@@ -22,7 +22,6 @@ public class MainMenuScreen implements Screen {
     private FitViewport viewport;
     private SpriteBatch batch;
 
-    // AssetManager'dan alınan referanslar (dispose ETME)
     private Texture backgroundTexture;
     private Sound hoverSound;
     private TextureRegion btnNewNormal, btnLoadNormal, btnOptionsNormal, btnExitNormal;
@@ -55,13 +54,11 @@ public class MainMenuScreen implements Screen {
         TextureAtlas atlas      = assets.getAtlas(Assets.ATLAS_UI_NORMAL);
         TextureAtlas atlasHover = assets.getAtlas(Assets.ATLAS_UI_HOVER);
 
-        // Hover State
         btnNewHover      = atlas.findRegion("Button_New_Game_Normal");
         btnLoadHover     = atlas.findRegion("button_2_normal-removebg-preview");
         btnOptionsHover  = atlas.findRegion("button_3_normal-removebg-preview");
         btnExitHover     = atlas.findRegion("button_4_normal-removebg-preview");
 
-        // Normal State
         btnNewNormal     = atlasHover.findRegion("button_1_hover-removebg-preview");
         btnLoadNormal    = atlasHover.findRegion("button_2_hover-removebg-preview");
         btnOptionsNormal = atlasHover.findRegion("button_3_hover-removebg-preview");
@@ -92,7 +89,6 @@ public class MainMenuScreen implements Screen {
         btnLoadGame = new Rectangle(VIRTUAL_WIDTH / 2f - loadW / 2f + gap,  btnOptions.y + optH + gap, loadW, loadH);
         btnNewGame  = new Rectangle(VIRTUAL_WIDTH / 2f - newW / 2f + gap,   btnLoadGame.y + loadH + gap, newW, newH);
 
-        // Hit rectangle'lar: sadece banner kısmı (alt %55), sivri çıkıntı hariç
         hitExit     = bannerHit(btnExit);
         hitOptions  = bannerHit(btnOptions);
         hitLoadGame = bannerHit(btnLoadGame);
@@ -173,6 +169,5 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         if (batch != null) batch.dispose();
-        // Asset'ler AssetManager tarafından yönetilir, burada dispose edilmez
     }
 }

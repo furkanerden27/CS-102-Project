@@ -7,9 +7,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
     /*Implementation of this class is incomplete */
-    private final float GRAVITY = 2f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
+    private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
-    private TiledMapTileLayer distanceLayer;
+    private TiledMapTileLayer WallMob;
+    private TiledMapTileLayer WallBoss;
+    private boolean isMobDefeated = false;
+    private boolean isBossDefeated = false;
     private Inventory inventory;
 
     // animations
@@ -34,15 +37,19 @@ public class Player extends Entity{
     private float deathStateTime = 0;
 
     public Player(float health, float posX, float posY, TiledMap map) {
+        this(health, posX, posY, map, new Inventory());
+    }
+
+    public Player(float health, float posX, float posY, TiledMap map, Inventory inventory) {
         super(health, posX, posY);
-        // Animations are driven from the Atlas rather than loading a raw PNG.
-        initAnimationsFromAtlas("maincharacter", 
+        initAnimationsFromAtlas("maincharacter",
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-        distanceLayer = (TiledMapTileLayer) map.getLayers().get("Enemy");
-        inventory = new Inventory();
+        WallMob = (TiledMapTileLayer) map.getLayers().get("WallMob");
+        WallBoss = (TiledMapTileLayer) map.getLayers().get("WallBoss");
+        this.inventory = inventory;
         goldDropped = 0;
         speedX = 0;
         speedY = 0;
@@ -176,14 +183,18 @@ public class Player extends Entity{
             /* updating the coorinates of the player 
             two controlls are necessary to keeping the other movement when hitting a wall */
             // x coordinates
-            if (!isCollision(nextX, getY(), collisionLayer)) {
+            if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
+            //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
+            {
                 setX(nextX);
             } 
             else {
                 speedX = 0;
             }
             // y coordinates
-            if (!isCollision(getX(), nextY, collisionLayer)) {
+            if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
+            //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
+            {
                 setY(nextY);
                 isOnGround = false; 
             } 
