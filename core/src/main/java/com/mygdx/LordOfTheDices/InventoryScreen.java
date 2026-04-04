@@ -19,8 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygdx.LordOfTheDices.Card.Suit;
 
-//Inventory screen, shows the inventory and the items' descriptions
 public class InventoryScreen implements Screen {
 
     private static final float VIRTUAL_WIDTH = 800f;
@@ -32,7 +32,7 @@ public class InventoryScreen implements Screen {
     private Stage stage;
     private BitmapFont font;
     private BitmapFont font2;
-    private Label descriptionLabel;
+    private Label descLabel;
     private Label goldLabel;
     private Label reminderLabel;
 
@@ -142,14 +142,14 @@ public class InventoryScreen implements Screen {
         chosenStyle = new Label.LabelStyle(font2, Color.GOLD);
         titleStyle = new Label.LabelStyle(font, Color.GOLD);
 
-        //Root table----------------------------------------------
+        //Root table
         Table rootTable = new Table();
         rootTable.top().left();
         rootTable.setFillParent(true);
         rootTable.pad(15);
         stage.addActor(rootTable);
 
-        //Left panel: descriptions----------------------------------
+        //Left panel: descriptions
         
         leftPanel = new Table();
         leftPanel.bottom().left();
@@ -157,25 +157,25 @@ public class InventoryScreen implements Screen {
         Label descTitle = new Label("Item Info", titleStyle);
         leftPanel.add(descTitle).left().padTop(180).padLeft(50).row();
 
-        descriptionLabel = new Label("Hover over an item to see its description.", labelStyle);
-        descriptionLabel.setWrap(true);
-        leftPanel.add(descriptionLabel).width(200).left().padTop(50).padLeft(18).expandY().top();
+        descLabel = new Label("Hover over an item to see its description.", labelStyle);
+        descLabel.setWrap(true);
+        leftPanel.add(descLabel).width(200).left().padTop(50).padLeft(18).expandY().top();
 
-        //Right panel: inventory---------------------------------------------------
+        //Right panel: inventory
         rightPanel = new Table();
         rightPanel.top();
 
-        // Gold display-------------------------------------
+        // Gold display
         goldLabel = new Label("Gold: " + inventory.getGold(), titleStyle);
         rightPanel.add(goldLabel).left().padBottom(10).padRight(70).colspan(2).row();
 
-        //Reminder display--------------------------------------------
+        //Reminder display
         Table remindTable = new Table();
         remindTable.top().left();
         reminderLabel = new Label("Press ESC to exit ", labelStyle);
         remindTable.add(reminderLabel).top().left().padRight(300).row();
 
-        //Button texts----------------------------------------------
+        //Button texts
         buttonText = (mode) ? new Label("Cards", labelStyle) : new Label("Cards", chosenStyle);
         buttonText.setPosition(160, 336);
         buttonText.setTouchable(Touchable.disabled);
@@ -188,11 +188,8 @@ public class InventoryScreen implements Screen {
 
         
 
-        // Dice count
-        // Label diceLabel = new Label("Dice: " + inventory.getDiceCount(), labelStyle);
-        // rightPanel.add(diceLabel).left().padBottom(15).colspan(2).row();
 
-        // Cards section(Visible by default)---------------------------
+        // Cards section(Visible at start)
 
             cardsTitle = new Label("Cards ", titleStyle);
             rightPanel.add(cardsTitle).center().padLeft(20).padTop(-10).colspan(2).row();
@@ -202,7 +199,7 @@ public class InventoryScreen implements Screen {
             cardsScroll.setFadeScrollBars(false);
 
         
-        // Relics section(Not visible by default)---------------------
+        // Relics section(Not visible at start)
 
             relicsTitle = new Label("Relics", titleStyle);
             rightPanel.add(relicsTitle).center().padLeft(20).padTop(-40).colspan(2).row();
@@ -232,48 +229,63 @@ public class InventoryScreen implements Screen {
         rootTable.add(rightPanel).expand().fill();
     }
 
-    //Builds the card table.
     private Table buildCardsTable(Label.LabelStyle style) {
         Table table = new Table();
         table.top().left().padLeft(70).padTop(30);
 
+        int repeat = 1;
+        int value = 0;
+        Suit suit = null;
+        Label storeLabel = null;
+
         int col = 0;
         for (Card card : inventory.getCards()) {
-            Table cardCell = new Table();
-
-            TextureRegion region = card.getTextureRegion();
-            if (region != null) {
-                Image cardImage = new Image(region);
-                cardCell.add(cardImage).size(48, 72).row();
+            if(card.getRank().getNumericValue() == value && card.getSuit() == suit){
+                repeat++;
+                storeLabel.setText(card.getRank().name() + "(X" + repeat + ")");
             }
+            else{
+                    repeat = 1;
+                    value = card.getRank().getNumericValue();
+                    suit = card.getSuit();
+                    Table cardCell = new Table();
+                    cardCell.setUserObject("Item");
 
-            Label nameLabel = new Label(card.getRank().name(), style);
-            nameLabel.setFontScale(0.7f);
-            cardCell.add(nameLabel).center();
+                    TextureRegion region = card.getTextureRegion();
+                    if (region != null) {
+                        Image cardImage = new Image(region);
+                        cardCell.add(cardImage).size(48, 72).row();
+                    }
 
-            cardCell.addListener(new ClickListener() {
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    descriptionLabel.setText(card.getName() + "\n\n" + card.getDescription());
+                    Label nameLabel = new Label(card.getRank().name(), style);
+                    nameLabel.setFontScale(0.7f);
+                    cardCell.add(nameLabel).center();
+
+                    storeLabel = nameLabel;
+
+                    cardCell.addListener(new ClickListener() {
+                    @Override
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                        descLabel.setText(card.getName() + "\n\n" + card.getDescription());
+                    }
+
+                    @Override
+                    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                        descLabel.setText("Hover over an item to see its description.");
+                    }
+                });
+
+                table.add(cardCell).pad(6);
+                col++;
+                if (col >= 6) {
+                    table.row();
+                    col = 0;
                 }
-
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    descriptionLabel.setText("Hover over an item to see its description.");
-                }
-            });
-
-            table.add(cardCell).pad(6);
-            col++;
-            if (col >= 6) {
-                table.row();
-                col = 0;
             }
         }
         return table;
     }
 
-    //Builds the relic table.
     private Table buildRelicsTable(Label.LabelStyle style) {
         Table table = new Table();
          table.top().left().padLeft(70).padTop(30);
@@ -293,13 +305,13 @@ public class InventoryScreen implements Screen {
             relicCell.addListener(new ClickListener() {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    descriptionLabel.setText(relic.getName() + "\n\n" + relic.getDescription()
+                    descLabel.setText(relic.getName() + "\n\n" + relic.getDescription()
                         + (relic.isActive() ? "\n[ACTIVE]" : "\n[INACTIVE]"));
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    descriptionLabel.setText("Hover over an item to see its description.");
+                    descLabel.setText("Hover over an item to see its description.");
                 }
             });
 
@@ -310,7 +322,6 @@ public class InventoryScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // ESC or I to go back
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.goBack();
             return;
@@ -340,3 +351,5 @@ public class InventoryScreen implements Screen {
         if (font != null) font.dispose();
     }
 }
+
+

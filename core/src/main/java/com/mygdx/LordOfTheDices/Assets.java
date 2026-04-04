@@ -38,6 +38,9 @@ public class Assets {
     public static final String ATLAS_CARDS          = "cards.atlas";
     public static final String ATLAS_ENTITIES       = "Atlas/Entities.atlas";
     public static final String ATLAS_EFFECTS        = "Effects.atlas";
+    public static final String ATLAS_PAUSE_BUTTONS = "ui/PauseScreen/pause_screen_buttons.atlas";
+
+    public static final String TEX_PAUSE_BTN = "ui/PauseScreen/pause_btn.png";
 
     public static final String SFX_HOVER = "audio/hoverSound.mp3";
 
@@ -75,6 +78,9 @@ public class Assets {
         manager.load(ATLAS_CARDS,         TextureAtlas.class);
         manager.load(ATLAS_ENTITIES,      TextureAtlas.class);
         manager.load(ATLAS_EFFECTS,       TextureAtlas.class);
+        manager.load(ATLAS_PAUSE_BUTTONS, TextureAtlas.class);
+
+        manager.load(TEX_PAUSE_BTN, Texture.class);
 
         manager.load(SFX_HOVER, Sound.class);
 
