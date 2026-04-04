@@ -1,5 +1,7 @@
 package com.mygdx.LordOfTheDices;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -38,9 +40,12 @@ public class BattleScreen implements Screen{
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
+    //private SpriteBatch batch;
+
     public BattleScreen(Assets assets, FightManager manager, int sizeX, int sizeY) {
         stage = new Stage(new FitViewport(sizeX, sizeY));
         this.manager = manager;
+        //batch = new SpriteBatch(); TODO
 
         cardSpades = assets.getTexture(Assets.TEX_CARD_SPADES);
         cardClubs = assets.getTexture(Assets.TEX_CARD_CLUBS);
@@ -89,19 +94,16 @@ public class BattleScreen implements Screen{
         stage.addActor(mainTable);
         
 
-        Dice[] zarlar = manager.getDices();
+        
         ClickListener diceClickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 manager.rollAllDice();
-                /* 
-                for(int i = 0; i < zarlar.length; i++){
-                    if(zarlar[i].isClicked(x, y)){ // TODO ZARLAR ITEM OLUNCA CALISACAK
-                        manager.diceClicked(zarlar[i]);
+                for(int i = 0; i < manager.dices.size(); i++){
+                    if(manager.dices.get(i).isClicked(x, y)){ // TODO ZARLAR ITEM OLUNCA CALISACAK
+                        manager.diceClicked(manager.dices.get(i));
                     }
                 }
-                    
-            */
             }
         };
         
@@ -111,11 +113,22 @@ public class BattleScreen implements Screen{
         
         //her zar tiklandiginde kendi basina donmesi icin SPRITE olarak kullanilabilirler. 
         for(int i = 0; i < 6; i++){
-            //placeholderImage = new Image(zarlar[i].getTexture()); Dice item'i extendledigi zaman olacak bu
+            //placeholderImage = new Image(manager.dices.get(i).getTexture()); //Dice item'i extendledigi zaman olacak bu
             placeholderImage = new Image(lockedDice); // BU DEGISECEK TODO
             placeholderImage.addListener(diceClickListener);
             diceTable.add(placeholderImage).padBottom(8).row();
         }
+
+        /*for(int i = 0; i < 6; i++){
+            placeholderImage = new Image(lockedDice); // BU DEGISECEK TODO
+            placeholderImage.addListener(new ClickListener(i){
+                @Override
+                public void clicked(InputEvent event, float x, float y){
+                    manager.diceClicked(manager.dices.get(i));
+                }
+            });
+        }*/
+
 
         Image rollAllButton = new Image(rollAllTexture);
         rollAllButton.addListener(new ClickListener(){
@@ -232,7 +245,7 @@ public class BattleScreen implements Screen{
     public void updateCards(){
         //TODO ????
         // Cardlardan suitine göre info çekilecekx 
-        Card[] cards = manager.getHand(selectedSuit); 
+        ArrayList<Card> cards = manager.getHand(selectedSuit); 
         
         Image addedImage;
 
@@ -255,17 +268,17 @@ public class BattleScreen implements Screen{
         }
         
         cardSlots[1].clearChildren();
-        if(cards[0] == null){
+        if(cards.isEmpty()){
              cardSlots[1].add(new Image(lockedDice));
         }
         else{
-            cards[0].loadTexture();
+            cards.get(0).loadTexture();
             
-            addedImage = new Image(cards[0].getTextureRegion());
+            addedImage = new Image(cards.get(0).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[0]);
+                    manager.actSelectedCard(cards.get(0));
                     switchToFirstView();
                 }
             });  
@@ -274,16 +287,16 @@ public class BattleScreen implements Screen{
 
 
         cardSlots[2].clearChildren();
-        if(cards[1] == null){
+        if(cards.size() < 2){
              cardSlots[2].add(new Image(lockedDice));
         }
         else{
-            cards[1].loadTexture();
-            addedImage = new Image(cards[1].getTextureRegion());
+            cards.get(1).loadTexture();
+            addedImage = new Image(cards.get(1).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[1]);
+                    manager.actSelectedCard(cards.get(1));
                     switchToFirstView();
                 }
             });  
@@ -291,16 +304,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[3].clearChildren();
-        if(cards[2] == null){
+        if(cards.size() < 3){
              cardSlots[3].add(new Image(lockedDice));
         }
         else{
-            cards[2].loadTexture();
-            addedImage = new Image(cards[2].getTextureRegion());
+            cards.get(2).loadTexture();
+            addedImage = new Image(cards.get(2).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[2]);
+                    manager.actSelectedCard(cards.get(2));
                     switchToFirstView();
                 }
             });  
@@ -308,16 +321,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[4].clearChildren();
-        if(cards[3] == null){
+        if(cards.size() < 4){
              cardSlots[4].add(new Image(lockedDice));
         }
         else{
-            cards[3].loadTexture();
-            addedImage = new Image(cards[3].getTextureRegion());
+            cards.get(3).loadTexture();
+            addedImage = new Image(cards.get(3).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[3]);
+                    manager.actSelectedCard(cards.get(3));
                     switchToFirstView();
                 }
             });  
@@ -325,16 +338,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[5].clearChildren();
-        if(cards[4] == null){
+        if(cards.size() < 5){
              cardSlots[5].add(new Image(lockedDice));
         }
         else{
-            cards[4].loadTexture();
-            addedImage = new Image(cards[4].getTextureRegion());
+            cards.get(4).loadTexture();
+            addedImage = new Image(cards.get(4).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[4]);
+                    manager.actSelectedCard(cards.get(4));
                     switchToFirstView();
                 }
             });  
@@ -347,7 +360,18 @@ public class BattleScreen implements Screen{
     public void render(float delta) {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+        manager.updateFight();
+
+
+        /*batch.begin();
+        for (int i = 0; i < 6; i++) {
+            manager.dices.add(i, new Dice("Dice:" + i)); // TODO KALDIR OR DEBUGd
+            manager.dices.get(i).setTexture(lockedDice);
+            manager.dices.get(i).setPosition(800, i*88);
+            manager.dices.get(i).draw(batch);
+        }
+        batch.end();*/
+
         stage.act(delta);
         stage.draw();
     }

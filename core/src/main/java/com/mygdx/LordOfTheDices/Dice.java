@@ -18,7 +18,8 @@ public class Dice extends Item {
 
     private int value;
     private float stateTime;
-    private boolean isRolling; 
+    private boolean isRolling;
+    public boolean canRoll = true; 
     private boolean isLocked;
 
     public Dice(String name) {
@@ -27,6 +28,7 @@ public class Dice extends Item {
         isLocked = false;
         isRolling = false;
         this.stateTime = 0f;
+        // TODO  KALDIR FOR DEBUGGING 
     }
 
     //returns a random num from 1 to 6, call it to stop rolling animation
