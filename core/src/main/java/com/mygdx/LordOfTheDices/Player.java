@@ -9,7 +9,10 @@ public class Player extends Entity{
     /*Implementation of this class is incomplete */
     private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
-    private TiledMapTileLayer interactionLayer;
+    private TiledMapTileLayer WallMob;
+    private TiledMapTileLayer WallBoss;
+    private boolean isMobDefeated = false;
+    private boolean isBossDefeated = false;
     private Inventory inventory;
 
     // animations
@@ -41,7 +44,8 @@ public class Player extends Entity{
         setSize(24, 24);
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-        interactionLayer = (TiledMapTileLayer) map.getLayers().get("Interaction");
+        WallMob = (TiledMapTileLayer) map.getLayers().get("WallMob");
+        WallBoss = (TiledMapTileLayer) map.getLayers().get("WallBoss");
         inventory = new Inventory();
         goldDropped = 0;
         speedX = 0;
@@ -176,14 +180,16 @@ public class Player extends Entity{
             /* updating the coorinates of the player 
             two controlls are necessary to keeping the other movement when hitting a wall */
             // x coordinates
-            if (!isCollision(nextX, getY(), collisionLayer)) {
+            if (!isCollision(nextX, getY(), collisionLayer) && // burası test için kaldırılmalı
+            (isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) {
                 setX(nextX);
             } 
             else {
                 speedX = 0;
             }
             // y coordinates
-            if (!isCollision(getX(), nextY, collisionLayer)) {
+            if (!isCollision(getX(), nextY, collisionLayer) && // burası da test için kaldırılmalı
+            (isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) {
                 setY(nextY);
                 isOnGround = false; 
             } 
