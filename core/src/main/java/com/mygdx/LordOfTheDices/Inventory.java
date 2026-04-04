@@ -14,7 +14,7 @@ public class Inventory implements Comparator<Card> {
     private ArrayList<Relic> relics;
     private int gold;
 
-    /** For loading a saved game. */
+    // For loading a saved game. 
     public Inventory(ArrayList<Dice> dice, ArrayList<Card> cards, ArrayList<Relic> relics, int gold) {
         this.dice = dice;
         this.cards = cards;
@@ -37,7 +37,7 @@ public class Inventory implements Comparator<Card> {
         gold = 100; //can be changed
     }
 
-    // Dice-------------------------------------------
+    // Dice
 
     public void addDice(String str) {
         dice.add(new Dice(str));
@@ -49,7 +49,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getDiceCount() { return dice.size(); }
 
-    // Cards------------------------------------------------------------
+    // Cards
 
     // Adds a card. Cards that are not special cards can't be stacked. Returns false if duplicate. 
     public boolean addCard(Card card) {
@@ -66,7 +66,15 @@ public class Inventory implements Comparator<Card> {
         if (card.getRank().getNumericValue() == 2) {
             return false;
         }
-        return cards.remove(card);
+        
+        for (Card c : cards) {
+            if (c.getSuit() == card.getSuit() && c.getRank() == card.getRank()) {
+            cards.remove(c);
+            return true;
+            }
+        }
+        
+        return false;
     }
 
     public boolean hasCard(Card card) {
@@ -95,7 +103,7 @@ public class Inventory implements Comparator<Card> {
         return result;
     }
 
-    //Relics-------------------------------------------------------
+    //Relics
 
     //Adds a relic. Relics can't be stacked.
     // public boolean addRelic(Relic relic) {
@@ -121,7 +129,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getRelicCount() { return relics.size(); }
 
-    //Gold----------------------------------------------
+    //Gold
 
     public int getGold() { return gold; }
 
@@ -140,7 +148,7 @@ public class Inventory implements Comparator<Card> {
     }
 
 
-    //Other-----------------------------------------------------------------------
+    //Other
 
     //The sort method uses this. This is needed to properly sort cards so that
     //They can be shown in a specific way in the inventory screen.
@@ -153,4 +161,19 @@ public class Inventory implements Comparator<Card> {
             return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();
         }
     }
+
+    //Returns five random cards of a suit
+    //Requested for the battle system
+    public ArrayList<Card> getFiveCards(Suit suit) {
+        ArrayList<Card> list = getCardsBySuit(suit);
+        Collections.shuffle(list);
+        ArrayList<Card> fiveList = new ArrayList<Card>();
+        for(int i = 0; i < list.size(); i++){
+            if(i < 5){
+                fiveList.add(list.get(i));
+            }
+        }
+        return fiveList;
+    }
 }
+
