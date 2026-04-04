@@ -36,6 +36,7 @@ public class Assets {
     public static final String ATLAS_SAVE_PANEL     = "ui/Save_Name_Screen/SetSaveNamePanel.atlas";
     public static final String ATLAS_STORY_BUTTONS  = "ui/Story/Story_Buttons/Story_buttons.atlas";
     public static final String ATLAS_CARDS          = "cards.atlas";
+    public static final String ATLAS_RELICS         = "relics.atlas";
     public static final String ATLAS_ENTITIES       = "Atlas/Entities.atlas";
     public static final String ATLAS_EFFECTS        = "Effects.atlas";
     public static final String ATLAS_PAUSE_BUTTONS = "ui/PauseScreen/pause_screen_buttons.atlas";
@@ -76,6 +77,7 @@ public class Assets {
         manager.load(ATLAS_SAVE_PANEL,    TextureAtlas.class);
         manager.load(ATLAS_STORY_BUTTONS, TextureAtlas.class);
         manager.load(ATLAS_CARDS,         TextureAtlas.class);
+        manager.load(ATLAS_RELICS,        TextureAtlas.class);
         manager.load(ATLAS_ENTITIES,      TextureAtlas.class);
         manager.load(ATLAS_EFFECTS,       TextureAtlas.class);
         manager.load(ATLAS_PAUSE_BUTTONS, TextureAtlas.class);
