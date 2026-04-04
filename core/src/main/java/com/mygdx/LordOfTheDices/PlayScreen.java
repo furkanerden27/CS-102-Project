@@ -26,7 +26,8 @@ public class PlayScreen implements Screen {
     private float stateTime = 0;
     private FloatingText goldDisplay;
     private Texture pauseBtnTexture;
-
+    private Shop shop;
+    private float merchantX = -1;
 
     private int startingGold;
     private String saveName;
@@ -49,6 +50,7 @@ public class PlayScreen implements Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
         initialiseEntities();
+        shop = new Shop(player.getInventory());
     }
 
     private void initialiseEntities() {
@@ -60,6 +62,11 @@ public class PlayScreen implements Screen {
         BasicMob mob = new BasicMob(0, 0);
         mob.setEntity(map);
         entities.add(mob);
+
+        Merchant merchant = new Merchant(0, 0);
+        merchant.setEntity(map);
+        merchantX = merchant.getX();
+        entities.add(merchant);
 
         Boss boss = createBoss(level.getBossName(), 0, 0);
         if (boss != null) {
@@ -166,6 +173,11 @@ public class PlayScreen implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.showScreen(Screens.INVENTORY, player.getInventory());
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            if (merchantX >= 0 && Math.abs(player.getX() - merchantX) < 50f) {
+                screenManager.showShop(shop);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
             for (Entity e : entities) {

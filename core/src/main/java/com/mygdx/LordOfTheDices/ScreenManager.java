@@ -61,6 +61,11 @@ public class ScreenManager {
         }
     }
 
+    public void showShop(Shop shop) {
+        previousScreen = game.getScreen();
+        game.setScreen(new ShopScreen(this, shop, game));
+    }
+
     public void showScreen(Screens screen, Screen playScreen) {
         if (screen == Screens.PAUSE) {
             game.setScreen(new PauseScreen(game, this, playScreen));
