@@ -206,6 +206,11 @@ public class LoadGameScreen implements Screen {
         e.currentLevel  = extractInt(obj, "currentLevel");
         e.currentHealth = extractInt(obj, "currentHealth");
         e.currentMoney  = extractInt(obj, "currentMoney");
+        e.playerX       = (float) extractInt(obj, "playerX");
+        e.playerY       = (float) extractInt(obj, "playerY");
+        e.cards         = extractString(obj, "cards");
+        e.dice          = extractString(obj, "dice");
+        e.relics        = extractString(obj, "relics");
         e.timestamp     = extractLong(obj, "timestamp");
         if (e.saveName == null || e.saveName.isEmpty()) return null;
         return e;
@@ -511,7 +516,8 @@ public class LoadGameScreen implements Screen {
     private void onLoad() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
         SaveEntry entry = saves.get(selectedIndex);
-        screenManager.showScreen(Screens.PLAY, entry.currentMoney, entry.saveName, Level.fromNumber(entry.currentLevel));
+        screenManager.showScreen(Screens.PLAY, entry.currentMoney, entry.currentHealth, entry.playerX, entry.playerY,
+            entry.saveName, Level.fromNumber(entry.currentLevel), entry.cards, entry.dice, entry.relics);
     }
 
     private void onDelete() {
@@ -563,6 +569,11 @@ public class LoadGameScreen implements Screen {
         int currentLevel;
         int currentHealth;
         int currentMoney;
+        float playerX;
+        float playerY;
+        String cards = "";
+        String dice = "";
+        String relics = "";
         long timestamp;
     }
 }

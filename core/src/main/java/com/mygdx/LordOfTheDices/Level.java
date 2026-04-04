@@ -21,11 +21,6 @@ public enum Level {
         this.mobCount = mobCount;
     }
 
-    public int getNumber() { return number; }
-    public String getMapFile() { return mapFile; }
-    public String getBossName() { return bossName; }
-    public int getMobCount() { return mobCount; }
-
     public static Level fromNumber(int num) {
         for (Level l : values()) {
             if (l.number == num) return l;
@@ -37,5 +32,18 @@ public enum Level {
         int nextNum = number + 1;
         if (nextNum > 6) return null;
         return fromNumber(nextNum);
+    }
+    
+    public int getNumber(){
+        return number;
+    }
+    public String getMapFile(){ 
+        return mapFile;
+    }
+    public String getBossName(){
+        return bossName;
+    }
+    public int getMobCount(){
+        return mobCount;
     }
 }

@@ -227,6 +227,8 @@ public abstract class Entity extends Sprite {
     public int getGold(){
         return goldDropped;
     }
+    public float getHealth() { return health; }
+    public void setHealth(float h) { this.health = h; }
     public void removeAllEffects(){
         effectsInFight.clear();
     }

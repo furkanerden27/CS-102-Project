@@ -42,9 +42,10 @@ public class ScreenManager {
         else if(screen == Screens.PLAY)         game.setScreen(new PlayScreen(game));
     }
 
-    public void showScreen(Screens screen, int gold, String saveName, Level level) {
+    public void showScreen(Screens screen, int gold, float health, float playerX, float playerY,
+                           String saveName, Level level, String cards, String dice, String relics) {
         if (screen == Screens.PLAY) {
-            game.setScreen(new PlayScreen(game, gold, saveName, level));
+            game.setScreen(new PlayScreen(game, gold, health, playerX, playerY, saveName, level, cards, dice, relics));
         }
     }
 

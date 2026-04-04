@@ -180,11 +180,20 @@ public class PauseScreen implements Screen {
 
         int gold = ps.getCurrentGold();
         int levelNum = ps.getLevel().getNumber();
+        int health = (int) ps.getPlayerHealth();
+        int playerX = (int) ps.getPlayerX();
+        int playerY = (int) ps.getPlayerY();
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
+        Inventory inv = ps.getPlayerInventory();
         String json = "{\"saveName\":\"" + saveName + "\"," +
                       "\"currentLevel\":" + levelNum + "," +
-                      "\"currentHealth\":200," +
+                      "\"currentHealth\":" + health + "," +
                       "\"currentMoney\":" + gold + "," +
+                      "\"playerX\":" + playerX + "," +
+                      "\"playerY\":" + playerY + "," +
+                      "\"cards\":\"" + inv.serializeCards() + "\"," +
+                      "\"dice\":\"" + inv.serializeDice() + "\"," +
+                      "\"relics\":\"" + inv.serializeRelics() + "\"," +
                       "\"timestamp\":" + System.currentTimeMillis() + "}";
 
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.PUT);

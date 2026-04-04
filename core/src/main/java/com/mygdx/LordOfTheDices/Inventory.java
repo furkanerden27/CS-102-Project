@@ -192,5 +192,75 @@ public class Inventory implements Comparator<Card> {
         }
         return fiveList;
     }
+
+    public String serializeCards() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cards.size(); i++) {
+            Card c = cards.get(i);
+            if (i > 0) sb.append(",");
+            sb.append(c.getSuit().name()).append("-").append(c.getRank().getNumericValue());
+        }
+        return sb.toString();
+    }
+
+    public String serializeDice() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < dice.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(dice.get(i).getName());
+        }
+        return sb.toString();
+    }
+
+    public String serializeRelics() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < relics.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(relics.get(i).getRelicType().name());
+        }
+        return sb.toString();
+    }
+
+    public static Inventory deserialize(String cardsStr, String diceStr, String relicsStr, int gold) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        ArrayList<Dice> diceList = new ArrayList<Dice>();
+        ArrayList<Relic> relicList = new ArrayList<Relic>();
+
+        if (cardsStr != null && !cardsStr.isEmpty()) {
+            String[] parts = cardsStr.split(",");
+            for (String part : parts) {
+                String[] split = part.split("-");
+                if (split.length == 2) {
+                    Suit suit = Suit.valueOf(split[0]);
+                    int rankVal = Integer.parseInt(split[1]);
+                    Rank rank = intToRank(rankVal);
+                    if (rank != null) cards.add(new Card(suit, rank));
+                }
+            }
+        }
+
+        if (diceStr != null && !diceStr.isEmpty()) {
+            String[] parts = diceStr.split(",");
+            for (String part : parts) {
+                diceList.add(new Dice(part));
+            }
+        }
+
+        if (relicsStr != null && !relicsStr.isEmpty()) {
+            String[] parts = relicsStr.split(",");
+            for (String part : parts) {
+                relicList.add(new Relic(Relic.RelicType.valueOf(part)));
+            }
+        }
+
+        return new Inventory(diceList, cards, relicList, gold);
+    }
+
+    private static Rank intToRank(int val) {
+        for (Rank r : Rank.values()) {
+            if (r.getNumericValue() == val) return r;
+        }
+        return null;
+    }
 }
 

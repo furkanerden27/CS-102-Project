@@ -30,20 +30,30 @@ public class PlayScreen implements Screen {
     private float merchantX = -1;
 
     private int startingGold;
+    private float startingHealth;
+    private float startingX, startingY;
     private String saveName;
     private Level level;
+    private String savedCards, savedDice, savedRelics;
 
     public PlayScreen(Core game) {
-        this(game, 100, "", Level.LEVEL_1);
+        this(game, 100, 200, 300, 350, "", Level.LEVEL_1, "", "", "");
     }
 
-    public PlayScreen(Core game, int gold, String saveName, Level level) {
+    public PlayScreen(Core game, int gold, float health, float playerX, float playerY,
+                      String saveName, Level level, String cards, String dice, String relics) {
         this.game = game;
         this.assets = game.getAssets();
         this.screenManager = game.screen;
         this.startingGold = gold;
+        this.startingHealth = health;
+        this.startingX = (playerX == 0 && playerY == 0) ? 300 : playerX;
+        this.startingY = (playerX == 0 && playerY == 0) ? 350 : playerY;
         this.saveName = saveName;
         this.level = level;
+        this.savedCards = cards;
+        this.savedDice = dice;
+        this.savedRelics = relics;
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
         map = assets.getMap(level.getMapFile());
@@ -55,8 +65,13 @@ public class PlayScreen implements Screen {
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 300, 350, map);
-        player.getInventory().setGold(startingGold);
+        if (savedCards != null && !savedCards.isEmpty()) {
+            Inventory loadedInv = Inventory.deserialize(savedCards, savedDice, savedRelics, startingGold);
+            player = new Player(startingHealth, startingX, startingY, map, loadedInv);
+        } else {
+            player = new Player(startingHealth, startingX, startingY, map);
+            player.getInventory().setGold(startingGold);
+        }
         entities.add(player);
 
         BasicMob mob = new BasicMob(0, 0);
@@ -136,7 +151,65 @@ public class PlayScreen implements Screen {
 
         game.batch.end();
         removeDeadEntities();
+        checkInteraction();
+    }
 
+    private void checkInteraction() {
+        com.badlogic.gdx.maps.tiled.TiledMapTileLayer endGameLayer =
+            (com.badlogic.gdx.maps.tiled.TiledMapTileLayer) map.getLayers().get("EndGame");
+        if (endGameLayer == null) return;
+        int tileX = (int) (player.getX() / endGameLayer.getTileWidth());
+        int tileY = (int) (player.getY() / endGameLayer.getTileHeight());
+        if (endGameLayer.getCell(tileX, tileY) == null) return;
+
+        Level next = level.next();
+        if (next == null) {
+            deleteFromFirebase();
+            screenManager.showScreen(Screens.STORY_END);
+        } else {
+            saveToFirebase(next.getNumber());
+            Inventory inv = player.getInventory();
+            screenManager.showScreen(Screens.PLAY, inv.getGold(), player.getHealth(), 300, 350,
+                saveName, next, inv.serializeCards(), inv.serializeDice(), inv.serializeRelics());
+        }
+    }
+
+    private void saveToFirebase(int nextLevel) {
+        if (saveName == null || saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
+        Inventory inv = player.getInventory();
+        String json = "{\"saveName\":\"" + saveName + "\"," +
+                      "\"currentLevel\":" + nextLevel + "," +
+                      "\"currentHealth\":" + (int) player.getHealth() + "," +
+                      "\"currentMoney\":" + inv.getGold() + "," +
+                      "\"playerX\":" + (int) player.getX() + "," +
+                      "\"playerY\":" + (int) player.getY() + "," +
+                      "\"cards\":\"" + inv.serializeCards() + "\"," +
+                      "\"dice\":\"" + inv.serializeDice() + "\"," +
+                      "\"relics\":\"" + inv.serializeRelics() + "\"," +
+                      "\"timestamp\":" + System.currentTimeMillis() + "}";
+
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.PUT);
+        req.setUrl(url);
+        req.setHeader("Content-Type", "application/json");
+        req.setContent(json);
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
+    }
+
+    private void deleteFromFirebase() {
+        if (saveName == null || saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.DELETE);
+        req.setUrl(url);
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
     }
 
     private void handleInput() {
@@ -226,6 +299,14 @@ public class PlayScreen implements Screen {
     public int getCurrentGold() { return player.getInventory().getGold(); }
 
     public Level getLevel() { return level; }
+
+    public float getPlayerHealth() { return player.getHealth(); }
+
+    public float getPlayerX() { return player.getX(); }
+
+    public float getPlayerY() { return player.getY(); }
+
+    public Inventory getPlayerInventory() { return player.getInventory(); }
 
     @Override public void show() {}
     @Override public void hide() {}
