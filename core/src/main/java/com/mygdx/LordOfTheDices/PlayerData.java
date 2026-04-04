@@ -45,7 +45,7 @@ public class PlayerData {
             data.dice.add(d.getName());
         }
         for (Relic r : inv.getRelics()) {
-            data.relics.add(r.getRelicType().name() + ":" + r.isActive() + ":" + r.getBuyingValue());
+            data.relics.add(r.getRelicType().name() + ":" + r.isActive());
         }
 
         return data;
@@ -70,7 +70,7 @@ public class PlayerData {
             data.dice.add(d.getName());
         }
         for (Relic r : inv.getRelics()) {
-            data.relics.add(r.getRelicType().name() + ":" + r.isActive() + ":" + r.getBuyingValue());
+            data.relics.add(r.getRelicType().name() + ":" + r.isActive());
         }
 
         return data;
@@ -108,10 +108,9 @@ public class PlayerData {
         for (String s : relics) {
             String[] parts = s.split(":");
             RelicType type = RelicType.valueOf(parts[0]);
-            if (parts.length >= 3) {
+            if (parts.length >= 2) {
                 boolean active = Boolean.parseBoolean(parts[1]);
-                int buyPrice = Integer.parseInt(parts[2]);
-                relicList.add(new Relic(type, active, buyPrice));
+                relicList.add(new Relic(type, active));
             } else {
                 relicList.add(new Relic(type));
             }

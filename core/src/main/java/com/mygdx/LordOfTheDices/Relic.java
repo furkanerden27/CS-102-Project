@@ -50,13 +50,12 @@ public class Relic extends Item {
         loadTexture();
     }
 
-    /** Constructor for loading a saved relic with known state. */
-    public Relic(RelicType type, boolean isActive, int buyingValue) {
+    public Relic(RelicType type, boolean isActive) {
         super(type.name() + " RELIC");
         this.type = type;
         this.effectMagnitude = assignEffectMagnitude(type);
         this.isActive = isActive;
-        this.buyingValue = buyingValue;
+        this.buyingValue = (int) (Math.random() * 100) + 200;
         this.description = buildDescription();
         loadTexture();
     }
