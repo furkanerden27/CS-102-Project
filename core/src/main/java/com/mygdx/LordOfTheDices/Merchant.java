@@ -1,11 +1,17 @@
 package com.mygdx.LordOfTheDices;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Merchant extends Entity {
 
+    private Animation<TextureRegion> standing;
+    
     public Merchant(float posX, float posY) {
         super(1, posX, posY);
-        initAnimationsFromAtlas("Merchant", 800, 400, new int[]{1});
-        setSize(64, 32);
+        initAnimationsFromAtlas("Merchant", 
+        80, 80, new int[]{10, 6, 10, 8, 6});
+        setSize(80, 80);
         name = "Merchant";
     }
 
@@ -18,6 +24,7 @@ public class Merchant extends Entity {
     @Override
     protected void setAnimations(int[] frameCounts) {
         super.setAnimations(frameCounts);
-        currentAnimation = animations[0];
+        standing = animations[0];
+        currentAnimation = standing;
     }
 }
