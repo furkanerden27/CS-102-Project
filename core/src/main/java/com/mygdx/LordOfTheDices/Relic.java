@@ -50,11 +50,30 @@ public class Relic extends Item {
         loadTexture();
     }
 
+    public Relic(RelicType type, boolean isActive) {
+        super(type.name() + " RELIC");
+        this.type = type;
+        this.effectMagnitude = assignEffectMagnitude(type);
+        this.isActive = isActive;
+        this.buyingValue = (int) (Math.random() * 100) + 200;
+        this.description = buildDescription();
+        loadTexture();
+    }
+
+    /** Reapplies effects of already-active relics (used after loading a save). */
+    public void reapply(Player player) {
+        if (!isActive) return;
+        applyEffect(player);
+    }
+
     /* activates the relic and applies its permanent effect on the player */
     public void apply(Player player) {
         if (isActive) return;
-        
         isActive = true;
+        applyEffect(player);
+    }
+
+    private void applyEffect(Player player) {
         switch (type) {
             case ARMOUR: // will change later
                 float bonus = player.maxHealth * effectMagnitude;
@@ -83,7 +102,7 @@ public class Relic extends Item {
                 break;
             case REBIRTH:
                 //TODO
-                break;  
+                break;
         }
     }
 

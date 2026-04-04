@@ -29,31 +29,21 @@ public class PlayScreen implements Screen {
     private Shop shop;
     private float merchantX = -1;
 
-    private int startingGold;
-    private float startingHealth;
-    private float startingX, startingY;
     private String saveName;
     private Level level;
-    private String savedCards, savedDice, savedRelics;
+    private PlayerData playerData;
 
     public PlayScreen(Core game) {
-        this(game, 100, 200, 300, 350, "", Level.LEVEL_1, "", "", "");
+        this(game, PlayerData.newSave("", 1, 200, 100));
     }
 
-    public PlayScreen(Core game, int gold, float health, float playerX, float playerY,
-                      String saveName, Level level, String cards, String dice, String relics) {
+    public PlayScreen(Core game, PlayerData playerData) {
         this.game = game;
         this.assets = game.getAssets();
         this.screenManager = game.screen;
-        this.startingGold = gold;
-        this.startingHealth = health;
-        this.startingX = (playerX == 0 && playerY == 0) ? 300 : playerX;
-        this.startingY = (playerX == 0 && playerY == 0) ? 350 : playerY;
-        this.saveName = saveName;
-        this.level = level;
-        this.savedCards = cards;
-        this.savedDice = dice;
-        this.savedRelics = relics;
+        this.playerData = playerData;
+        this.saveName = playerData.saveName;
+        this.level = Level.fromNumber(playerData.currentLevel);
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
         map = assets.getMap(level.getMapFile());
@@ -65,12 +55,19 @@ public class PlayScreen implements Screen {
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        if (savedCards != null && !savedCards.isEmpty()) {
-            Inventory loadedInv = Inventory.deserialize(savedCards, savedDice, savedRelics, startingGold);
-            player = new Player(startingHealth, startingX, startingY, map, loadedInv);
+        float px = (playerData.playerX == 0 && playerData.playerY == 0) ? 300 : playerData.playerX;
+        float py = (playerData.playerX == 0 && playerData.playerY == 0) ? 350 : playerData.playerY;
+
+        if (!playerData.cards.isEmpty()) {
+            Inventory loadedInv = playerData.toInventory();
+            player = new Player(playerData.currentHealth, px, py, map, loadedInv);
         } else {
-            player = new Player(startingHealth, startingX, startingY, map);
-            player.getInventory().setGold(startingGold);
+            player = new Player(playerData.currentHealth, px, py, map);
+            player.getInventory().setGold(playerData.currentMoney);
+        }
+        // Reapply active relic effects after loading
+        for (Relic r : player.getInventory().getRelics()) {
+            r.reapply(player);
         }
         entities.add(player);
 
@@ -167,32 +164,22 @@ public class PlayScreen implements Screen {
             deleteFromFirebase();
             screenManager.showScreen(Screens.STORY_END);
         } else {
-            saveToFirebase(next.getNumber());
-            Inventory inv = player.getInventory();
-            screenManager.showScreen(Screens.PLAY, inv.getGold(), player.getHealth(), 300, 350,
-                saveName, next, inv.serializeCards(), inv.serializeDice(), inv.serializeRelics());
+            PlayerData data = PlayerData.fromPlayer(saveName, next.getNumber(), player);
+            data.playerX = 300;
+            data.playerY = 350;
+            saveToFirebase(data);
+            screenManager.showScreen(Screens.PLAY, data);
         }
     }
 
-    private void saveToFirebase(int nextLevel) {
-        if (saveName == null || saveName.isEmpty()) return;
-        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
-        Inventory inv = player.getInventory();
-        String json = "{\"saveName\":\"" + saveName + "\"," +
-                      "\"currentLevel\":" + nextLevel + "," +
-                      "\"currentHealth\":" + (int) player.getHealth() + "," +
-                      "\"currentMoney\":" + inv.getGold() + "," +
-                      "\"playerX\":" + (int) player.getX() + "," +
-                      "\"playerY\":" + (int) player.getY() + "," +
-                      "\"cards\":\"" + inv.serializeCards() + "\"," +
-                      "\"dice\":\"" + inv.serializeDice() + "\"," +
-                      "\"relics\":\"" + inv.serializeRelics() + "\"," +
-                      "\"timestamp\":" + System.currentTimeMillis() + "}";
+    private void saveToFirebase(PlayerData data) {
+        if (data.saveName == null || data.saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + data.saveName + ".json";
 
         com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.PUT);
         req.setUrl(url);
         req.setHeader("Content-Type", "application/json");
-        req.setContent(json);
+        req.setContent(data.toJson());
         com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
             @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
             @Override public void failed(Throwable t) {}

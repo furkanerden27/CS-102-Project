@@ -13,12 +13,12 @@ public class Assets {
     private final AssetManager manager = new AssetManager();
 
     public static final String BG_MAIN_MENU = "ui/Main_Menu/main_menu_bg.png";
-    public static final String TEXTURE_DICE = "dice.png";
-    public static final String TEXTURE_FIGHT_BG = "FightBackground.png";
-    public static final String TEX_LOCKED_DICE = "LockedDice.png";
-    public static final String TEX_ROLL_ALL_BTN = "RollAllButton.png";
-    public static final String TEX_ARROW           = "Arrow.png";
-    public static final String TEX_INVERSE_ARROW   = "InverseArrow.png";
+    public static final String TEXTURE_DICE = "dice/dice.png";
+    public static final String TEXTURE_FIGHT_BG = "battle/FightBackground.png";
+    public static final String TEX_LOCKED_DICE = "dice/LockedDice.png";
+    public static final String TEX_ROLL_ALL_BTN = "dice/RollAllButton.png";
+    public static final String TEX_ARROW           = "battle/Arrow.png";
+    public static final String TEX_INVERSE_ARROW   = "battle/InverseArrow.png";
     public static final String TEX_CARD_SPADES     = "Cards/card-spades.png";
     public static final String TEX_CARD_CLUBS      = "Cards/card-clubs.png";
     public static final String TEX_CARD_HEARTS     = "Cards/card-hearts.png";
@@ -35,10 +35,10 @@ public class Assets {
     public static final String ATLAS_OPTIONS        = "ui/Options_Menu/options_menu.atlas";
     public static final String ATLAS_SAVE_PANEL     = "ui/Save_Name_Screen/SetSaveNamePanel.atlas";
     public static final String ATLAS_STORY_BUTTONS  = "ui/Story/Story_Buttons/Story_buttons.atlas";
-    public static final String ATLAS_CARDS          = "cards.atlas";
-    public static final String ATLAS_RELICS         = "relics.atlas";
-    public static final String ATLAS_ENTITIES       = "Atlas/Entities.atlas";
-    public static final String ATLAS_EFFECTS        = "Effects.atlas";
+    public static final String ATLAS_CARDS          = "Cards/cards.atlas";
+    public static final String ATLAS_RELICS         = "relics/relics.atlas";
+    public static final String ATLAS_ENTITIES       = "entities/Entities.atlas";
+    public static final String ATLAS_EFFECTS        = "effects/Effects.atlas";
     public static final String ATLAS_PAUSE_BUTTONS = "ui/PauseScreen/pause_screen_buttons.atlas";
 
     public static final String TEX_PAUSE_BTN = "ui/PauseScreen/pause_btn.png";
