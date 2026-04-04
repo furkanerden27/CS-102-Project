@@ -153,15 +153,32 @@ public class Inventory implements Comparator<Card> {
     //The sort method uses this. This is needed to properly sort cards so that
     //They can be shown in a specific way in the inventory screen.
     public int compare(Card card1, Card card2) {
-        if(card1.getSuit() != card2.getSuit()){
-            //return card1.getSuit().getNumericValue() - card2.getSuit().getNumericValue();
-            return 0;
+        if(card1.getRank() != card2.getRank()){
+            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();      
         }
         else{
-            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();
+            Suit[] suitArr = new Suit[4];
+            suitArr[0] = Card.Suit.SPADES;
+            suitArr[1] = Card.Suit.HEARTS;
+            suitArr[2] = Card.Suit.CLUBS;
+            suitArr[3] = Card.Suit.DIAMONDS;
+
+            int cardVal1 = 0;
+            int cardVal2 = 0;
+
+            for(int i = 0; i < 4; i++){
+                if(suitArr[i] == card1.getSuit()){
+                    cardVal1 = i;
+                }
+                if(suitArr[i] == card2.getSuit()){
+                    cardVal2 = i;
+                }
+            }
+
+            return cardVal1 - cardVal2;
+            
         }
     }
-
     //Returns five random cards of a suit
     //Requested for the battle system
     public ArrayList<Card> getFiveCards(Suit suit) {
