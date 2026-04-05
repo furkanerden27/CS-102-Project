@@ -37,6 +37,15 @@ public class Player extends Entity{
     private boolean isDead = false;
     private float deathStateTime = 0;
 
+    private float relicArmourMultiplier = 1f;
+    private float relicDamageMultiplier = 1f;
+    private float relicGoldMultiplier = 1f;
+    private float relicPotionMultiplier = 1f;
+    private float relicBuffIncrease = 0f;
+    private float relicDebuffIncrease= 0f;
+    private float relicDiscountMultiplier = 1f;
+    private int relicRebirthCount = 0;
+
     public Player(float health, float posX, float posY, TiledMap map) {
         this(health, posX, posY, map, new Inventory());
     }
@@ -215,7 +224,7 @@ public class Player extends Entity{
     }
 
     public void addGold(int gold){
-        inventory.addGold(gold);
+        inventory.addGold((int)(gold * relicGoldMultiplier));
     }
 
     public Inventory getInventory() {
@@ -228,5 +237,87 @@ public class Player extends Entity{
 
     public void setAttackModifier(float m){
         attackModifier = m;
+    }
+
+    @Override
+    public void takeDamage(float damage) {
+        damage *= relicArmourMultiplier;
+        if(relicRebirthCount > 0) {
+            health = Math.max(0, health - damage);
+            if(health == 0) {
+                relicRebirthCount--;
+                health = maxHealth * 0.5f;
+                isAlive = true;
+            }
+            if (health > 0) {
+                isTakingDamage = true;
+                isShaking = false;
+                damageTime = 0;
+                originalColor = getColor().cpy();
+            }
+        }
+        else {
+            super.takeDamage(damage);
+        }  
+    }
+
+    public void addRelicArmourMultiplier(float multiplier) {
+        this.relicArmourMultiplier -= multiplier;
+    }
+
+    public void addRelicDamageMultiplier(float multiplier) {
+        this.relicDamageMultiplier += multiplier;
+    }
+
+    public void addRelicGoldMultiplier(float multiplier) {
+        this.relicGoldMultiplier += multiplier;
+    }
+
+    public void addRelicPotionMultiplier(float multiplier) {
+        this.relicPotionMultiplier += multiplier;
+    }
+
+    public void addRelicBuffIncrease(float increase) {
+        this.relicBuffIncrease += increase;
+    }
+
+    public void addRelicDebuffIncrease(float increase) {
+        this.relicDebuffIncrease += increase;
+    }
+
+    public void addRelicDiscountMultiplier(float multiplier) {
+        this.relicDiscountMultiplier -= multiplier;
+    }
+
+    public void addRebirthCount() {
+        this.relicRebirthCount++;
+    }
+
+    public float getRelicBuffIncrease() {
+        return relicBuffIncrease;
+    }
+
+    public float getRelicDebuffIncrease() {
+        return relicDebuffIncrease;
+    }
+
+    public float getRelicDamageMultiplier() {
+        return relicDamageMultiplier;
+    }
+
+    public float getRelicGoldMultiplier() {
+        return relicGoldMultiplier;
+    }
+
+    public float getRelicPotionMultiplier() {
+        return relicPotionMultiplier;
+    }
+
+    public float getRelicDiscountMultiplier() {
+        return relicDiscountMultiplier;
+    }
+
+    public int getRebirthCount() {
+        return relicRebirthCount;
     }
 }

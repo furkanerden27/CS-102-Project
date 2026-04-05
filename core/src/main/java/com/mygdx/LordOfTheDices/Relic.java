@@ -37,7 +37,7 @@ public class Relic extends Item {
     private final RelicType type;
     private final float effectMagnitude;
     private boolean isActive;
-    private final int buyingValue;
+    private int buyingValue;
     private TextureRegion textureRegion;
 
     public Relic(RelicType type) {
@@ -75,33 +75,32 @@ public class Relic extends Item {
 
     private void applyEffect(Player player) {
         switch (type) {
-            case ARMOUR: // will change later
-                float bonus = player.maxHealth * effectMagnitude;
-                player.addMaxHealth(bonus);
+            case ARMOUR:
+                player.addRelicArmourMultiplier(effectMagnitude);
                 break;
             case BUFF:
-                player.setAttackModifier(effectMagnitude);
+                player.addRelicBuffIncrease(effectMagnitude);
                 break;
             case DAMAGE:
-                //TODO
+                player.addRelicDamageMultiplier(effectMagnitude);
                 break;
             case DEBUFF:
-                //TODO
+                player.addRelicDebuffIncrease(effectMagnitude);
                 break;
             case DISCOUNT:
-                //TODO
+                player.addRelicDiscountMultiplier(effectMagnitude);
                 break;
             case GOLD:
-                //TODO
+                player.addRelicGoldMultiplier(effectMagnitude);
                 break;
             case HEALTH:
-                //TODO
+                player.addMaxHealth(player.getMaxHealth() * effectMagnitude);
                 break;
             case POTION:
-                //TODO
+                player.addRelicPotionMultiplier(effectMagnitude);
                 break;
             case REBIRTH:
-                //TODO
+                player.addRebirthCount();
                 break;
         }
     }
