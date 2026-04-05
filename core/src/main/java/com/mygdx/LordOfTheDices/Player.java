@@ -14,6 +14,7 @@ public class Player extends Entity{
     private boolean isMobDefeated = false;
     private boolean isBossDefeated = false;
     private Inventory inventory;
+    private boolean isLocked = false;
 
     // animations
     private Animation<TextureRegion> standingRight;
@@ -157,6 +158,7 @@ public class Player extends Entity{
 
     @Override
     public void update(float deltaTime) {
+        
         //----controls the death of the player and the death animation----
         if (!isAlive && !isDead) {
             isDead = true;
@@ -174,37 +176,38 @@ public class Player extends Entity{
         } 
         //----if the player is alive, handle the input and update the position and animation----
         else {
-            handleInput();
-            speedY -= GRAVITY; 
+            if(!isLocked){
+                handleInput();
+                speedY -= GRAVITY; 
             
-            float nextX = getX() + speedX * deltaTime;
-            float nextY = getY() + speedY * deltaTime;
-
-            /* updating the coorinates of the player 
-            two controlls are necessary to keeping the other movement when hitting a wall */
-            // x coordinates
-            if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
-            //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
-            {
-                setX(nextX);
-            } 
-            else {
-                speedX = 0;
-            }
-            // y coordinates
-            if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
-            //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
-            {
-                setY(nextY);
-                isOnGround = false; 
-            } 
-            else {
-                if (speedY < 0) {
-                    isOnGround = true;
+                float nextX = getX() + speedX * deltaTime;
+                float nextY = getY() + speedY * deltaTime;
+                
+                /* updating the coorinates of the player 
+                two controlls are necessary to keeping the other movement when hitting a wall */
+                // x coordinates
+                if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
+                //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
+                {
+                    setX(nextX);
+                } 
+                else {
+                    speedX = 0;
                 }
-                speedY = 0;
+                // y coordinates
+                if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
+                //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
+                {
+                    setY(nextY);
+                    isOnGround = false; 
+                } 
+                else {
+                    if (speedY < 0) {
+                        isOnGround = true;
+                    }
+                    speedY = 0;
+                }
             }
-
             stateTime += deltaTime;
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         }
@@ -217,6 +220,10 @@ public class Player extends Entity{
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public void setLocked(boolean t){
+        isLocked = t;
     }
 
     public void setAttackModifier(float m){

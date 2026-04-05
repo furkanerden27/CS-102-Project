@@ -24,7 +24,7 @@ public class Inventory implements Comparator<Card> {
 
     // Creates a default new game inventory. 
     public Inventory() {
-        dice = new ArrayList<Dice>();
+        dice = new ArrayList<Dice>(6);
         cards = new ArrayList<Card>();
         relics = new ArrayList<Relic>();
 

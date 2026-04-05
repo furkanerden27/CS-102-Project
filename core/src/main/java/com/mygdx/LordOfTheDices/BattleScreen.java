@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -16,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.LordOfTheDices.Card.Suit;
@@ -40,12 +44,21 @@ public class BattleScreen implements Screen{
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
-    //private SpriteBatch batch;
+    private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
+    private BitmapFont uiFont;
+
+    private Image[] diceImages;
 
     public BattleScreen(Assets assets, FightManager manager, int sizeX, int sizeY) {
         stage = new Stage(new FitViewport(sizeX, sizeY));
         this.manager = manager;
-        //batch = new SpriteBatch(); TODO
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+        uiFont = new BitmapFont();
+        uiFont.getData().setScale(1.5f);
+
+        
 
         cardSpades = assets.getTexture(Assets.TEX_CARD_SPADES);
         cardClubs = assets.getTexture(Assets.TEX_CARD_CLUBS);
@@ -57,6 +70,7 @@ public class BattleScreen implements Screen{
         arrowTexture = assets.getTexture(Assets.TEX_ARROW);
         inverseArrowTexture = assets.getTexture(Assets.TEX_INVERSE_ARROW);
 
+        diceImages = new Image[]{new Image(), new Image(), new Image(), new Image(), new Image(), new Image()};
 
         toolTipTable = new Table();
         toolTipLabel = new Label("", new LabelStyle( new BitmapFont(), Color.BLACK));
@@ -360,20 +374,51 @@ public class BattleScreen implements Screen{
     public void render(float delta) {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        manager.updateFight();
+        
 
+        manager.updateFight(delta);
 
-        /*batch.begin();
-        for (int i = 0; i < 6; i++) {
-            manager.dices.add(i, new Dice("Dice:" + i)); // TODO KALDIR OR DEBUGd
-            manager.dices.get(i).setTexture(lockedDice);
-            manager.dices.get(i).setPosition(800, i*88);
-            manager.dices.get(i).draw(batch);
-        }
-        batch.end();*/
+        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        drawHealthBar(manager.getPlayer(), FightManager.PLAYER_X, FightManager.PLAYER_Y - 6f);
+        drawHealthBar(manager.getMob(), FightManager.MOB_X, FightManager.MOB_Y - 6f);
+
 
         stage.act(delta);
         stage.draw();
+
+        batch.begin();
+        manager.getPlayer().draw(batch);
+        manager.getMob().draw(batch);
+
+
+        // SIZE KADAR GIDIP galibaok?
+        int i = 0;
+        for (i = 0; i < manager.dices.size(); i++) {
+            if (manager.dices.get(i).isLocked()) {
+                diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+            }
+            TextureRegion frame = manager.dices.get(i).getCurrentFrame();
+            if (frame != null) {
+                diceImages[i].setDrawable(new TextureRegionDrawable(frame));
+            }
+        }
+        while(i < 6){
+            diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+            i++;
+        }
+
+        
+        if(manager.isPlayerTurn()){
+            uiFont.setColor(Color.GREEN);   
+            uiFont.draw(batch, "Player's Turn", 10, 6); 
+        }
+        else{
+            uiFont.setColor(Color.RED);
+            uiFont.draw(batch, "Enemy's Turn", 10, 6); 
+        }
+
+        batch.end();
+        uiFont.setColor(Color.WHITE);
     }
 
     @Override
@@ -381,7 +426,27 @@ public class BattleScreen implements Screen{
         stage.getViewport().update(width, height, true);
     }
 
+    private void drawHealthBar(Entity e, float x, float y){
+        float barWidth = 80f, barHeight = 8f;
+        float healthRatio = e.health / e.maxHealth;
 
+        shapeRenderer.setAutoShapeType(true); // I have no idea what this does but it does not work if I dont do this
+        //Draws the halth bar above the entity
+        shapeRenderer.begin();
+
+        shapeRenderer.setColor(0.35f, 0.05f, 0.05f, 0.9f);
+        shapeRenderer.rect(x, y, barWidth, barHeight);
+
+        shapeRenderer.setColor(1f - healthRatio, healthRatio * 0.85f, 0.05f, 1f);
+        shapeRenderer.rect(x, y, barWidth * healthRatio, barHeight);
+
+        shapeRenderer.end();
+
+        batch.begin();
+        uiFont.setColor(Color.WHITE);
+        uiFont.draw(batch, (int) e.health + " / " + (int) e.maxHealth, x, y + barHeight + 11f);
+        batch.end();
+    }
 
     @Override
     public void show() {}

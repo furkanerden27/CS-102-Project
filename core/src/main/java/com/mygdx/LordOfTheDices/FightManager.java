@@ -19,15 +19,33 @@ public class FightManager {
 
     public ArrayList<Dice> dices;
 
+    public static final float PLAYER_X = 700f, PLAYER_Y =500f;
+    public static final float MOB_X = 1200f, MOB_Y = 500f;
+    public float playerLastX;
+    public float playerLastY;
+
     public FightManager(Player player, Mob mob, ScreenManager screenManager){
         this.player = player;
         this.mob = mob;
+        player.setLocked(true);
+
         isPlayerTurn = true;
         canRollAll = true;
         dices = player.getInventory().getDice();
         this.screenManager = screenManager;
         screen1 = screenManager.showBattleScreen(this);
         
+        if(player != null){
+            playerLastX = player.getX();
+            playerLastY = player.getY();
+            player.setPosition(PLAYER_X, PLAYER_Y);
+        }
+        if(mob  != null){
+            mob.setPosition(MOB_X, MOB_Y);
+        }   
+
+
+
         determineHands();
     }
 
@@ -100,8 +118,12 @@ public class FightManager {
         isPlayerTurn = false;
     }
 
-    public void updateFight(){
-        //TODO
+    public void updateFight(float delta){
+        player.update(delta);
+        mob.update(delta);
+        for(Dice d : dices){
+            d.update(delta);
+        }
     }
 
     public void diceClicked(Dice clickedDice){
@@ -156,7 +178,21 @@ public class FightManager {
         return null;//TODO
     }
 
+    public Player getPlayer(){
+        return player;
+    }
+
+    public Mob getMob(){
+        return mob;
+    }
+
     private void endFight(){
+
+        if(player.isAlive){
+            player.setPosition(playerLastX, playerLastY);
+        }
+        player.setLocked(false);
+        
         mob.removeAllEffects();
         player.removeAllEffects();
         player.addGold(mob.getGold());
