@@ -116,6 +116,10 @@ public abstract class Entity extends Sprite {
         maxHealth += heal;
     }
 
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
     public boolean isAlive() {
         return isAlive;
     }

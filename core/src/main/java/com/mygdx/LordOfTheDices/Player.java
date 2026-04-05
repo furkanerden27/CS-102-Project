@@ -14,6 +14,7 @@ public class Player extends Entity{
     private boolean isMobDefeated = false;
     private boolean isBossDefeated = false;
     private Inventory inventory;
+    private boolean isLocked = false;
 
     // animations
     private Animation<TextureRegion> standingRight;
@@ -35,6 +36,15 @@ public class Player extends Entity{
 
     private boolean isDead = false;
     private float deathStateTime = 0;
+
+    private float relicArmourMultiplier = 1f;
+    private float relicDamageMultiplier = 1f;
+    private float relicGoldMultiplier = 1f;
+    private float relicPotionMultiplier = 1f;
+    private float relicBuffIncrease = 0f;
+    private float relicDebuffIncrease= 0f;
+    private float relicDiscountMultiplier = 1f;
+    private int relicRebirthCount = 0;
 
     public Player(float health, float posX, float posY, TiledMap map) {
         this(health, posX, posY, map, new Inventory());
@@ -157,6 +167,7 @@ public class Player extends Entity{
 
     @Override
     public void update(float deltaTime) {
+        
         //----controls the death of the player and the death animation----
         if (!isAlive && !isDead) {
             isDead = true;
@@ -174,37 +185,38 @@ public class Player extends Entity{
         } 
         //----if the player is alive, handle the input and update the position and animation----
         else {
-            handleInput();
-            speedY -= GRAVITY; 
+            if(!isLocked){
+                handleInput();
+                speedY -= GRAVITY; 
             
-            float nextX = getX() + speedX * deltaTime;
-            float nextY = getY() + speedY * deltaTime;
-
-            /* updating the coorinates of the player 
-            two controlls are necessary to keeping the other movement when hitting a wall */
-            // x coordinates
-            if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
-            //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
-            {
-                setX(nextX);
-            } 
-            else {
-                speedX = 0;
-            }
-            // y coordinates
-            if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
-            //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
-            {
-                setY(nextY);
-                isOnGround = false; 
-            } 
-            else {
-                if (speedY < 0) {
-                    isOnGround = true;
+                float nextX = getX() + speedX * deltaTime;
+                float nextY = getY() + speedY * deltaTime;
+                
+                /* updating the coorinates of the player 
+                two controlls are necessary to keeping the other movement when hitting a wall */
+                // x coordinates
+                if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
+                //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
+                {
+                    setX(nextX);
+                } 
+                else {
+                    speedX = 0;
                 }
-                speedY = 0;
+                // y coordinates
+                if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
+                //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
+                {
+                    setY(nextY);
+                    isOnGround = false; 
+                } 
+                else {
+                    if (speedY < 0) {
+                        isOnGround = true;
+                    }
+                    speedY = 0;
+                }
             }
-
             stateTime += deltaTime;
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         }
@@ -212,14 +224,100 @@ public class Player extends Entity{
     }
 
     public void addGold(int gold){
-        inventory.addGold(gold);
+        inventory.addGold((int)(gold * relicGoldMultiplier));
     }
 
     public Inventory getInventory() {
         return inventory;
     }
 
+    public void setLocked(boolean t){
+        isLocked = t;
+    }
+
     public void setAttackModifier(float m){
         attackModifier = m;
+    }
+
+    @Override
+    public void takeDamage(float damage) {
+        damage *= relicArmourMultiplier;
+        if(relicRebirthCount > 0) {
+            health = Math.max(0, health - damage);
+            if(health == 0) {
+                relicRebirthCount--;
+                health = maxHealth * 0.5f;
+                isAlive = true;
+            }
+            if (health > 0) {
+                isTakingDamage = true;
+                isShaking = false;
+                damageTime = 0;
+                originalColor = getColor().cpy();
+            }
+        }
+        else {
+            super.takeDamage(damage);
+        }  
+    }
+
+    public void addRelicArmourMultiplier(float multiplier) {
+        this.relicArmourMultiplier -= multiplier;
+    }
+
+    public void addRelicDamageMultiplier(float multiplier) {
+        this.relicDamageMultiplier += multiplier;
+    }
+
+    public void addRelicGoldMultiplier(float multiplier) {
+        this.relicGoldMultiplier += multiplier;
+    }
+
+    public void addRelicPotionMultiplier(float multiplier) {
+        this.relicPotionMultiplier += multiplier;
+    }
+
+    public void addRelicBuffIncrease(float increase) {
+        this.relicBuffIncrease += increase;
+    }
+
+    public void addRelicDebuffIncrease(float increase) {
+        this.relicDebuffIncrease += increase;
+    }
+
+    public void addRelicDiscountMultiplier(float multiplier) {
+        this.relicDiscountMultiplier -= multiplier;
+    }
+
+    public void addRebirthCount() {
+        this.relicRebirthCount++;
+    }
+
+    public float getRelicBuffIncrease() {
+        return relicBuffIncrease;
+    }
+
+    public float getRelicDebuffIncrease() {
+        return relicDebuffIncrease;
+    }
+
+    public float getRelicDamageMultiplier() {
+        return relicDamageMultiplier;
+    }
+
+    public float getRelicGoldMultiplier() {
+        return relicGoldMultiplier;
+    }
+
+    public float getRelicPotionMultiplier() {
+        return relicPotionMultiplier;
+    }
+
+    public float getRelicDiscountMultiplier() {
+        return relicDiscountMultiplier;
+    }
+
+    public int getRebirthCount() {
+        return relicRebirthCount;
     }
 }

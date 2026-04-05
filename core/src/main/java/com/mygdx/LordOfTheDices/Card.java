@@ -177,16 +177,16 @@ public class Card extends Item {
     public void apply(Player player, Mob mob) {
         switch (suit) {
             case SPADES:
-                mob.takeDamage(power);
+                mob.takeDamage(power * player.getRelicDamageMultiplier());
                 break;
             case HEARTS:
-                player.heal(power);
+                player.heal(power * player.getRelicPotionMultiplier());
                 break;
             case CLUBS:
-                mob.addEffect(new Weaken(rank.getNumericValue(), 0.25f));
+                mob.addEffect(new Weaken(rank.getNumericValue(), 0.25f + player.getRelicDebuffIncrease()));
                 break;
             case DIAMONDS:
-                player.addEffect(new Strengthen(rank.getNumericValue(), 0.25f));
+                player.addEffect(new Strengthen(rank.getNumericValue(), 0.25f + player.getRelicBuffIncrease()));
                 break;
         }
     }

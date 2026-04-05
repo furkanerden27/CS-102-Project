@@ -226,10 +226,12 @@ public class PlayScreen implements Screen {
             player.jump();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            /* 
             Mob nearestMob = findNearestMob();
             if (nearestMob != null) {
                 new FightManager(player, nearestMob, screenManager);
-            }
+            }*/
+           new FightManager(player, new Envy(5, 20), screenManager);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.showScreen(Screens.INVENTORY, player.getInventory());
