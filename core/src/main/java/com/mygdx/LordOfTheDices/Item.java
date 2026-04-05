@@ -23,7 +23,9 @@ public abstract class Item extends Sprite{
     }
 
     /* returns the descripion of the item as a string to show while hovering */
-    public abstract String getDescription();
+    public String getDescription() {
+        return description;
+    }
 
     /* loads the correct sprite region for this item */
     protected abstract void loadTexture();

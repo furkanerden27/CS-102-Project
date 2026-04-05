@@ -1,48 +1,40 @@
 package com.mygdx.LordOfTheDices;
 
 public class SpecialCard extends Card {
-    
+
     private final Effect effect;
     private final DiceCondition condition;
 
-    // conditions might change later to balance the game
     public enum DiceCondition {
-        ALL_EVEN,       // All dice must show even numbers
-        ALL_ODD,        // All dice must show odd numbers
-        ALL_SAME,       // All dice must show the same value
-        ALL_DIFFERENT,       // Dice values form a consecutive sequence
-        TOTAL_ABOVE_20  // Sum of all dice must exceed 20
+        NO_ONES,
+        AT_LEAST_A_SIX,
+        ALL_DIFFERENT,
+        TOTAL_ABOVE_20
     }
 
-    public SpecialCard(Suit suit, Rank rank, Effect effect, DiceCondition condition) {
+    public SpecialCard(Suit suit, Rank rank) {
         super(suit, rank, true);
-        this.effect = effect;
-        this.condition = condition;
+        this.effect = buildEffect();
+        description = buildDescription();
+        this.condition = assignCondition();
     }
 
-    /* checks if the dice values meet this cards unique condition.*/
     public boolean checkSpecialPlay(int[] diceValues) {
         switch (condition) {
-            case ALL_EVEN:
+            case NO_ONES:
                 for (int v : diceValues) {
-                    if (v % 2 != 0) return false;
+                    if (v == 1) return false;
                 }
                 return true;
 
-            case ALL_ODD:
+            case AT_LEAST_A_SIX:
                 for (int v : diceValues) {
-                    if (v % 2 == 0) return false;
+                    if (v == 6) return true;
                 }
-                return true;
-
-            case ALL_SAME:
-                for (int i = 1; i < diceValues.length; i++) {
-                    if (diceValues[i] != diceValues[0]) return false;
-                }
-                return true;
+                return false;
 
             case ALL_DIFFERENT:
-                boolean[] seen = new boolean[7]; // 1-6
+                boolean[] seen = new boolean[7];
                 for (int v : diceValues) {
                     if (v < 1 || v > 6 || seen[v]) return false;
                     seen[v] = true;
@@ -62,17 +54,75 @@ public class SpecialCard extends Card {
     @Override
     public void apply(Player player, Mob mob) {
         if (effect != null) {
-            effect.applyEffect(mob);
+            mob.addEffect(effect);
         } else {
             super.apply(player, mob);
         }
     }
 
-    public Effect getEffect()           { return effect; }
-    public DiceCondition getCondition()  { return condition; }
-
-    @Override
-    public String getDescription() {
-        return super.getDescription() + "\n[Special: " + condition.name() + "]";
+    private Effect buildEffect() {
+        float mag = getEffectMagnitude();
+        switch (suit) {
+            case SPADES:   return new Bleeding(3, mag);
+            case HEARTS:   return new Lure(2, mag);
+            case CLUBS:    return new Poison(3, mag);
+            case DIAMONDS: return new Stun(1, mag);
+            default:       return null;
+        }
     }
+
+    private float getEffectMagnitude() {
+        switch (rank) {
+            case JACK:   return 3f;
+            case QUEEN:  return 5f;
+            case KING:   return 8f;
+            case ACE:    return 12f;
+            default:     return 3f;
+        }
+    }
+
+    private DiceCondition assignCondition() {
+        switch (rank) {
+            case JACK:   return DiceCondition.NO_ONES;
+            case QUEEN:  return DiceCondition.AT_LEAST_A_SIX;
+            case KING:   return DiceCondition.ALL_DIFFERENT;
+            case ACE:    return DiceCondition.TOTAL_ABOVE_20;
+            default:     return DiceCondition.NO_ONES;
+        }
+    }
+
+    private String conditionText() {
+        switch (condition) {
+            case NO_ONES:        return "No 1s on dice";
+            case AT_LEAST_A_SIX: return "At least one 6";
+            case ALL_DIFFERENT:  return "All dice different";
+            case TOTAL_ABOVE_20: return "Dice total > 20";
+            default:             return "";
+        }
+    }
+
+    private String buildDescription() {
+        String effectDesc;
+        switch (suit) {
+            case SPADES:
+                effectDesc = "Bleeding: " + (int) effect.baseValue + " dmg/turn for " + effect.durationLeft + " turns";
+                break;
+            case HEARTS:
+                effectDesc = "Lures enemy for " + effect.durationLeft + " turns";
+                break;
+            case CLUBS:
+                effectDesc = "Poison: " + (int) effect.baseValue + " dmg/turn for " + effect.durationLeft + " turns";
+                break;
+            case DIAMONDS:
+                effectDesc = "Stuns enemy for " + effect.durationLeft + " turn";
+                break;
+            default:
+                effectDesc = "";
+        }
+        return effectDesc + "\nCondition: " + conditionText()
+            + (expendable ? "\n[Single use]" : "");
+    }
+
+    public Effect getEffect()          { return effect; }
+    public DiceCondition getCondition() { return condition; }
 }

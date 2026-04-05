@@ -2,12 +2,12 @@ package com.mygdx.LordOfTheDices;
 
 public enum Level {
 
-    LEVEL_1(1, Assets.MAP_1, "Pride",    3),
-    LEVEL_2(2, Assets.MAP_2, "Envy",     4),
-    LEVEL_3(3, Assets.MAP_1, "Wrath",    5),
-    LEVEL_4(4, Assets.MAP_2, "Lust",     6),
-    LEVEL_5(5, Assets.MAP_1, "Sloth",    7),
-    LEVEL_6(6, Assets.MAP_2, "Gluttony", 8);
+    LEVEL_1(1, Assets.MAP_1, "Sloth",    3),
+    LEVEL_2(2, Assets.MAP_2, "Gluttony", 4),
+    LEVEL_3(3, Assets.MAP_1, "Lust",     5),
+    LEVEL_4(4, Assets.MAP_2, "Wrath",    6),
+    LEVEL_5(5, Assets.MAP_1, "Envy",     7),
+    LEVEL_6(6, Assets.MAP_2, "Pride",    8);
 
     private final int number;
     private final String mapFile;
@@ -21,11 +21,6 @@ public enum Level {
         this.mobCount = mobCount;
     }
 
-    public int getNumber() { return number; }
-    public String getMapFile() { return mapFile; }
-    public String getBossName() { return bossName; }
-    public int getMobCount() { return mobCount; }
-
     public static Level fromNumber(int num) {
         for (Level l : values()) {
             if (l.number == num) return l;
@@ -37,5 +32,18 @@ public enum Level {
         int nextNum = number + 1;
         if (nextNum > 6) return null;
         return fromNumber(nextNum);
+    }
+    
+    public int getNumber(){
+        return number;
+    }
+    public String getMapFile(){ 
+        return mapFile;
+    }
+    public String getBossName(){
+        return bossName;
+    }
+    public int getMobCount(){
+        return mobCount;
     }
 }

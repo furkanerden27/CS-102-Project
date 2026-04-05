@@ -29,21 +29,21 @@ public class PlayScreen implements Screen {
     private Shop shop;
     private float merchantX = -1;
 
-    private int startingGold;
     private String saveName;
     private Level level;
+    private PlayerData playerData;
 
     public PlayScreen(Core game) {
-        this(game, 100, "", Level.LEVEL_1);
+        this(game, PlayerData.newSave("", 1, 200, 100));
     }
 
-    public PlayScreen(Core game, int gold, String saveName, Level level) {
+    public PlayScreen(Core game, PlayerData playerData) {
         this.game = game;
         this.assets = game.getAssets();
         this.screenManager = game.screen;
-        this.startingGold = gold;
-        this.saveName = saveName;
-        this.level = level;
+        this.playerData = playerData;
+        this.saveName = playerData.saveName;
+        this.level = Level.fromNumber(playerData.currentLevel);
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
         map = assets.getMap(level.getMapFile());
@@ -55,8 +55,24 @@ public class PlayScreen implements Screen {
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 300, 350, map);
-        player.getInventory().setGold(startingGold);
+        float px = (playerData.playerX == 0 && playerData.playerY == 0) ? 300 : playerData.playerX;
+        float py = (playerData.playerX == 0 && playerData.playerY == 0) ? 350 : playerData.playerY;
+
+        if (!playerData.cards.isEmpty()) {
+            Inventory loadedInv = playerData.toInventory();
+            player = new Player(playerData.currentHealth, px, py, map, loadedInv);
+        } else {
+            player = new Player(playerData.currentHealth, px, py, map);
+            player.getInventory().setGold(playerData.currentMoney);
+        }
+        int targetDice = Math.min(level.getNumber(), 6);
+        while (player.getInventory().getDiceCount() < targetDice) {
+            player.getInventory().addDice("Dice " + (player.getInventory().getDiceCount() + 1));
+        }
+
+        for (Relic r : player.getInventory().getRelics()) {
+            r.reapply(player);
+        }
         entities.add(player);
 
         BasicMob mob = new BasicMob(0, 0);
@@ -115,7 +131,7 @@ public class PlayScreen implements Screen {
         float goldX = camera.position.x - (viewport.getWorldWidth() / 2) + 20;
         float goldY = camera.position.y + (viewport.getWorldHeight() / 2) - 15;
         goldDisplay.setPosition(goldX, goldY);
-        goldDisplay.setText("Gold: " + player.getGold());
+        goldDisplay.setText("Gold: " + player.getInventory().getGold());
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -136,7 +152,55 @@ public class PlayScreen implements Screen {
 
         game.batch.end();
         removeDeadEntities();
+        checkInteraction();
+    }
 
+    private void checkInteraction() {
+        com.badlogic.gdx.maps.tiled.TiledMapTileLayer endGameLayer =
+            (com.badlogic.gdx.maps.tiled.TiledMapTileLayer) map.getLayers().get("EndGame");
+        if (endGameLayer == null) return;
+        int tileX = (int) (player.getX() / endGameLayer.getTileWidth());
+        int tileY = (int) (player.getY() / endGameLayer.getTileHeight());
+        if (endGameLayer.getCell(tileX, tileY) == null) return;
+
+        Level next = level.next();
+        if (next == null) {
+            deleteFromFirebase();
+            screenManager.showScreen(Screens.STORY_END);
+        } else {
+            PlayerData data = PlayerData.fromPlayer(saveName, next.getNumber(), player);
+            data.playerX = 300;
+            data.playerY = 350;
+            saveToFirebase(data);
+            screenManager.showScreen(Screens.PLAY, data);
+        }
+    }
+
+    private void saveToFirebase(PlayerData data) {
+        if (data.saveName == null || data.saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + data.saveName + ".json";
+
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.PUT);
+        req.setUrl(url);
+        req.setHeader("Content-Type", "application/json");
+        req.setContent(data.toJson());
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
+    }
+
+    private void deleteFromFirebase() {
+        if (saveName == null || saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.DELETE);
+        req.setUrl(url);
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
     }
 
     private void handleInput() {
@@ -226,6 +290,14 @@ public class PlayScreen implements Screen {
     public int getCurrentGold() { return player.getInventory().getGold(); }
 
     public Level getLevel() { return level; }
+
+    public float getPlayerHealth() { return player.getHealth(); }
+
+    public float getPlayerX() { return player.getX(); }
+
+    public float getPlayerY() { return player.getY(); }
+
+    public Inventory getPlayerInventory() { return player.getInventory(); }
 
     @Override public void show() {}
     @Override public void hide() {}

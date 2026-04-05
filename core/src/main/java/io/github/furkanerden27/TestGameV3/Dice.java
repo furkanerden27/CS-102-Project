@@ -18,7 +18,7 @@ public class Dice {
 
 
     public Dice(SpriteBatch batch, float posx, float posy) {
-        dices = TextureRegion.split(new Texture("dice.png"), 32, 32)[0];
+        dices = TextureRegion.split(new Texture("dice/dice.png"), 32, 32)[0];
         diceAnimation = new Animation<>(0.05f, dices);
         diceAnimation.setPlayMode(Animation.PlayMode.LOOP);
         this.batch = batch;

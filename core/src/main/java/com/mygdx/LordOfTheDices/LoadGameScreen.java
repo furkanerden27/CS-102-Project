@@ -68,7 +68,7 @@ public class LoadGameScreen implements Screen {
     private int hoveredBtn = -1;
     private int lastHoveredBtn = -1;
 
-    private List<SaveEntry> saves = new ArrayList<>();
+    private List<PlayerData> saves = new ArrayList<>();
     private boolean loading = true;
     private String errorMsg = null;
 
@@ -141,7 +141,7 @@ public class LoadGameScreen implements Screen {
                 String body = response.getResultAsString();
 
                 if (status == 200 && body != null && !body.equals("null")) {
-                    final List<SaveEntry> parsed = parseJson(body);
+                    final ArrayList<PlayerData> parsed = PlayerData.fromJsonAll(body);
                     Gdx.app.postRunnable(() -> {
                         saves = parsed;
                         loading = false;
@@ -168,80 +168,6 @@ public class LoadGameScreen implements Screen {
                 Gdx.app.postRunnable(() -> loading = false);
             }
         });
-    }
-
-    private List<SaveEntry> parseJson(String json) {
-        List<SaveEntry> list = new ArrayList<>();
-        if (json == null || json.length() < 2) return list;
-
-        json = json.trim();
-        if (json.startsWith("{")) json = json.substring(1);
-        if (json.endsWith("}")) json = json.substring(0, json.length() - 1);
-
-        int i = 0;
-        while (i < json.length()) {
-            int keyStart = json.indexOf('"', i);
-            if (keyStart == -1) break;
-            int keyEnd = json.indexOf('"', keyStart + 1);
-            if (keyEnd == -1) break;
-
-            int objStart = json.indexOf('{', keyEnd);
-            if (objStart == -1) break;
-            int objEnd = json.indexOf('}', objStart);
-            if (objEnd == -1) break;
-
-            String obj = json.substring(objStart, objEnd + 1);
-            SaveEntry entry = parseSaveEntry(obj);
-            if (entry != null) list.add(entry);
-
-            i = objEnd + 1;
-        }
-
-        return list;
-    }
-
-    private SaveEntry parseSaveEntry(String obj) {
-        SaveEntry e = new SaveEntry();
-        e.saveName      = extractString(obj, "saveName");
-        e.currentLevel  = extractInt(obj, "currentLevel");
-        e.currentHealth = extractInt(obj, "currentHealth");
-        e.currentMoney  = extractInt(obj, "currentMoney");
-        e.timestamp     = extractLong(obj, "timestamp");
-        if (e.saveName == null || e.saveName.isEmpty()) return null;
-        return e;
-    }
-
-    private String extractString(String json, String key) {
-        String search = "\"" + key + "\":\"";
-        int start = json.indexOf(search);
-        if (start == -1) return "";
-        start += search.length();
-        int end = json.indexOf('"', start);
-        return end == -1 ? "" : json.substring(start, end);
-    }
-
-    private int extractInt(String json, String key) {
-        String search = "\"" + key + "\":";
-        int start = json.indexOf(search);
-        if (start == -1) return 0;
-        start += search.length();
-        int end = start;
-        while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-'))
-            end++;
-        try { return Integer.parseInt(json.substring(start, end)); }
-        catch (NumberFormatException ex) { return 0; }
-    }
-
-    private long extractLong(String json, String key) {
-        String search = "\"" + key + "\":";
-        int start = json.indexOf(search);
-        if (start == -1) return 0;
-        start += search.length();
-        int end = start;
-        while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-'))
-            end++;
-        try { return Long.parseLong(json.substring(start, end)); }
-        catch (NumberFormatException ex) { return 0; }
     }
 
     @Override
@@ -369,14 +295,14 @@ public class LoadGameScreen implements Screen {
                     float rowY = dataTop - (i + 1) * ROW_H + scrollOffset;
                     if (rowY + ROW_H < tableY || rowY > dataTop) continue;
 
-                    SaveEntry e = saves.get(i);
+                    PlayerData e = saves.get(i);
                     float textY = rowY + ROW_H * 0.62f;
 
                     bodyFont.setColor(i == selectedIndex ? COL_HEADER : COL_TEXT);
-                    bodyFont.draw(batch, e.saveName,                    colName,  textY);
-                    bodyFont.draw(batch, String.valueOf(e.currentLevel),  colLevel, textY);
-                    bodyFont.draw(batch, String.valueOf(e.currentHealth), colHP,    textY);
-                    bodyFont.draw(batch, String.valueOf(e.currentMoney),  colGold,  textY);
+                    bodyFont.draw(batch, e.saveName,                       colName,  textY);
+                    bodyFont.draw(batch, String.valueOf(e.currentLevel),    colLevel, textY);
+                    bodyFont.draw(batch, String.valueOf((int) e.currentHealth), colHP, textY);
+                    bodyFont.draw(batch, String.valueOf(e.currentMoney),    colGold,  textY);
                 }
                 batch.flush();
                 com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.popScissors();
@@ -510,13 +436,13 @@ public class LoadGameScreen implements Screen {
 
     private void onLoad() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
-        SaveEntry entry = saves.get(selectedIndex);
-        screenManager.showScreen(Screens.PLAY, entry.currentMoney, entry.saveName, Level.fromNumber(entry.currentLevel));
+        PlayerData entry = saves.get(selectedIndex);
+        screenManager.showScreen(Screens.PLAY, entry);
     }
 
     private void onDelete() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
-        SaveEntry entry = saves.get(selectedIndex);
+        PlayerData entry = saves.get(selectedIndex);
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/"
             + entry.saveName + ".json";
 
@@ -558,11 +484,4 @@ public class LoadGameScreen implements Screen {
         if (bodyFont  != null) bodyFont.dispose();
     }
 
-    private static class SaveEntry {
-        String saveName = "";
-        int currentLevel;
-        int currentHealth;
-        int currentMoney;
-        long timestamp;
-    }
 }

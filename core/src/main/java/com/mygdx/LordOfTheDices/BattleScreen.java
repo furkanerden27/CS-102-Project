@@ -1,11 +1,16 @@
 package com.mygdx.LordOfTheDices;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -14,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.LordOfTheDices.Card.Suit;
@@ -38,9 +44,21 @@ public class BattleScreen implements Screen{
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
+    private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
+    private BitmapFont uiFont;
+
+    private Image[] diceImages;
+
     public BattleScreen(Assets assets, FightManager manager, int sizeX, int sizeY) {
         stage = new Stage(new FitViewport(sizeX, sizeY));
         this.manager = manager;
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+        uiFont = new BitmapFont();
+        uiFont.getData().setScale(1.5f);
+
+        
 
         cardSpades = assets.getTexture(Assets.TEX_CARD_SPADES);
         cardClubs = assets.getTexture(Assets.TEX_CARD_CLUBS);
@@ -52,6 +70,7 @@ public class BattleScreen implements Screen{
         arrowTexture = assets.getTexture(Assets.TEX_ARROW);
         inverseArrowTexture = assets.getTexture(Assets.TEX_INVERSE_ARROW);
 
+        diceImages = new Image[]{new Image(), new Image(), new Image(), new Image(), new Image(), new Image()};
 
         toolTipTable = new Table();
         toolTipLabel = new Label("", new LabelStyle( new BitmapFont(), Color.BLACK));
@@ -89,19 +108,16 @@ public class BattleScreen implements Screen{
         stage.addActor(mainTable);
         
 
-        Dice[] zarlar = manager.getDices();
+        
         ClickListener diceClickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 manager.rollAllDice();
-                /* 
-                for(int i = 0; i < zarlar.length; i++){
-                    if(zarlar[i].isClicked(x, y)){ // TODO ZARLAR ITEM OLUNCA CALISACAK
-                        manager.diceClicked(zarlar[i]);
+                for(int i = 0; i < manager.dices.size(); i++){
+                    if(manager.dices.get(i).isClicked(x, y)){ // TODO ZARLAR ITEM OLUNCA CALISACAK
+                        manager.diceClicked(manager.dices.get(i));
                     }
                 }
-                    
-            */
             }
         };
         
@@ -111,11 +127,22 @@ public class BattleScreen implements Screen{
         
         //her zar tiklandiginde kendi basina donmesi icin SPRITE olarak kullanilabilirler. 
         for(int i = 0; i < 6; i++){
-            //placeholderImage = new Image(zarlar[i].getTexture()); Dice item'i extendledigi zaman olacak bu
+            //placeholderImage = new Image(manager.dices.get(i).getTexture()); //Dice item'i extendledigi zaman olacak bu
             placeholderImage = new Image(lockedDice); // BU DEGISECEK TODO
             placeholderImage.addListener(diceClickListener);
             diceTable.add(placeholderImage).padBottom(8).row();
         }
+
+        /*for(int i = 0; i < 6; i++){
+            placeholderImage = new Image(lockedDice); // BU DEGISECEK TODO
+            placeholderImage.addListener(new ClickListener(i){
+                @Override
+                public void clicked(InputEvent event, float x, float y){
+                    manager.diceClicked(manager.dices.get(i));
+                }
+            });
+        }*/
+
 
         Image rollAllButton = new Image(rollAllTexture);
         rollAllButton.addListener(new ClickListener(){
@@ -232,7 +259,7 @@ public class BattleScreen implements Screen{
     public void updateCards(){
         //TODO ????
         // Cardlardan suitine göre info çekilecekx 
-        Card[] cards = manager.getHand(selectedSuit); 
+        ArrayList<Card> cards = manager.getHand(selectedSuit); 
         
         Image addedImage;
 
@@ -255,17 +282,17 @@ public class BattleScreen implements Screen{
         }
         
         cardSlots[1].clearChildren();
-        if(cards[0] == null){
+        if(cards.isEmpty()){
              cardSlots[1].add(new Image(lockedDice));
         }
         else{
-            cards[0].loadTexture();
+            cards.get(0).loadTexture();
             
-            addedImage = new Image(cards[0].getTextureRegion());
+            addedImage = new Image(cards.get(0).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[0]);
+                    manager.actSelectedCard(cards.get(0));
                     switchToFirstView();
                 }
             });  
@@ -274,16 +301,16 @@ public class BattleScreen implements Screen{
 
 
         cardSlots[2].clearChildren();
-        if(cards[1] == null){
+        if(cards.size() < 2){
              cardSlots[2].add(new Image(lockedDice));
         }
         else{
-            cards[1].loadTexture();
-            addedImage = new Image(cards[1].getTextureRegion());
+            cards.get(1).loadTexture();
+            addedImage = new Image(cards.get(1).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[1]);
+                    manager.actSelectedCard(cards.get(1));
                     switchToFirstView();
                 }
             });  
@@ -291,16 +318,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[3].clearChildren();
-        if(cards[2] == null){
+        if(cards.size() < 3){
              cardSlots[3].add(new Image(lockedDice));
         }
         else{
-            cards[2].loadTexture();
-            addedImage = new Image(cards[2].getTextureRegion());
+            cards.get(2).loadTexture();
+            addedImage = new Image(cards.get(2).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[2]);
+                    manager.actSelectedCard(cards.get(2));
                     switchToFirstView();
                 }
             });  
@@ -308,16 +335,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[4].clearChildren();
-        if(cards[3] == null){
+        if(cards.size() < 4){
              cardSlots[4].add(new Image(lockedDice));
         }
         else{
-            cards[3].loadTexture();
-            addedImage = new Image(cards[3].getTextureRegion());
+            cards.get(3).loadTexture();
+            addedImage = new Image(cards.get(3).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[3]);
+                    manager.actSelectedCard(cards.get(3));
                     switchToFirstView();
                 }
             });  
@@ -325,16 +352,16 @@ public class BattleScreen implements Screen{
         }
 
         cardSlots[5].clearChildren();
-        if(cards[4] == null){
+        if(cards.size() < 5){
              cardSlots[5].add(new Image(lockedDice));
         }
         else{
-            cards[4].loadTexture();
-            addedImage = new Image(cards[4].getTextureRegion());
+            cards.get(4).loadTexture();
+            addedImage = new Image(cards.get(4).getTextureRegion());
             addedImage.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[4]);
+                    manager.actSelectedCard(cards.get(4));
                     switchToFirstView();
                 }
             });  
@@ -348,8 +375,50 @@ public class BattleScreen implements Screen{
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
+
+        manager.updateFight(delta);
+
+        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        drawHealthBar(manager.getPlayer(), FightManager.PLAYER_X, FightManager.PLAYER_Y - 6f);
+        drawHealthBar(manager.getMob(), FightManager.MOB_X, FightManager.MOB_Y - 6f);
+
+
         stage.act(delta);
         stage.draw();
+
+        batch.begin();
+        manager.getPlayer().draw(batch);
+        manager.getMob().draw(batch);
+
+
+        // SIZE KADAR GIDIP galibaok?
+        int i = 0;
+        for (i = 0; i < manager.dices.size(); i++) {
+            if (manager.dices.get(i).isLocked()) {
+                diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+            }
+            TextureRegion frame = manager.dices.get(i).getCurrentFrame();
+            if (frame != null) {
+                diceImages[i].setDrawable(new TextureRegionDrawable(frame));
+            }
+        }
+        while(i < 6){
+            diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+            i++;
+        }
+
+        
+        if(manager.isPlayerTurn()){
+            uiFont.setColor(Color.GREEN);   
+            uiFont.draw(batch, "Player's Turn", 10, 6); 
+        }
+        else{
+            uiFont.setColor(Color.RED);
+            uiFont.draw(batch, "Enemy's Turn", 10, 6); 
+        }
+
+        batch.end();
+        uiFont.setColor(Color.WHITE);
     }
 
     @Override
@@ -357,7 +426,27 @@ public class BattleScreen implements Screen{
         stage.getViewport().update(width, height, true);
     }
 
+    private void drawHealthBar(Entity e, float x, float y){
+        float barWidth = 80f, barHeight = 8f;
+        float healthRatio = e.health / e.maxHealth;
 
+        shapeRenderer.setAutoShapeType(true); // I have no idea what this does but it does not work if I dont do this
+        //Draws the halth bar above the entity
+        shapeRenderer.begin();
+
+        shapeRenderer.setColor(0.35f, 0.05f, 0.05f, 0.9f);
+        shapeRenderer.rect(x, y, barWidth, barHeight);
+
+        shapeRenderer.setColor(1f - healthRatio, healthRatio * 0.85f, 0.05f, 1f);
+        shapeRenderer.rect(x, y, barWidth * healthRatio, barHeight);
+
+        shapeRenderer.end();
+
+        batch.begin();
+        uiFont.setColor(Color.WHITE);
+        uiFont.draw(batch, (int) e.health + " / " + (int) e.maxHealth, x, y + barHeight + 11f);
+        batch.end();
+    }
 
     @Override
     public void show() {}

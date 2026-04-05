@@ -15,8 +15,8 @@ public class Sloth extends Boss {
         initAnimationsFromAtlas("Sloth", 
             64, 64, new int[]{16});
         setSize(32,32);
-        baseAttackDamage = 15; // can be changed
-        health = maxHealth = 100; // can be changed
+        baseAttackDamage = 10;
+        health = maxHealth = 80;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Sloth extends Boss {
         if (Math.random() < stunProb) {
             isAttacking = true;
             player.takeDamage(damage);
-            player.addEffect(new Lure(1, damage)); // henüz çalışıyor mu emin değilim, duration ve baseValue değerleri değişebilir
+            player.addEffect(new Lure(1, 0));
             showstunText = true;
         }
         else {
