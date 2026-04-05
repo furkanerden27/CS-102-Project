@@ -235,6 +235,10 @@ public class Player extends Entity{
         isLocked = t;
     }
 
+    public float getAttackModifier(){
+        return attackModifier;
+    }
+
     public void setAttackModifier(float m){
         attackModifier = m;
     }

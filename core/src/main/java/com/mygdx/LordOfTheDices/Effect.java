@@ -15,6 +15,7 @@ public abstract class Effect {
     public Effect(int duration, float baseValue){
         this.durationLeft = duration;
         this.baseValue = baseValue;
+        this.magnitude = 1f;
     }
 
    
@@ -36,5 +37,9 @@ public abstract class Effect {
 
     public String getName(){
         return effectName;
+    }
+
+    public int getDurationLeft(){
+        return durationLeft;
     }
 }

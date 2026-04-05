@@ -7,18 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Card extends Item {
 
-    // 
-    // ATLAS PROPERTIES
-    //
-
     private static TextureAtlas atlas;
 
-    /* Call once in AssetManager */
     public static void init(TextureAtlas cardAtlas) {
         atlas = cardAtlas;
     }
 
-    /* Returns the 96×144 region for a suit+rank from cards.atlas. */
     private static TextureRegion getAtlasRegion(Suit suit, Rank rank) {
         if (atlas == null)
             throw new IllegalStateException("Call Card.init() first.");
@@ -27,15 +21,11 @@ public class Card extends Item {
         return atlas.findRegion("card-" + suitName + "-" + atlasValue);
     }
 
-    // 
-    // ENUMS
-    // 
-
-    public enum Suit { 
-        SPADES, 
-        HEARTS, 
-        CLUBS, 
-        DIAMONDS 
+    public enum Suit {
+        SPADES,
+        HEARTS,
+        CLUBS,
+        DIAMONDS
     }
 
     public enum Rank {
@@ -44,52 +34,32 @@ public class Card extends Item {
         JACK(11), QUEEN(12), KING(13), ACE(14);
 
         private final int value;
-        Rank(int v) { 
-            this.value = v; 
+        Rank(int v) {
+            this.value = v;
         }
 
-        /* Returns the numeric value of this rank (2–14). */
-        public int getNumericValue() { 
-            return value; 
+        public int getNumericValue() {
+            return value;
         }
     }
-
-    // 
-    // PROPERTIES
-    // 
 
     protected final Suit suit;
     protected final Rank rank;
     private TextureRegion cachedRegion;
 
-    /* Effect scale: damage dealt / HP healed / buff-debuff magnitude. */
     protected float power;
-
-    /* Minimum total dice roll needed to play this card. */
     private int diceRequirement;
-
-    /* True once the player clicks this card during their turn. */
     private boolean selected;
-
-    /* True for SpecialCard face-cards that are consumed on use. */
     protected final boolean expendable;
-
-    /* Gold cost when buying from a merchant. */
     private int buyingValue;
-
-    /* Gold received when selling to a merchant. */
     private int sellingValue;
-
-    // 
-    // Constructor
-    // 
 
     public Card(Suit suit, Rank rank) {
         super(suit.name() + " " + rank.name());
         this.suit            = suit;
         this.rank            = rank;
         this.power           = calculateStartingPower();
-        this.diceRequirement = rank.getNumericValue();
+        this.diceRequirement = calculateDiceRequirement();
         this.expendable      = false;
         this.selected        = false;
         this.buyingValue     = computeBuyPrice();
@@ -98,13 +68,12 @@ public class Card extends Item {
         loadTexture();
     }
 
-    /* Protected constructor for SpecialCard to set expendable = true. */
     protected Card(Suit suit, Rank rank, boolean expendable) {
         super(suit.name() + " " + rank.name());
         this.suit            = suit;
         this.rank            = rank;
         this.power           = calculateStartingPower();
-        this.diceRequirement = rank.getNumericValue();
+        this.diceRequirement = calculateDiceRequirement();
         this.expendable      = expendable;
         this.selected        = false;
         this.buyingValue     = computeBuyPrice();
@@ -112,10 +81,6 @@ public class Card extends Item {
         this.description     = buildDescription();
         loadTexture();
     }
-
-    // 
-    // PUBLIC DISPLAY METHODS
-    // 
 
     @Override
     public void loadTexture() {
@@ -131,90 +96,90 @@ public class Card extends Item {
         return cachedRegion;
     }
 
-    // 
-    // PRIVATE HELPERS
-    // 
-
     private float calculateStartingPower() {
+        int r = rank.getNumericValue();
         switch (suit) {
-            case SPADES:   return (float)(rank.getNumericValue() * 2);
-            case HEARTS:   return (float)rank.getNumericValue();
-            case CLUBS:    return (float)rank.getNumericValue();
-            case DIAMONDS: return (float)rank.getNumericValue();
+            case SPADES:   return r * 2f;
+            case HEARTS:   return r * 1.5f;
+            case CLUBS:    return r * 0.5f;
+            case DIAMONDS: return r * 0.5f;
             default:       return 0;
         }
     }
 
-    private String buildDescription() {
-        String effectDesc;
-        switch (suit) {
-            case SPADES:   effectDesc = "Deals "          + power + " damage";     break;
-            case HEARTS:   effectDesc = "Gives "          + power + " shield";     break;
-            case CLUBS:    effectDesc = "Debuffs enemy for " + power + " turns";   break;
-            case DIAMONDS: effectDesc = "Buffs player for "  + power + " turns";   break;
-            default:       effectDesc = "";
-        }
-        return effectDesc + "\nRequires roll: " + diceRequirement + (expendable ? "\n[Discarded when used]" : "");
+    private int calculateDiceRequirement() {
+        return rank.getNumericValue();
+    }
+    private int getEffectDuration() {
+        int r = rank.getNumericValue();
+        if (r <= 4) return 2;
+        if (r <= 7) return 3;
+        return 4;
     }
 
-    private int computeBuyPrice()  { 
-        return rank.getNumericValue() * 10; 
-    }
-
-    private int computeSellPrice() { 
-        return computeBuyPrice() / 2; 
-    }
-
-    //
-    // GAMEPLAY
-    //
-
-    public boolean checkPlay(int diceTotal) {
-        return diceTotal >= diceRequirement;
-    }
-
-    /* Applies the card's effect based on its suit. */
     public void apply(Player player, Mob mob) {
         switch (suit) {
             case SPADES:
-                mob.takeDamage(power * player.getRelicDamageMultiplier());
+                float damage = (power + player.getAttackModifier()) * player.getRelicDamageMultiplier();
+                mob.takeDamage(Math.max(0, damage));
                 break;
             case HEARTS:
                 player.heal(power * player.getRelicPotionMultiplier());
                 break;
             case CLUBS:
-                mob.addEffect(new Weaken(rank.getNumericValue(), 0.25f + player.getRelicDebuffIncrease()));
+                mob.addEffect(new Weaken(getEffectDuration(), power + player.getRelicDebuffIncrease()));
                 break;
             case DIAMONDS:
-                player.addEffect(new Strengthen(rank.getNumericValue(), 0.25f + player.getRelicBuffIncrease()));
+                player.addEffect(new Strengthen(getEffectDuration(), power + player.getRelicBuffIncrease()));
                 break;
         }
     }
 
-    // will implement later to balance the gameplay
-    //public void increasePower() {}
-    //public void increaseDiceRequirement() {}
-    //public void increaseBuyingValue() {}
-    //public void increaseSellingValue() {}
-
-    public void select() { 
-        selected = true; 
-    }
-    public void unselect() { 
-        selected = false; 
+    private int computeBuyPrice() {
+        return rank.getNumericValue() * 8;
     }
 
-    // 
-    // GETTERS AND HELPERS
-    // 
+    private int computeSellPrice() {
+        return computeBuyPrice() / 2;
+    }
 
-    public Suit    getSuit()              { return suit; }
-    public Rank    getRank()              { return rank; }
-    public float   getPower()             { return power; }
-    public int     getDiceRequirement()   { return diceRequirement; }
-    public boolean isSelected()           { return selected; }
-    public boolean isExpendable()         { return expendable; }
-    public int     getBuyingValue()       { return buyingValue; }
-    public int     getSellingValue()      { return sellingValue; }
+    private String buildDescription() {
+        String effectDesc;
+        switch (suit) {
+            case SPADES:
+                effectDesc = "Deals " + (int) power + " damage";
+                break;
+            case HEARTS:
+                effectDesc = "Heals " + (int) power + " HP";
+                break;
+            case CLUBS:
+                effectDesc = "Weakens enemy by " + String.format("%.1f", power)
+                    + " for " + getEffectDuration() + " turns";
+                break;
+            case DIAMONDS:
+                effectDesc = "Strengthens you by " + String.format("%.1f", power)
+                    + " for " + getEffectDuration() + " turns";
+                break;
+            default:
+                effectDesc = "";
+        }
+        return effectDesc + "\nDice needed: " + diceRequirement
+            + (expendable ? "\n[Single use]" : "");
+    }
+
+    public boolean checkPlay(int diceTotal) {
+        return diceTotal >= diceRequirement;
+    }
+
+    public void select()   { selected = true; }
+    public void unselect() { selected = false; }
+
+    public Suit    getSuit()            { return suit; }
+    public Rank    getRank()            { return rank; }
+    public float   getPower()           { return power; }
+    public int     getDiceRequirement() { return diceRequirement; }
+    public boolean isSelected()         { return selected; }
+    public boolean isExpendable()       { return expendable; }
+    public int     getBuyingValue()     { return buyingValue; }
+    public int     getSellingValue()    { return sellingValue; }
 }
-

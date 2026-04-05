@@ -19,6 +19,22 @@ public class ScreenManager {
         }
     }
 
+    public void restartLevel() {
+        if (previousScreen instanceof PlayScreen) {
+            PlayScreen ps = (PlayScreen) previousScreen;
+            PlayerData data = PlayerData.newSave(
+                ps.getSaveName(),
+                ps.getLevel().getNumber(),
+                200,
+                ps.getCurrentGold()
+            );
+            previousScreen = null;
+            game.setScreen(new PlayScreen(game, data));
+        } else {
+            goBack();
+        }
+    }
+
     public void showScreen(Screens screen){
         //Ama PAUSE için dikkat! Pause ekranına geçerken eski ekranı dispose etmemelisin,
         // çünkü oyuna geri dönmek isteyeceksin. PAUSE'u ekrana hazır olduğunda bunu düşün.
@@ -49,7 +65,8 @@ public class ScreenManager {
     }
 
     public BattleScreen showBattleScreen(FightManager fightManager) {
-        BattleScreen battleScreen =new BattleScreen(game.getAssets(), fightManager, 800, 400);
+        previousScreen = game.getScreen();
+        BattleScreen battleScreen = new BattleScreen(game.getAssets(), fightManager, 800, 400);
         game.setScreen(battleScreen);
         return battleScreen;
     }

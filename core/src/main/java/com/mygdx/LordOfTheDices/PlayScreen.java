@@ -65,7 +65,11 @@ public class PlayScreen implements Screen {
             player = new Player(playerData.currentHealth, px, py, map);
             player.getInventory().setGold(playerData.currentMoney);
         }
-        // Reapply active relic effects after loading
+        int targetDice = Math.min(level.getNumber(), 6);
+        while (player.getInventory().getDiceCount() < targetDice) {
+            player.getInventory().addDice("Dice " + (player.getInventory().getDiceCount() + 1));
+        }
+
         for (Relic r : player.getInventory().getRelics()) {
             r.reapply(player);
         }
@@ -127,7 +131,7 @@ public class PlayScreen implements Screen {
         float goldX = camera.position.x - (viewport.getWorldWidth() / 2) + 20;
         float goldY = camera.position.y + (viewport.getWorldHeight() / 2) - 15;
         goldDisplay.setPosition(goldX, goldY);
-        goldDisplay.setText("Gold: " + player.getGold());
+        goldDisplay.setText("Gold: " + player.getInventory().getGold());
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -226,12 +230,10 @@ public class PlayScreen implements Screen {
             player.jump();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            /* 
             Mob nearestMob = findNearestMob();
             if (nearestMob != null) {
                 new FightManager(player, nearestMob, screenManager);
-            }*/
-           new FightManager(player, new Envy(5, 20), screenManager);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.showScreen(Screens.INVENTORY, player.getInventory());
