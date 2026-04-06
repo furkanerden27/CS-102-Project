@@ -13,8 +13,8 @@ public class BasicMob extends Mob {
 
     public BasicMob(float posX, float posY) {
         super(posX, posY);
-        goldDropped = MIN * level + (int)(Math.random() * (MAX - MIN) * level + 1);
         level++;
+        goldDropped = MIN * level + (int)(Math.random() * (MAX - MIN) * level + 1);
         addMaxHealth(level * CONSTANT);
         initAnimationsFromAtlas("BasicMob", 
             64, 64, new int[]{6});
