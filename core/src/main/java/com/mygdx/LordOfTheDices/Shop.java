@@ -106,6 +106,8 @@ public class Shop {
         return inv;
     }
 
+    public int getRelicAmount(){return relicsForSale.size();}
+
     public ArrayList<Card> getCardsForSale() {
         ArrayList<Card> available = new ArrayList<>();
         for (Card c : cardsForSale) {
