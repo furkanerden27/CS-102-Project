@@ -14,7 +14,7 @@ public class Inventory implements Comparator<Card> {
     private ArrayList<Relic> relics;
     private int gold;
 
-    /** For loading a saved game. */
+    // For loading a saved game. 
     public Inventory(ArrayList<Dice> dice, ArrayList<Card> cards, ArrayList<Relic> relics, int gold) {
         this.dice = dice;
         this.cards = cards;
@@ -24,7 +24,7 @@ public class Inventory implements Comparator<Card> {
 
     // Creates a default new game inventory. 
     public Inventory() {
-        dice = new ArrayList<Dice>();
+        dice = new ArrayList<Dice>(6);
         cards = new ArrayList<Card>();
         relics = new ArrayList<Relic>();
 
@@ -37,7 +37,7 @@ public class Inventory implements Comparator<Card> {
         gold = 100; //can be changed
     }
 
-    // Dice-------------------------------------------
+    // Dice
 
     public void addDice(String str) {
         dice.add(new Dice(str));
@@ -49,7 +49,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getDiceCount() { return dice.size(); }
 
-    // Cards------------------------------------------------------------
+    // Cards
 
     // Adds a card. Cards that are not special cards can't be stacked. Returns false if duplicate. 
     public boolean addCard(Card card) {
@@ -61,12 +61,20 @@ public class Inventory implements Comparator<Card> {
         return true;
     }
 
-    //Removes a card. Rank TWO cards (starter cards) can't be removed. 
     public boolean removeCard(Card card) {
-        if (card.getRank().getNumericValue() == 2) {
+        int suitCount = getCardsBySuit(card.getSuit()).size();
+        if (suitCount <= 1) {
             return false;
         }
-        return cards.remove(card);
+
+        for (Card c : cards) {
+            if (c.getSuit() == card.getSuit() && c.getRank() == card.getRank()) {
+                cards.remove(c);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean hasCard(Card card) {
@@ -95,7 +103,7 @@ public class Inventory implements Comparator<Card> {
         return result;
     }
 
-    //Relics-------------------------------------------------------
+    //Relics
 
     //Adds a relic. Relics can't be stacked.
     // public boolean addRelic(Relic relic) {
@@ -121,7 +129,7 @@ public class Inventory implements Comparator<Card> {
 
     public int getRelicCount() { return relics.size(); }
 
-    //Gold----------------------------------------------
+    //Gold
 
     public int getGold() { return gold; }
 
@@ -140,17 +148,50 @@ public class Inventory implements Comparator<Card> {
     }
 
 
-    //Other-----------------------------------------------------------------------
+    //Other
 
     //The sort method uses this. This is needed to properly sort cards so that
     //They can be shown in a specific way in the inventory screen.
     public int compare(Card card1, Card card2) {
-        if(card1.getSuit() != card2.getSuit()){
-            //return card1.getSuit().getNumericValue() - card2.getSuit().getNumericValue();
-            return 0;
+        if(card1.getRank() != card2.getRank()){
+            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();      
         }
         else{
-            return card1.getRank().getNumericValue() - card2.getRank().getNumericValue();
+            Suit[] suitArr = new Suit[4];
+            suitArr[0] = Card.Suit.SPADES;
+            suitArr[1] = Card.Suit.HEARTS;
+            suitArr[2] = Card.Suit.CLUBS;
+            suitArr[3] = Card.Suit.DIAMONDS;
+
+            int cardVal1 = 0;
+            int cardVal2 = 0;
+
+            for(int i = 0; i < 4; i++){
+                if(suitArr[i] == card1.getSuit()){
+                    cardVal1 = i;
+                }
+                if(suitArr[i] == card2.getSuit()){
+                    cardVal2 = i;
+                }
+            }
+
+            return cardVal1 - cardVal2;
+            
         }
     }
+    //Returns five random cards of a suit
+    //Requested for the battle system
+    public ArrayList<Card> getFiveCards(Suit suit) {
+        ArrayList<Card> list = getCardsBySuit(suit);
+        Collections.shuffle(list);
+        ArrayList<Card> fiveList = new ArrayList<Card>();
+        for(int i = 0; i < list.size(); i++){
+            if(i < 5){
+                fiveList.add(list.get(i));
+            }
+        }
+        return fiveList;
+    }
+
 }
+

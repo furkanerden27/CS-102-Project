@@ -16,7 +16,8 @@ public class Lust extends Boss {
             55, 93, new int[]{4});
         setSize(55, 93);
         lureProb = 0.5;
-        baseAttackDamage = 10; // may be changed later
+        baseAttackDamage = 10;
+        health = maxHealth = 90;
     }
 
     @Override
@@ -26,8 +27,8 @@ public class Lust extends Boss {
         float damage = baseAttackDamage;
         player.takeDamage(damage);
         if (Math.random() < lureProb) {
-            player.addEffect(new Lure(1, damage)); // henüz çalışıyor mu emin değilim, duration ve baseValue değerleri değişebilir
-            player.addEffect(new Bleeding(1, damage)); 
+            player.addEffect(new Lure(1, 0));
+            player.addEffect(new Bleeding(2, 3)); 
             showLureText = true;
         }
     }
@@ -38,7 +39,7 @@ public class Lust extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
@@ -47,7 +48,7 @@ public class Lust extends Boss {
                     showFloatingText("Lured!", Color.BLUE);
                     showLureText = false;
                 }
-                translate(20, 0);
+                translate(60, 0);
             }
         }
         updateDamageEffect(deltaTime);

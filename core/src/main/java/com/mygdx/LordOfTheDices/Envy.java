@@ -20,7 +20,8 @@ public class Envy extends Boss {
         initAnimationsFromAtlas("Envy", 
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
-        baseAttackDamage = 10; // Base attack damage for Envy (can be changed)
+        baseAttackDamage = 12;
+        health = maxHealth = 120;
     }
 
     public void mimic(Player player) {
@@ -69,7 +70,7 @@ public class Envy extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= attack.getAnimationDuration()) {
@@ -80,7 +81,7 @@ public class Envy extends Boss {
                 }
             }
             if(attackStateTime >= 2f) {
-                translate(20, 0);
+                translate(60, 0);
                 isAttacking = false;
             }
         }

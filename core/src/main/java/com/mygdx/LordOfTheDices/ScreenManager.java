@@ -1,8 +1,6 @@
 package com.mygdx.LordOfTheDices;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
-import com.sun.org.apache.xerces.internal.impl.xs.ElementPSVImpl;
 
 public class ScreenManager {
 
@@ -21,6 +19,22 @@ public class ScreenManager {
         }
     }
 
+    public void restartLevel() {
+        if (previousScreen instanceof PlayScreen) {
+            PlayScreen ps = (PlayScreen) previousScreen;
+            PlayerData data = PlayerData.newSave(
+                ps.getSaveName(),
+                ps.getLevel().getNumber(),
+                200,
+                ps.getCurrentGold()
+            );
+            previousScreen = null;
+            game.setScreen(new PlayScreen(game, data));
+        } else {
+            goBack();
+        }
+    }
+
     public void showScreen(Screens screen){
         //Ama PAUSE için dikkat! Pause ekranına geçerken eski ekranı dispose etmemelisin,
         // çünkü oyuna geri dönmek isteyeceksin. PAUSE'u ekrana hazır olduğunda bunu düşün.
@@ -36,26 +50,42 @@ public class ScreenManager {
 
         else if(screen == Screens.LOAD_SAVE)        game.setScreen(new LoadGameScreen(game, this));
 
-        else if(screen == Screens.OPTIONS)      game.setScreen(new OptionsScreen(game, this));
+        else if(screen == Screens.OPTIONS) {
+            previousScreen = game.getScreen();
+            game.setScreen(new OptionsScreen(game, this));
+        }
 
         else if(screen == Screens.PLAY)         game.setScreen(new PlayScreen(game));
-
-        // else if(screen == Screens.PAUSE)    game.setScreen(new PauseScreen(game, this));
-
-        // else if(screen == Screens.MENU_PAUSE)    game.setScreen(new MenuPauseScreen(game, this));
-
     }
 
-    public void showScreen(Screens screen, FightManager fightManager) {
-        if (screen == Screens.BATTLE) {
-            game.setScreen(new BattleScreen(game.getAssets(), fightManager, 800, 400));
+    public void showScreen(Screens screen, PlayerData playerData) {
+        if (screen == Screens.PLAY) {
+            game.setScreen(new PlayScreen(game, playerData));
         }
+    }
+
+    public BattleScreen showBattleScreen(FightManager fightManager) {
+        previousScreen = game.getScreen();
+        BattleScreen battleScreen = new BattleScreen(game.getAssets(), fightManager, 800, 400);
+        game.setScreen(battleScreen);
+        return battleScreen;
     }
 
     public void showScreen(Screens screen, Inventory inventory) {
         if (screen == Screens.INVENTORY) {
             previousScreen = game.getScreen();
             game.setScreen(new InventoryScreen(this, inventory));
+        }
+    }
+
+    public void showShop(Shop shop) {
+        previousScreen = game.getScreen();
+        game.setScreen(new ShopScreen(this, shop, game));
+    }
+
+    public void showScreen(Screens screen, Screen playScreen) {
+        if (screen == Screens.PAUSE) {
+            game.setScreen(new PauseScreen(game, this, playScreen));
         }
     }
 

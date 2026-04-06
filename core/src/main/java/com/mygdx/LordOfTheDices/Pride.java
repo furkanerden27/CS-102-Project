@@ -21,8 +21,8 @@ public class Pride extends Boss {
         initAnimationsFromAtlas("Pride", 
             160, 144, new int[]{6});
         setSize(160, 144);
-        baseAttackDamage = 15; // can be changed
-        health = maxHealth = 200; // can be changed
+        baseAttackDamage = 14;
+        health = maxHealth = 160;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Pride extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
@@ -96,7 +96,7 @@ public class Pride extends Boss {
                     showFloatingText("Missed!", Color.RED);
                     showMissText = false;
                 }
-                translate(20, 0);
+                translate(60, 0);
             }
         }
         updateDamageEffect(deltaTime);

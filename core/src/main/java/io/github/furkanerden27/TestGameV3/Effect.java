@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public abstract class Effect {
     
-    public static final TextureAtlas effects = new TextureAtlas(Gdx.files.local("Effects.atlas"));
+    public static final TextureAtlas effects = new TextureAtlas(Gdx.files.local("effects/Effects.atlas"));
     protected int durationLeft;
     protected float magnitude;
     protected float baseValue;

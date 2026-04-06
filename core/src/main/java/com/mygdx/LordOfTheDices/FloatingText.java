@@ -21,7 +21,7 @@ public class FloatingText {
     public FloatingText(String text, float x, float y, Color color) {
         this(text, x, y, color, defaultFont);
         defaultFont.setUseIntegerPositions(false);
-        defaultFont.getData().setScale(0.7f);
+        defaultFont.getData().setScale(1.2f);
         defaultFont.getRegion().getTexture().setFilter(
             Texture.TextureFilter.Linear,
             Texture.TextureFilter.Linear

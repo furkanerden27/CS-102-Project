@@ -17,8 +17,9 @@ public class Gluttony extends Boss {
         initAnimationsFromAtlas("Gluttony", 
             144, 80, new int[]{6, 4, 8});
         setSize(144, 80);
-        hitProb = 0.3;
-        baseAttackDamage = 10; // Base attack damage for Gluttony (can be changed)
+        hitProb = 0.35;
+        baseAttackDamage = 10;
+        health = maxHealth = 70;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class Gluttony extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= attack.getAnimationDuration()) {
@@ -53,7 +54,7 @@ public class Gluttony extends Boss {
                 }
             }
             if(attackStateTime >= 2f) {
-                translate(20, 0);
+                translate(60, 0);
                 isAttacking = false;
             }
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -24,44 +25,89 @@ public class PlayScreen implements Screen {
     private ArrayList<Entity> entities;
     private float stateTime = 0;
     private FloatingText goldDisplay;
+    private Texture pauseBtnTexture;
+    private Shop shop;
+    private float merchantX = -1;
 
+    private String saveName;
+    private Level level;
+    private PlayerData playerData;
 
     public PlayScreen(Core game) {
+        this(game, PlayerData.newSave("", 1, 200, 100));
+    }
+
+    public PlayScreen(Core game, PlayerData playerData) {
         this.game = game;
         this.assets = game.getAssets();
         this.screenManager = game.screen;
+        this.playerData = playerData;
+        this.saveName = playerData.saveName;
+        this.level = Level.fromNumber(playerData.currentLevel);
         camera = new OrthographicCamera();
         viewport = new FitViewport(405, 225, camera);
-        map = assets.getMap(Assets.MAP_2);
+        map = assets.getMap(level.getMapFile());
         mapRenderer = new OrthogonalTiledMapRenderer(map);
+        pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
         initialiseEntities();
+        shop = new Shop(player.getInventory());
     }
 
     private void initialiseEntities() {
         entities = new ArrayList<>();
-        player = new Player(200, 300, 400, map);
+        float px = (playerData.playerX == 0 && playerData.playerY == 0) ? 300 : playerData.playerX;
+        float py = (playerData.playerX == 0 && playerData.playerY == 0) ? 350 : playerData.playerY;
+
+        if (!playerData.cards.isEmpty()) {
+            Inventory loadedInv = playerData.toInventory();
+            player = new Player(playerData.currentHealth, px, py, map, loadedInv);
+        } else {
+            player = new Player(playerData.currentHealth, px, py, map);
+            player.getInventory().setGold(playerData.currentMoney);
+        }
+        int targetDice = Math.min(level.getNumber(), 6);
+        while (player.getInventory().getDiceCount() < targetDice) {
+            player.getInventory().addDice("Dice " + (player.getInventory().getDiceCount() + 1));
+        }
+
+        for (Relic r : player.getInventory().getRelics()) {
+            r.reapply(player);
+        }
         entities.add(player);
-        
-        Pride pride = new Pride(300, 100);
-        entities.add(pride);
-        Envy envy = new Envy(1200, 60);
-        entities.add(envy);
-        Wrath wrath = new Wrath(1300, 60);
-        entities.add(wrath);
-        //Gluttony gluttony = new Gluttony(1400, 60);
-        //gluttony.setEntity(map);
-        //entities.add(gluttony);
-        BasicMob mob1 = new BasicMob(1600, 60);
-        mob1.setEntity(map);
-        entities.add(mob1);
-        Lust lust = new Lust(1000, 100);
-        entities.add(lust);
-        Sloth sloth = new Sloth(1100, 100);
-        entities.add(sloth);
+
+        BasicMob mob = new BasicMob(0, 0);
+        mob.setEntity(map);
+        entities.add(mob);
+
+        Merchant merchant = new Merchant(0, 0);
+        merchant.setEntity(map);
+        merchantX = merchant.getX();
+        entities.add(merchant);
+
+        Boss boss = createBoss(level.getBossName(), 0, 0);
+        if (boss != null) {
+            String originalName = boss.name;
+            boss.name = "Boss";
+            boss.setEntity(map);
+            boss.name = originalName;
+            entities.add(boss);
+        }
 
         goldDisplay = new FloatingText("Gold: 0", 0, 0, Color.GOLD);
         goldDisplay.setImmovable();
-        goldDisplay.setDurationIndefinite(); 
+        goldDisplay.setDurationIndefinite();
+    }
+
+    private Boss createBoss(String bossName, float x, float y) {
+        switch (bossName) {
+            case "Pride":    return new Pride(x, y);
+            case "Envy":     return new Envy(x, y);
+            case "Wrath":    return new Wrath(x, y);
+            case "Lust":     return new Lust(x, y);
+            case "Sloth":    return new Sloth(x, y);
+            case "Gluttony": return new Gluttony(x, y);
+            default:         return null;
+        }
     }
 
     @Override
@@ -69,25 +115,23 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        handleInput();
         for (Entity e : entities) {
             e.update(delta);
         }
 
-        camera.position.set(player.getX() + (player.getWidth() / 2), 
+        camera.position.set(player.getX() + (player.getWidth() / 2),
                             player.getY() + (player.getHeight() / 2), 0);
         camera.update();
+
+        handleInput();
 
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        // --- Updating gold text ---
         float goldX = camera.position.x - (viewport.getWorldWidth() / 2) + 20;
         float goldY = camera.position.y + (viewport.getWorldHeight() / 2) - 15;
-
         goldDisplay.setPosition(goldX, goldY);
-        goldDisplay.setText("Gold: " + player.getGold());
-        // ----------------------------
+        goldDisplay.setText("Gold: " + player.getInventory().getGold());
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -96,15 +140,86 @@ public class PlayScreen implements Screen {
         }
 
         if (goldDisplay != null) {
-            goldDisplay.render(game.batch); 
+            goldDisplay.render(game.batch);
         }
+
+        float btnScale = 0.1f;
+        float btnW = pauseBtnTexture.getWidth() * btnScale;
+        float btnH = pauseBtnTexture.getHeight() * btnScale;
+        float btnX = camera.position.x + (viewport.getWorldWidth() / 2) - btnW + 5;
+        float btnY = camera.position.y + (viewport.getWorldHeight() / 2) - btnH + 5;
+        game.batch.draw(pauseBtnTexture, btnX, btnY, btnW, btnH);
+
         game.batch.end();
         removeDeadEntities();
+        checkInteraction();
+    }
 
+    private void checkInteraction() {
+        com.badlogic.gdx.maps.tiled.TiledMapTileLayer endGameLayer =
+            (com.badlogic.gdx.maps.tiled.TiledMapTileLayer) map.getLayers().get("EndGame");
+        if (endGameLayer == null) return;
+        int tileX = (int) (player.getX() / endGameLayer.getTileWidth());
+        int tileY = (int) (player.getY() / endGameLayer.getTileHeight());
+        if (endGameLayer.getCell(tileX, tileY) == null) return;
+
+        Level next = level.next();
+        if (next == null) {
+            deleteFromFirebase();
+            screenManager.showScreen(Screens.STORY_END);
+        } else {
+            PlayerData data = PlayerData.fromPlayer(saveName, next.getNumber(), player);
+            data.playerX = 300;
+            data.playerY = 350;
+            saveToFirebase(data);
+            screenManager.showScreen(Screens.PLAY, data);
+        }
+    }
+
+    private void saveToFirebase(PlayerData data) {
+        if (data.saveName == null || data.saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + data.saveName + ".json";
+
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.PUT);
+        req.setUrl(url);
+        req.setHeader("Content-Type", "application/json");
+        req.setContent(data.toJson());
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
+    }
+
+    private void deleteFromFirebase() {
+        if (saveName == null || saveName.isEmpty()) return;
+        String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
+        com.badlogic.gdx.Net.HttpRequest req = new com.badlogic.gdx.Net.HttpRequest(com.badlogic.gdx.Net.HttpMethods.DELETE);
+        req.setUrl(url);
+        com.badlogic.gdx.Gdx.net.sendHttpRequest(req, new com.badlogic.gdx.Net.HttpResponseListener() {
+            @Override public void handleHttpResponse(com.badlogic.gdx.Net.HttpResponse response) {}
+            @Override public void failed(Throwable t) {}
+            @Override public void cancelled() {}
+        });
     }
 
     private void handleInput() {
-        /* getting the input to update the player movement (S is not implemented yet)*/
+        if (Gdx.input.justTouched()) {
+            float btnScale = 0.1f;
+            float btnW = pauseBtnTexture.getWidth() * btnScale;
+            float btnH = pauseBtnTexture.getHeight() * btnScale;
+            float btnX = camera.position.x + (viewport.getWorldWidth() / 2) - btnW - 10;
+            float btnY = camera.position.y + (viewport.getWorldHeight() / 2) - btnH;
+
+            com.badlogic.gdx.math.Vector3 touch = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touch, viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+
+            if (touch.x >= btnX && touch.x <= btnX + btnW && touch.y >= btnY && touch.y <= btnY + btnH) {
+                screenManager.showScreen(Screens.PAUSE, this);
+                return;
+            }
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.moveLeft();
         }
@@ -114,30 +229,39 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) { 
             player.jump();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) { 
-            //TODO THIS IS JUST FOR TESTING REMOVE LATER
-            
-            screenManager.showScreen(Screens.BATTLE, new FightManager(player, null));
-            //game.setScreen(new CombatScreen());
-            
-            
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            Mob nearestMob = findNearestMob();
+            if (nearestMob != null) {
+                new FightManager(player, nearestMob, screenManager);
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             screenManager.showScreen(Screens.INVENTORY, player.getInventory());
         }
-        // Test Gluttony's special attack remove after testing
-        if (Gdx.input.isKeyJustPressed(Input.Keys.G)) { 
-            
-            for (Entity e : entities) {
-                if (e instanceof BasicMob) {
-                    ((BasicMob) e).specialAttack(player);
-                    break;
-                }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            if (merchantX >= 0 && Math.abs(player.getX() - merchantX) < 50f) {
+                screenManager.showShop(shop);
             }
         }
     }
 
-     private void removeDeadEntities() {
+    private Mob findNearestMob() {
+        float interactionRange = 50f;
+        Mob nearest = null;
+        float minDist = Float.MAX_VALUE;
+        for (Entity e : entities) {
+            if (e instanceof Mob && e.isAlive()) {
+                float dist = Math.abs(e.getX() - player.getX());
+                if (dist < interactionRange && dist < minDist) {
+                    minDist = dist;
+                    nearest = (Mob) e;
+                }
+            }
+        }
+        return nearest;
+    }
+
+    private void removeDeadEntities() {
         ArrayList<Entity> toRemove = new ArrayList<>();
         for (Entity e : entities) {
             if (!e.isAlive()) {
@@ -153,8 +277,22 @@ public class PlayScreen implements Screen {
         viewport.update(width, height); 
     }
 
-    @Override public void show() {} // when screen is initialized
-    @Override public void hide() {} // when screen is changed
+    public String getSaveName() { return saveName; }
+
+    public int getCurrentGold() { return player.getInventory().getGold(); }
+
+    public Level getLevel() { return level; }
+
+    public float getPlayerHealth() { return player.getHealth(); }
+
+    public float getPlayerX() { return player.getX(); }
+
+    public float getPlayerY() { return player.getY(); }
+
+    public Inventory getPlayerInventory() { return player.getInventory(); }
+
+    @Override public void show() {}
+    @Override public void hide() {}
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void dispose() {}

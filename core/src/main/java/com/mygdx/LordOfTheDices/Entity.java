@@ -116,6 +116,10 @@ public abstract class Entity extends Sprite {
         maxHealth += heal;
     }
 
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
     public boolean isAlive() {
         return isAlive;
     }
@@ -227,12 +231,16 @@ public abstract class Entity extends Sprite {
     public int getGold(){
         return goldDropped;
     }
+    public ArrayList<Effect> getEffects() { return effectsInFight; }
+    public float getHealth() { return health; }
+    public void setHealth(float h) { this.health = h; }
     public void removeAllEffects(){
         effectsInFight.clear();
     }
 
     public void setEntity(TiledMap map) {
         MapLayer objectLayer = map.getLayers().get("Entities");
+        if (objectLayer == null) return;
         MapObject playerObject = objectLayer.getObjects().get(name);
         if (playerObject instanceof TextureMapObject) {
             TextureMapObject texObj = (TextureMapObject) playerObject;

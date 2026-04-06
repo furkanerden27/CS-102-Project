@@ -1,11 +1,19 @@
 package com.mygdx.LordOfTheDices;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -14,59 +22,77 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.LordOfTheDices.Card.Suit;
 
-public class BattleScreen implements Screen{
-    
+public class BattleScreen implements Screen {
+
     private Stage stage;
     private FightManager manager;
+    private FitViewport viewport;
 
     private Card.Suit selectedSuit;
 
-    private Texture cardSpades;
-    private Texture cardClubs;
-    private Texture cardHearts;
-    private Texture cardDiamonds;// TODO burasi atlasla degistirilecek? nasil olcak bilmiyom ama bisiler yapilcak
+    private Texture cardSpades, cardClubs, cardHearts, cardDiamonds;
     private Texture background, lockedDice, rollAllTexture, arrowTexture, inverseArrowTexture;
-    
+    private TextureAtlas effectsAtlas;
+
     private Image inverseArrowImage, arrowImage;
 
-    private Label toolTipLabel;
-    private Table cardsTable1, cardsTable2, toolTipTable;
+    private Label descLabel;
+    private Table cardsTable1, cardsTable2;
     private Table[] cardSlots;
     private Container<Table> cardsWrapper;
 
-    public BattleScreen(Assets assets,FightManager manager, int sizeX, int sizeY) {
-        stage = new Stage(new FitViewport(sizeX, sizeY));
+    private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
+    private BitmapFont uiFont;
+    private BitmapFont smallFont;
+
+    private Image[] diceImages;
+
+    private static final float EFFECT_ICON_SIZE = 18f;
+    private static final float HP_BAR_WIDTH = 80f;
+    private static final float HP_BAR_HEIGHT = 6f;
+
+    public BattleScreen(Assets assets, FightManager manager, int sizeX, int sizeY) {
+        viewport = new FitViewport(sizeX, sizeY);
+        stage = new Stage(viewport);
         this.manager = manager;
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
-        //TODO get these to atlas or smth
-        cardSpades = new Texture("Cards\\card-spades.png");
-        cardClubs = new Texture("Cards\\card-clubs.png");
-        cardHearts = new Texture("Cards\\card-hearts.png");
-        cardDiamonds = new Texture("Cards\\card-diamonds.png");
-        background = new Texture("FightBackground.png");
-        lockedDice = new Texture("LockedDice.png");
-        rollAllTexture = new Texture("RollAllButton.png");
-        arrowTexture = new Texture("Arrow.png");
-        inverseArrowTexture = new Texture("InverseArrow.png");
+        uiFont = new BitmapFont();
+        uiFont.getData().setScale(1.2f);
 
+        smallFont = new BitmapFont();
+        smallFont.getData().setScale(0.8f);
 
-        toolTipTable = new Table();
-        toolTipLabel = new Label("", new LabelStyle( new BitmapFont(), Color.BLACK));
-        toolTipTable.add(toolTipLabel);
-        toolTipTable.setVisible(false);
-        toolTipLabel.getStyle().font.getData().markupEnabled = true;
+        cardSpades = assets.getTexture(Assets.TEX_CARD_SPADES);
+        cardClubs = assets.getTexture(Assets.TEX_CARD_CLUBS);
+        cardHearts = assets.getTexture(Assets.TEX_CARD_HEARTS);
+        cardDiamonds = assets.getTexture(Assets.TEX_CARD_DIAMONDS);
+        background = assets.getTexture(Assets.TEXTURE_FIGHT_BG);
+        lockedDice = assets.getTexture(Assets.TEX_LOCKED_DICE);
+        rollAllTexture = assets.getTexture(Assets.TEX_ROLL_ALL_BTN);
+        arrowTexture = assets.getTexture(Assets.TEX_ARROW);
+        inverseArrowTexture = assets.getTexture(Assets.TEX_INVERSE_ARROW);
+        effectsAtlas = Effect.effects;
+
+        diceImages = new Image[6];
+        for (int i = 0; i < 6; i++) {
+            diceImages[i] = new Image(lockedDice);
+        }
 
         cardSlots = new Table[]{new Table(), new Table(), new Table(), new Table(), new Table(), new Table()};
         Gdx.input.setInputProcessor(stage);
-        
+
         createUI();
     }
 
-    private void createUI(){
+    private void createUI() {
         cardsWrapper = new Container<>();
         cardsTable2 = new Table();
         cardsTable1 = new Table();
@@ -74,95 +100,77 @@ public class BattleScreen implements Screen{
         Table diceTable = new Table();
         Table mainTable = new Table();
 
-        
-        cardsTable1.setDebug(true);
-        cardsTable2.setDebug(true);
-
-
         mainTable.setFillParent(true);
-        
-        
+
         Image backGroundImage = new Image(background);
         backGroundImage.setFillParent(true);
-        //backGroundImage.toBack();
-        
+
         stage.addActor(backGroundImage);
         stage.addActor(mainTable);
-        
 
-        Dice[] zarlar = manager.getDices();
-        ClickListener diceClickListener = new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y){
-                manager.rollAllDice();
-                /* 
-                for(int i = 0; i < zarlar.length; i++){
-                    if(zarlar[i].isClicked(x, y)){ // TODO ZARLAR ITEM OLUNCA CALISACAK
-                        manager.diceClicked(zarlar[i]);
+        LabelStyle descStyle = new LabelStyle(smallFont, Color.WHITE);
+        descLabel = new Label("", descStyle);
+        descLabel.setWrap(true);
+        descLabel.setAlignment(Align.topLeft);
+
+        for (int i = 0; i < 6; i++) {
+            final int diceIndex = i;
+            diceImages[i].addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (diceIndex < manager.dices.size()) {
+                        manager.diceClicked(manager.dices.get(diceIndex));
                     }
                 }
-                    
-            */
-            }
-        };
-        
-        //Envanterden dice array'i aliyor olalim TODO
-        
-        Image placeholderImage; 
-        
-        //her zar tiklandiginde kendi basina donmesi icin SPRITE olarak kullanilabilirler. 
-        for(int i = 0; i < 6; i++){
-            //placeholderImage = new Image(zarlar[i].getTexture()); Dice item'i extendledigi zaman olacak bu
-            placeholderImage = new Image(lockedDice); // BU DEGISECEK TODO
-            placeholderImage.addListener(diceClickListener);
-            diceTable.add(placeholderImage).padBottom(8).row();
+            });
+            diceTable.add(diceImages[i]).size(32, 32).padBottom(4).row();
         }
 
         Image rollAllButton = new Image(rollAllTexture);
-        rollAllButton.addListener(new ClickListener(){
+        rollAllButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
+            public void clicked(InputEvent event, float x, float y) {
                 manager.rollAllDice();
             }
         });
-        diceTable.add(rollAllButton).padBottom(5).expand().row(); // RollALl Button
+        diceTable.add(rollAllButton).size(40, 20).padTop(4).row();
 
-        
-        
-        //CHANGE TODO
-        diceTable.setDebug(true);
+        Image skipTurnButton = new Image(inverseArrowTexture);
+        skipTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                manager.skipTurn();
+            }
+        });
+        diceTable.add(skipTurnButton).size(30, 16).padTop(4).expand().row();
 
         Image spadesImage = new Image(cardSpades);
-        spadesImage.addListener(new ClickListener(){
+        spadesImage.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
-                if(manager.isPlayerTurn()){
+            public void clicked(InputEvent event, float x, float y) {
+                if (manager.getState() == FightManager.FightState.PLAYER_PICK_CARD) {
                     selectedSuit = Suit.SPADES;
                     switchToSecondView();
                 }
-                else{
-                    //TODO siranin oyuncuda olmadigibi belirtmek lazim
-                }
             }
         });
-        
+
         Image clubsImage = new Image(cardClubs);
-        clubsImage.addListener(new ClickListener(){
+        clubsImage.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
-                if(manager.isPlayerTurn()){
+            public void clicked(InputEvent event, float x, float y) {
+                if (manager.getState() == FightManager.FightState.PLAYER_PICK_CARD) {
                     selectedSuit = Suit.CLUBS;
                     switchToSecondView();
                 }
-                
             }
         });
 
         Image diamondsImage = new Image(cardDiamonds);
-        diamondsImage.addListener(new ClickListener(){
+        diamondsImage.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
-                if(manager.isPlayerTurn()){
+            public void clicked(InputEvent event, float x, float y) {
+                if (manager.getState() == FightManager.FightState.PLAYER_PICK_CARD) {
                     selectedSuit = Suit.DIAMONDS;
                     switchToSecondView();
                 }
@@ -170,16 +178,14 @@ public class BattleScreen implements Screen{
         });
 
         Image heartsImage = new Image(cardHearts);
-        heartsImage.addListener(new ClickListener(){
+        heartsImage.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
-                if(manager.isPlayerTurn()){
+            public void clicked(InputEvent event, float x, float y) {
+                if (manager.getState() == FightManager.FightState.PLAYER_PICK_CARD) {
                     selectedSuit = Suit.HEARTS;
                     switchToSecondView();
                 }
             }
-
-
         });
 
         cardsTable1.add(spadesImage).pad(10).minHeight(50);
@@ -187,198 +193,230 @@ public class BattleScreen implements Screen{
         cardsTable1.add(diamondsImage).pad(10);
         cardsTable1.add(heartsImage).pad(10);
 
-        middleWrapper.add().expand().fill().minHeight(250).minWidth(750);
-        middleWrapper.row();
-        middleWrapper.add(cardsWrapper).expandX().bottom().padBottom(5).align(Align.bottom).minWidth(750);
-        
+        Table descPanel = new Table();
+        descPanel.add(descLabel).width(200).pad(8).top().left().expand();
 
-        mainTable.add(middleWrapper);
-        mainTable.add(diceTable).width(40).expandY().fillY().align(Align.right);
-        
+        middleWrapper.add(descPanel).width(220).expandY().fillY().top().left();
+        middleWrapper.add().expand().fill();
+        middleWrapper.row();
+        middleWrapper.add(cardsWrapper).expandX().bottom().padBottom(5).align(Align.bottom).colspan(2).minWidth(730);
+
+        mainTable.add(middleWrapper).expand().fill();
+        mainTable.add(diceTable).width(60).expandY().fillY().align(Align.right).padRight(5);
+
         arrowImage = new Image(arrowTexture);
         inverseArrowImage = new Image(inverseArrowTexture);
-        inverseArrowImage.addListener(new ClickListener(){
+        inverseArrowImage.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
+            public void clicked(InputEvent event, float x, float y) {
                 switchToFirstView();
             }
         });
-        
+
         cardsTable2.add(inverseArrowImage).padLeft(10).size(30, 16);
-        
-        cardsTable2.add(cardSlots[0]).padLeft(60).size(60, 90);
-
-        cardsTable2.add(arrowImage).padLeft(15).size(60, 32);
-        
-        for(int i = 1; i < 6; i ++){
-            cardsTable2.add(cardSlots[i]).padLeft(10).size(60, 90);
+        cardsTable2.add(cardSlots[0]).padLeft(40).size(60, 90);
+        cardsTable2.add(arrowImage).padLeft(10).size(50, 28);
+        for (int i = 1; i < 6; i++) {
+            cardsTable2.add(cardSlots[i]).padLeft(8).size(60, 90);
         }
-
-        toolTipTable.add(toolTipLabel);
 
         switchToFirstView();
     }
 
-    public void switchToFirstView(){
+    public void switchToFirstView() {
+        descLabel.setText("");
         cardsWrapper.clearChildren();
         cardsWrapper.setActor(cardsTable1);
     }
 
-    public void switchToSecondView(){
-        cardsWrapper.clearChildren(); // TODO hangi kartin gidecegini belilicen
+    public void switchToSecondView() {
+        descLabel.setText("");
+        cardsWrapper.clearChildren();
         updateCards();
         cardsWrapper.setActor(cardsTable2);
     }
-    
-    public void updateCards(){
-        //TODO ????
-        // Cardlardan suitine göre info çekilecekx 
-        Card[] cards = manager.getHand(selectedSuit); 
-        
-        Image addedImage;
+
+    public void updateCards() {
+        ArrayList<Card> cards = manager.getHand(selectedSuit);
 
         cardSlots[0].clearChildren();
         switch (selectedSuit) {
-            case SPADES:
-                cardSlots[0].add(new Image(cardSpades));
-                break;
-            case CLUBS:
-                cardSlots[0].add(new Image(cardClubs));
-                break;
-            case DIAMONDS:
-                cardSlots[0].add(new Image(cardDiamonds));
-                break;
-            case HEARTS:
-                cardSlots[0].add(new Image(cardHearts));
-                break;
-            default:
-                throw new AssertionError();
-        }
-        
-        cardSlots[1].clearChildren();
-        if(cards[0] == null){
-             cardSlots[1].add(new Image(lockedDice));
-        }
-        else{
-            cards[0].loadTexture();
-            
-            addedImage = new Image(cards[0].getTextureRegion());
-            addedImage.addListener(new ClickListener(){
-                @Override
-                public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[0]);
-                    switchToFirstView();
-                }
-            });  
-            cardSlots[1].add(addedImage);      
+            case SPADES:   cardSlots[0].add(new Image(cardSpades)); break;
+            case CLUBS:    cardSlots[0].add(new Image(cardClubs)); break;
+            case DIAMONDS: cardSlots[0].add(new Image(cardDiamonds)); break;
+            case HEARTS:   cardSlots[0].add(new Image(cardHearts)); break;
+            default: throw new AssertionError();
         }
 
+        for (int i = 0; i < 5; i++) {
+            int slotIndex = i + 1;
+            cardSlots[slotIndex].clearChildren();
 
-        cardSlots[2].clearChildren();
-        if(cards[1] == null){
-             cardSlots[2].add(new Image(lockedDice));
-        }
-        else{
-            cards[1].loadTexture();
-            addedImage = new Image(cards[1].getTextureRegion());
-            addedImage.addListener(new ClickListener(){
+            if (i >= cards.size()) {
+                cardSlots[slotIndex].add(new Image(lockedDice));
+                continue;
+            }
+
+            final Card card = cards.get(i);
+            card.loadTexture();
+            Image cardImage = new Image(card.getTextureRegion());
+
+            cardImage.addListener(new ClickListener() {
                 @Override
-                public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[1]);
+                public void clicked(InputEvent event, float x, float y) {
+                    descLabel.setText("");
+                    manager.actSelectedCard(card);
                     switchToFirstView();
                 }
-            });  
-            cardSlots[2].add(addedImage);      
-        }
 
-        cardSlots[3].clearChildren();
-        if(cards[2] == null){
-             cardSlots[3].add(new Image(lockedDice));
-        }
-        else{
-            cards[2].loadTexture();
-            addedImage = new Image(cards[2].getTextureRegion());
-            addedImage.addListener(new ClickListener(){
                 @Override
-                public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[2]);
-                    switchToFirstView();
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    descLabel.setText(card.name + "\n\n" + card.description);
                 }
-            });  
-            cardSlots[3].add(addedImage);      
-        }
 
-        cardSlots[4].clearChildren();
-        if(cards[3] == null){
-             cardSlots[4].add(new Image(lockedDice));
-        }
-        else{
-            cards[3].loadTexture();
-            addedImage = new Image(cards[3].getTextureRegion());
-            addedImage.addListener(new ClickListener(){
                 @Override
-                public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[3]);
-                    switchToFirstView();
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    descLabel.setText("");
                 }
-            });  
-            cardSlots[4].add(addedImage);      
-        }
+            });
 
-        cardSlots[5].clearChildren();
-        if(cards[4] == null){
-             cardSlots[5].add(new Image(lockedDice));
+            cardSlots[slotIndex].add(cardImage);
         }
-        else{
-            cards[4].loadTexture();
-            addedImage = new Image(cards[4].getTextureRegion());
-            addedImage.addListener(new ClickListener(){
-                @Override
-                public void clicked(InputEvent event, float x, float y){
-                    manager.actSelectedCard(cards[4]);
-                    switchToFirstView();
-                }
-            });  
-            cardSlots[5].add(addedImage);      
-        }
-        
     }
-    
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
+        manager.updateFight(delta);
+
+        updateDiceImages();
+
         stage.act(delta);
         stage.draw();
+
+        Matrix4 proj = stage.getCamera().combined;
+        batch.setProjectionMatrix(proj);
+        shapeRenderer.setProjectionMatrix(proj);
+
+        Player player = manager.getPlayer();
+        Mob mob = manager.getMob();
+
+        float playerCenterX = player.getX() + player.getWidth() / 2f;
+        float playerTopY = player.getY() + player.getHeight();
+        float mobCenterX = mob.getX() + mob.getWidth() / 2f;
+        float mobTopY = mob.getY() + mob.getHeight();
+
+        drawHealthBar(player, playerCenterX - HP_BAR_WIDTH / 2f, playerTopY + 8);
+        drawEffectIcons(player, playerCenterX - HP_BAR_WIDTH / 2f, playerTopY + 24);
+
+        drawHealthBar(mob, mobCenterX - HP_BAR_WIDTH / 2f, mobTopY + 8);
+        drawEffectIcons(mob, mobCenterX - HP_BAR_WIDTH / 2f, mobTopY + 24);
+
+        batch.begin();
+        player.draw(batch);
+        mob.draw(batch);
+
+        if (manager.isPlayerTurn()) {
+            uiFont.setColor(Color.GREEN);
+            uiFont.draw(batch, "Player's Turn", 10, 20);
+        } else {
+            uiFont.setColor(Color.RED);
+            uiFont.draw(batch, "Enemy's Turn", 10, 20);
+        }
+
+        uiFont.setColor(Color.WHITE);
+        uiFont.draw(batch, "Dice: " + manager.getDiceTotal(), 10, 395);
+
+        uiFont.setColor(Color.LIGHT_GRAY);
+        FightManager.FightState currentState = manager.getState();
+        if (currentState == FightManager.FightState.PLAYER_PICK_CARD) {
+            uiFont.draw(batch, "Pick a card!", 10, 375);
+        } else if (currentState == FightManager.FightState.PLAYER_ROLL) {
+            Card sel = manager.getSelectedCard();
+            if (sel != null) {
+                uiFont.draw(batch, "Selected: " + sel.name + " - Roll!", 10, 375);
+            }
+        }
+
+        String msg = manager.getLastMessage();
+        if (msg != null) {
+            uiFont.setColor(Color.YELLOW);
+            float msgX = viewport.getWorldWidth() / 2f - 80;
+            uiFont.draw(batch, msg, msgX, viewport.getWorldHeight() / 2f);
+        }
+
+        batch.end();
+        uiFont.setColor(Color.WHITE);
+    }
+
+    private void updateDiceImages() {
+        for (int i = 0; i < 6; i++) {
+            if (i < manager.dices.size()) {
+                Dice d = manager.dices.get(i);
+                TextureRegion frame = d.getCurrentFrame();
+                if (frame != null) {
+                    diceImages[i].setDrawable(new TextureRegionDrawable(frame));
+                } else {
+                    diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+                }
+            } else {
+                diceImages[i].setDrawable(new TextureRegionDrawable(lockedDice));
+            }
+        }
+    }
+
+    private void drawHealthBar(Entity e, float x, float y) {
+        float healthRatio = e.health / e.maxHealth;
+
+        shapeRenderer.setAutoShapeType(true);
+        shapeRenderer.begin();
+        shapeRenderer.setColor(0.35f, 0.05f, 0.05f, 0.9f);
+        shapeRenderer.rect(x, y, HP_BAR_WIDTH, HP_BAR_HEIGHT);
+        shapeRenderer.setColor(1f - healthRatio, healthRatio * 0.85f, 0.05f, 1f);
+        shapeRenderer.rect(x, y, HP_BAR_WIDTH * healthRatio, HP_BAR_HEIGHT);
+        shapeRenderer.end();
+
+        batch.begin();
+        smallFont.setColor(Color.WHITE);
+        smallFont.draw(batch, (int) e.health + "/" + (int) e.maxHealth, x, y + HP_BAR_HEIGHT + 10f);
+        batch.end();
+    }
+
+    private void drawEffectIcons(Entity e, float startX, float startY) {
+        ArrayList<Effect> effects = e.getEffects();
+        if (effects == null || effects.isEmpty()) return;
+
+        batch.begin();
+        float offsetX = 0;
+        for (Effect eff : effects) {
+            if (effectsAtlas != null && eff.getName() != null) {
+                TextureRegion region = effectsAtlas.findRegion(eff.getName());
+                if (region != null) {
+                    batch.draw(region, startX + offsetX, startY, EFFECT_ICON_SIZE, EFFECT_ICON_SIZE);
+                    smallFont.setColor(Color.WHITE);
+                    smallFont.draw(batch, String.valueOf(eff.getDurationLeft()),
+                        startX + offsetX + EFFECT_ICON_SIZE - 2, startY + 8);
+                    offsetX += EFFECT_ICON_SIZE + 3;
+                }
+            }
+        }
+        batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        viewport.update(width, height, true);
     }
 
+    @Override public void show() {}
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
 
-
-    @Override
-    public void show() {}
-    @Override
-    public void pause() {}
-    @Override
-    public void resume() {}
-    @Override
-    public void hide() {}
     @Override
     public void dispose() {
-        cardClubs.dispose();
-        cardDiamonds.dispose();
-        cardHearts.dispose();
-        cardSpades.dispose();
-        lockedDice.dispose();   
-        background.dispose();
-        rollAllTexture.dispose();
-        inverseArrowTexture.dispose();
-        arrowTexture.dispose();
-        
+        stage.dispose();
     }
 }
