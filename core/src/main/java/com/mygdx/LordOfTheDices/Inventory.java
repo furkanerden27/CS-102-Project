@@ -61,19 +61,19 @@ public class Inventory implements Comparator<Card> {
         return true;
     }
 
-    //Removes a card. Rank TWO cards (starter cards) can't be removed. 
     public boolean removeCard(Card card) {
-        if (card.getRank().getNumericValue() == 2) {
+        int suitCount = getCardsBySuit(card.getSuit()).size();
+        if (suitCount <= 1) {
             return false;
         }
-        
+
         for (Card c : cards) {
             if (c.getSuit() == card.getSuit() && c.getRank() == card.getRank()) {
-            cards.remove(c);
-            return true;
+                cards.remove(c);
+                return true;
             }
         }
-        
+
         return false;
     }
 

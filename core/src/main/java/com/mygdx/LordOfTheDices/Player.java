@@ -6,7 +6,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
-    /*Implementation of this class is incomplete */
     private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer WallMob;
@@ -16,7 +15,6 @@ public class Player extends Entity{
     private Inventory inventory;
     private boolean isLocked = false;
 
-    // animations
     private Animation<TextureRegion> standingRight;
     private Animation<TextureRegion> standingLeft;
     private Animation<TextureRegion> walkingRight;
@@ -27,15 +25,21 @@ public class Player extends Entity{
     private Animation<TextureRegion> attackLeft;
     private Animation<TextureRegion> dieRight;
     private Animation<TextureRegion> dieLeft;
-    
-    
+
+
     private float speedX, speedY;
     private boolean isOnGround;
+    private float physicsAccumulator = 0f;
+    private static final float FIXED_STEP = 1f / 60f;
 
-    private float attackModifier; // TODO bu hasar veren kartların hassarına eklenecek. Strengthen ve Weaken Efektleri bunu değiştirecek. 
+    private float attackModifier;
 
     private boolean isDead = false;
     private float deathStateTime = 0;
+    private boolean isBattleAttacking = false;
+    private float battleAttackTimer = 0;
+    private static final float BATTLE_ATTACK_DURATION = 0.6f;
+    private static final float BATTLE_LUNGE = 50f;
 
     private float relicArmourMultiplier = 1f;
     private float relicDamageMultiplier = 1f;
@@ -70,7 +74,7 @@ public class Player extends Entity{
     @Override
     protected void setAnimations(int[] frameCounts) {
         super.setAnimations(frameCounts);
-        
+
         standingRight = animations[0];
         standingLeft = getFlippedAnimation(standingRight);
         walkingRight = animations[3];
@@ -83,7 +87,6 @@ public class Player extends Entity{
         attackLeft = getFlippedAnimation(attackRight);
     }
 
-    // to handle input in PlayScreen
     public void moveLeft() {
         speedX -= ACC;
     }
@@ -100,8 +103,6 @@ public class Player extends Entity{
     }
 
     private void handleInput() {
-        /* limiting the speeds to a maximum value */
-        
         if(Math.abs(speedX) > MAX_SPEED) {
             speedX = MAX_SPEED * Math.signum(speedX);
         }
@@ -110,15 +111,14 @@ public class Player extends Entity{
         }
         if(Math.abs(speedX) > FRICTION) {
             speedX -= FRICTION * Math.signum(speedX);
-        } 
+        }
         else {
             speedX = 0;
-        }    
+        }
         handleAnimation();
     }
 
     private void handleAnimation() {
-        /* deciding on the direction and the animation of the player */
         if(speedX > 0) {
             direction = "right";
         }
@@ -149,13 +149,13 @@ public class Player extends Entity{
             currentAnimation = walkingLeft;
         }
     }
-    
+
     private boolean isCollision(float x, float y, TiledMapTileLayer layer) {
         float playerWidth = getWidth();
         float playerHeight = getHeight();
 
-        return checkTile(x, y, layer) || checkTile(x + playerWidth, y, layer) || // left and right down
-            checkTile(x, y + playerHeight, layer) || checkTile(x + playerWidth, y + playerHeight, layer); // left and right up
+        return checkTile(x, y, layer) || checkTile(x + playerWidth, y, layer) ||
+            checkTile(x, y + playerHeight, layer) || checkTile(x + playerWidth, y + playerHeight, layer);
     }
 
     private boolean checkTile(float x, float y, TiledMapTileLayer layer) {
@@ -167,8 +167,7 @@ public class Player extends Entity{
 
     @Override
     public void update(float deltaTime) {
-        
-        //----controls the death of the player and the death animation----
+
         if (!isAlive && !isDead) {
             isDead = true;
             deathStateTime = 0;
@@ -182,39 +181,48 @@ public class Player extends Entity{
                 stateTime += deltaTime;
                 currentFrame = currentAnimation.getKeyFrame(stateTime, false);
             }
-        } 
-        //----if the player is alive, handle the input and update the position and animation----
+        }
         else {
-            if(!isLocked){
-                handleInput();
-                speedY -= GRAVITY; 
-            
-                float nextX = getX() + speedX * deltaTime;
-                float nextY = getY() + speedY * deltaTime;
-                
-                /* updating the coorinates of the player 
-                two controlls are necessary to keeping the other movement when hitting a wall */
-                // x coordinates
-                if (!isCollision(nextX, getY(), collisionLayer)) //&& // burası test için kaldırılmalı
-                //(isMobDefeated || !isCollision(nextX, getY(), WallMob)) && (isBossDefeated ||!isCollision(nextX, getY(), WallBoss))) 
-                {
-                    setX(nextX);
-                } 
-                else {
-                    speedX = 0;
+            if (isBattleAttacking) {
+                battleAttackTimer += deltaTime;
+                if (battleAttackTimer >= BATTLE_ATTACK_DURATION) {
+                    isBattleAttacking = false;
+                    translate(-BATTLE_LUNGE, 0);
+                    currentAnimation = standingRight;
                 }
-                // y coordinates
-                if (!isCollision(getX(), nextY, collisionLayer)) //&& burası da test için kaldırılmalı
-                //(isMobDefeated || !isCollision(getX(), nextY, WallMob)) && (isBossDefeated ||!isCollision(getX(), nextY, WallBoss))) 
-                {
-                    setY(nextY);
-                    isOnGround = false; 
-                } 
-                else {
-                    if (speedY < 0) {
-                        isOnGround = true;
+            }
+            else if (isLocked) {
+                currentAnimation = standingRight;
+            }
+
+            if(!isLocked){
+                physicsAccumulator += deltaTime;
+                while (physicsAccumulator >= FIXED_STEP) {
+                    handleInput();
+                    speedY -= GRAVITY;
+
+                    float nextX = getX() + speedX * FIXED_STEP;
+                    float nextY = getY() + speedY * FIXED_STEP;
+
+                    if (!isCollision(nextX, getY(), collisionLayer))
+                    {
+                        setX(nextX);
                     }
-                    speedY = 0;
+                    else {
+                        speedX = 0;
+                    }
+                    if (!isCollision(getX(), nextY, collisionLayer))
+                    {
+                        setY(nextY);
+                        isOnGround = false;
+                    }
+                    else {
+                        if (speedY < 0) {
+                            isOnGround = true;
+                        }
+                        speedY = 0;
+                    }
+                    physicsAccumulator -= FIXED_STEP;
                 }
             }
             stateTime += deltaTime;
@@ -233,6 +241,15 @@ public class Player extends Entity{
 
     public void setLocked(boolean t){
         isLocked = t;
+    }
+
+    public void playBattleAttack() {
+        if (!isBattleAttacking) {
+            isBattleAttacking = true;
+            battleAttackTimer = 0;
+            currentAnimation = attackRight;
+            translate(BATTLE_LUNGE, 0);
+        }
     }
 
     public float getAttackModifier(){
@@ -262,7 +279,7 @@ public class Player extends Entity{
         }
         else {
             super.takeDamage(damage);
-        }  
+        }
     }
 
     public void addRelicArmourMultiplier(float multiplier) {

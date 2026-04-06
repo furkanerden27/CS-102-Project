@@ -45,7 +45,7 @@ public class Relic extends Item {
         this.type = type;
         this.effectMagnitude = assignEffectMagnitude(type);
         this.isActive = false;
-        this.buyingValue = (int) (Math.random() * 100) + 200;
+        this.buyingValue = (int) (Math.random() * 30) + 60;
         this.description = buildDescription();
         loadTexture();
     }
@@ -55,7 +55,7 @@ public class Relic extends Item {
         this.type = type;
         this.effectMagnitude = assignEffectMagnitude(type);
         this.isActive = isActive;
-        this.buyingValue = (int) (Math.random() * 100) + 200;
+        this.buyingValue = (int) (Math.random() * 30) + 60;
         this.description = buildDescription();
         loadTexture();
     }

@@ -15,8 +15,8 @@ public class Sloth extends Boss {
         initAnimationsFromAtlas("Sloth", 
             64, 64, new int[]{16});
         setSize(32,32);
-        baseAttackDamage = 10;
-        health = maxHealth = 80;
+        baseAttackDamage = 6;
+        health = maxHealth = 50;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Sloth extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
@@ -49,7 +49,7 @@ public class Sloth extends Boss {
                     showFloatingText("Stunned!", Color.BLUE);
                     showstunText = false;
                 }
-                translate(20, 0);
+                translate(60, 0);
             }
         }
         updateDamageEffect(deltaTime);

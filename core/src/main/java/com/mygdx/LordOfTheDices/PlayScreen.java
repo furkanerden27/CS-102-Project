@@ -243,14 +243,6 @@ public class PlayScreen implements Screen {
                 screenManager.showShop(shop);
             }
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-            for (Entity e : entities) {
-                if (e instanceof BasicMob) {
-                    ((BasicMob) e).specialAttack(player);
-                    break;
-                }
-            }
-        }
     }
 
     private Mob findNearestMob() {

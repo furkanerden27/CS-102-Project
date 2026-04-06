@@ -27,7 +27,8 @@ public class FightManager {
 
     public ArrayList<Dice> dices;
 
-    private static final float TARGET_SIZE = 96f;
+    private static final float PLAYER_BATTLE_SIZE = 72f;
+    private static final float MOB_BATTLE_SIZE = 140f;
     private static final float BATTLE_Y = 180f;
     public static final float PLAYER_X = 180f;
     public float playerBattleY, mobBattleX, mobBattleY;
@@ -70,7 +71,7 @@ public class FightManager {
             playerLastY = player.getY();
             playerOrigW = player.getWidth();
             playerOrigH = player.getHeight();
-            float pScale = TARGET_SIZE / Math.max(playerOrigW, playerOrigH);
+            float pScale = PLAYER_BATTLE_SIZE / Math.max(playerOrigW, playerOrigH);
             float pW = playerOrigW * pScale;
             float pH = playerOrigH * pScale;
             player.setSize(pW, pH);
@@ -80,7 +81,7 @@ public class FightManager {
         if (mob != null) {
             mobOrigW = mob.getWidth();
             mobOrigH = mob.getHeight();
-            float mScale = TARGET_SIZE / Math.max(mobOrigW, mobOrigH);
+            float mScale = MOB_BATTLE_SIZE / Math.max(mobOrigW, mobOrigH);
             float mW = mobOrigW * mScale;
             float mH = mobOrigH * mScale;
             mob.setSize(mW, mH);
@@ -180,6 +181,7 @@ public class FightManager {
         }
 
         if (success) {
+            player.playBattleAttack();
             selectedCard.apply(player, mob);
 
             if (mob instanceof Envy) {

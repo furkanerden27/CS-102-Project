@@ -6,8 +6,8 @@ public abstract class Boss extends Mob {
     
     public static int level = 1;
     protected Texture bossTexture;
-    private final int MIN = 40;
-    private final int MAX = 60;
+    private final int MIN = 30;
+    private final int MAX = 50;
 
     public Boss(float posX, float posY) {
         super(posX, posY);
