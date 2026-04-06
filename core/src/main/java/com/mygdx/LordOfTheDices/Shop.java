@@ -11,8 +11,9 @@ public class Shop {
     private ArrayList<Relic> relicsForSale;
     private Inventory inv;
     private int shopLevel;
+    private Player player;
 
-    public Shop(Inventory inv) {
+    public Shop(Inventory inv, Player player) {
         cardsForSale = new ArrayList<Card>();
         relicsForSale = new ArrayList<Relic>();
 
@@ -22,18 +23,36 @@ public class Shop {
             cardsForSale.add(new Card(Suit.HEARTS, intToRank(i)));
             cardsForSale.add(new Card(Suit.SPADES, intToRank(i)));
         }
+        for(int i = 11; i < 15; i++){
+            cardsForSale.add(new SpecialCard(Suit.CLUBS, intToRank(i)));
+            cardsForSale.add(new SpecialCard(Suit.DIAMONDS, intToRank(i)));
+            cardsForSale.add(new SpecialCard(Suit.HEARTS, intToRank(i)));
+            cardsForSale.add(new SpecialCard(Suit.SPADES, intToRank(i)));
+        }
+        relicsForSale.add(new Relic(RelicType.ARMOUR));
+        relicsForSale.add(new Relic(RelicType.DAMAGE));
+        relicsForSale.add(new Relic(RelicType.DEBUFF));
+        relicsForSale.add(new Relic(RelicType.DISCOUNT));
+        relicsForSale.add(new Relic(RelicType.REBIRTH));
+        relicsForSale.add(new Relic(RelicType.BUFF));
+        relicsForSale.add(new Relic(RelicType.GOLD));
+        relicsForSale.add(new Relic(RelicType.HEALTH));
+        relicsForSale.add(new Relic(RelicType.POTION));
 
         this.inv = inv;
         shopLevel = 1;
+        this.player = player;
     }
 
-    public Shop(Inventory inv, ArrayList<Card> cFS, ArrayList<Relic> rFS, int shopLevel) {
+    public Shop(Inventory inv, ArrayList<Card> cFS, ArrayList<Relic> rFS, int shopLevel, Player player) {
         this.inv = inv;
         this.shopLevel = shopLevel;
         cardsForSale = cFS;
         relicsForSale = rFS;
+        this.player = player;
     }
 
+    //Cards
     public String buyCard(Card card) {
         if (card.getBuyingValue() > inv.getGold()) {
             return "You don't have enough\nmoney!";
@@ -58,6 +77,27 @@ public class Shop {
         return sold ? "Alright, I'll take that!" : "Something went wrong...";
     }
 
+    //Relics
+    public String buyRelic(Relic relic){
+        if(getFinalRelicBuyingValue(relic) <= inv.getGold()){
+            if(inv.addRelic(relic)){
+                inv.setGold(inv.getGold() - getFinalRelicBuyingValue(relic));
+                return "Thank you for your purchase!";
+            }
+            else { return "You already have this relic!"; } //these outputs are for the "dialogue" system of the shop.
+        }
+        else{ return "You don't have enough\nmoney!"; }
+    }
+
+    //There's a discount relic, this exists to check for that
+    public int getFinalCardBuyingValue(Card card){
+        return (int)(((double)card.getBuyingValue()) * ((double)player.getRelicDiscountMultiplier()));
+    }
+
+    public int getFinalRelicBuyingValue(Relic relic){
+        return (int)(((double)relic.getBuyingValue()) * ((double)player.getRelicDiscountMultiplier()));
+    }
+    
     public void shopUpgrade() {
         shopLevel++;
     }
