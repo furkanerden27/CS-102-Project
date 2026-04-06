@@ -293,6 +293,7 @@ public class FightManager {
             player.setPosition(playerLastX, playerLastY);
             player.addGold(mob.getGold());
             player.setLocked(false);
+            player.getInventory().addDice(mob.diceDrop());
             screenManager.goBack();
         } else {
             player.setLocked(false);
