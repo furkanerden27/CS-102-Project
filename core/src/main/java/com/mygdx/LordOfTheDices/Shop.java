@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.mygdx.LordOfTheDices.Card.Rank;
 import com.mygdx.LordOfTheDices.Card.Suit;
+import com.mygdx.LordOfTheDices.Relic.RelicType;
 
 public class Shop {
 
@@ -54,14 +55,14 @@ public class Shop {
 
     //Cards
     public String buyCard(Card card) {
-        if (card.getBuyingValue() > inv.getGold()) {
+        if (getFinalCardBuyingValue(card) > inv.getGold()) {
             return "You don't have enough\nmoney!";
         }
         if (inv.hasCard(card)) {
             return "You already have this card!";
         }
         inv.addCard(card);
-        inv.setGold(inv.getGold() - card.getBuyingValue());
+        inv.setGold(inv.getGold() - getFinalCardBuyingValue(card));
         return "Thank you for your purchase!";
     }
 
@@ -130,3 +131,4 @@ public class Shop {
         return Rank.TWO;
     }
 }
+
