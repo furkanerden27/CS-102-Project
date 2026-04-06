@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class BasicMob extends Mob {
 
     public static int level = 0;
-    private final float CONSTANT = 20f;
-    private final int MIN = 15;
-    private final int MAX = 25;
+    private final float CONSTANT = 30f;
+    private final int MIN = 20;
+    private final int MAX = 35;
     private Animation<TextureRegion> standing;
 
     public BasicMob(float posX, float posY) {
@@ -20,7 +20,7 @@ public class BasicMob extends Mob {
             64, 64, new int[]{6});
         setSize(64, 64);
         name = "BasicMob";
-        baseAttackDamage = 5 + 3 * level;
+        baseAttackDamage = 6 + 2 * level;
     }
 
     @Override
@@ -37,12 +37,12 @@ public class BasicMob extends Mob {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
                 isAttacking = false;
-                translate(20, 0);
+                translate(60, 0);
             }
         }
     }

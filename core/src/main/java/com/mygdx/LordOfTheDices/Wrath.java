@@ -17,8 +17,8 @@ public class Wrath extends Boss {
         initAnimationsFromAtlas("Wrath", 
             121, 110, new int[]{4});
         setSize(121,110);
-        baseAttackDamage = 8;
-        health = maxHealth = 130;
+        baseAttackDamage = 12;
+        health = maxHealth = 110;
         rageProb = 0.35;
     }
 
@@ -41,7 +41,7 @@ public class Wrath extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
@@ -50,7 +50,7 @@ public class Wrath extends Boss {
                     showFloatingText("MEGA HIT!", Color.BLACK);
                     showRageText = false;
                 }
-                translate(20, 0);
+                translate(60, 0);
             }
         }
         updateRage();

@@ -96,20 +96,26 @@ public class Card extends Item {
         return cachedRegion;
     }
 
+    // SPADES: TWO=8, THREE=11, FOUR=14 ... TEN=26, robust early game damage
+    // HEARTS: TWO=6, THREE=8 ... TEN=18
+    // CLUBS/DIAMONDS: power is per-turn buff/debuff magnitude
     private float calculateStartingPower() {
         int r = rank.getNumericValue();
         switch (suit) {
-            case SPADES:   return r * 2f;
-            case HEARTS:   return r * 1.5f;
-            case CLUBS:    return r * 0.5f;
-            case DIAMONDS: return r * 0.5f;
+            case SPADES:   return 5 + r * 1.5f;
+            case HEARTS:   return 4 + r * 1.2f;
+            case CLUBS:    return 1 + r * 0.4f;
+            case DIAMONDS: return 1 + r * 0.4f;
             default:       return 0;
         }
     }
 
+    // Dice requirement = rank - 1 so TWO(2) needs 1 die showing 1+
+    // This means even with 1 die early game you can play rank 2-6
     private int calculateDiceRequirement() {
-        return rank.getNumericValue();
+        return Math.max(2, rank.getNumericValue() - 1);
     }
+
     private int getEffectDuration() {
         int r = rank.getNumericValue();
         if (r <= 4) return 2;
@@ -135,8 +141,9 @@ public class Card extends Item {
         }
     }
 
+    // TWO=10, FIVE=25, TEN=50, ACE=70
     private int computeBuyPrice() {
-        return rank.getNumericValue() * 8;
+        return rank.getNumericValue() * 5;
     }
 
     private int computeSellPrice() {

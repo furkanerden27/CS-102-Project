@@ -16,8 +16,8 @@ public class Lust extends Boss {
             55, 93, new int[]{4});
         setSize(55, 93);
         lureProb = 0.5;
-        baseAttackDamage = 8;
-        health = maxHealth = 110;
+        baseAttackDamage = 10;
+        health = maxHealth = 90;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Lust extends Boss {
         stateTime += deltaTime;
         if (isAttacking) {
             if(attackStateTime == 0) {
-                translate(-20, 0);
+                translate(-60, 0);
             }
             attackStateTime += deltaTime;
             if (attackStateTime >= 2f) {
@@ -48,7 +48,7 @@ public class Lust extends Boss {
                     showFloatingText("Lured!", Color.BLUE);
                     showLureText = false;
                 }
-                translate(20, 0);
+                translate(60, 0);
             }
         }
         updateDamageEffect(deltaTime);
