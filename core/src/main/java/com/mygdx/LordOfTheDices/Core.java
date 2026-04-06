@@ -21,6 +21,7 @@ public class Core extends Game {
 
         Card.init(assets.getAtlas(Assets.ATLAS_CARDS));
         Dice.init(assets.getTexture(Assets.TEXTURE_DICE));
+        Relic.init(assets.getAtlas(Assets.ATLAS_RELICS));
         Effect.effects = assets.getAtlas(Assets.ATLAS_EFFECTS);
 
         screen = new ScreenManager(this);
