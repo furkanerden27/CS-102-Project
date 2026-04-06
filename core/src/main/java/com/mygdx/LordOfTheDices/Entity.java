@@ -63,6 +63,8 @@ public abstract class Entity extends Sprite {
         floatingTexts = new ArrayList<>();
     }
 
+    protected String diceDrop(){return null;}
+
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
         TextureRegion region = atlas.findRegion(regionName);
         initAnimationsFromRegion(region, tileWidth, tileHeight, frameCounts);
