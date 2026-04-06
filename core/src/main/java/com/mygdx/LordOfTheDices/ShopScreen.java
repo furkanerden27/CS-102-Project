@@ -266,7 +266,7 @@ public class ShopScreen implements Screen{
                             if(descLabel.getText().toString().equals("Even I won't accept \nsomething like that,\nyou know...")){
                                 game.getAudioManager().playSfx(buzz);
                             }
-                            selectImage.setVisible(false);
+                            selectImage3.setVisible(false);
                             selected = null;
                             isSelected = false;
                             update(2);
@@ -704,6 +704,7 @@ public class ShopScreen implements Screen{
         if (font != null) font.dispose();
     }
 }
+
 
 
 
