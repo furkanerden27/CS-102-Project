@@ -59,6 +59,7 @@ public class Player extends Entity{
         initAnimationsFromAtlas("maincharacter",
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
+        currentAnimation = standingRight;
 
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
         WallMob = (TiledMapTileLayer) map.getLayers().get("WallMob");

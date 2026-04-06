@@ -23,6 +23,11 @@ public class Wrath extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Wrath";
+    }
+
+    @Override
     public void specialAttack(Player player) {
         isAttacking = true;
         attackStateTime = 0;

@@ -23,6 +23,11 @@ public class Gluttony extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Gluttony";
+    }
+
+    @Override
     public void specialAttack(Player player) {
         // Start the attacking animation
         isAttacking = true;

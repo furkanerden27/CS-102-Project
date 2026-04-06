@@ -35,6 +35,11 @@ public class Sloth extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Sloth";
+    }
+
+    @Override
     public void update(float deltaTime) {
         if (!isAlive) { return; }
         stateTime += deltaTime;

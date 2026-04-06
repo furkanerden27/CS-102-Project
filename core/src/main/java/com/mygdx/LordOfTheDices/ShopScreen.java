@@ -68,6 +68,7 @@ public class ShopScreen implements Screen{
     private Image buttonImage4;
     private Image selectImage;
     private Image selectImage2;
+    private Image selectImage3;
 
 
 
@@ -108,6 +109,7 @@ public class ShopScreen implements Screen{
         buttonImage4 = new Image(buttonTexture);
         selectImage = new Image(selectTexture);
         selectImage2 = new Image(selectTexture);
+        selectImage3 = new Image(selectTexture);
 
         isSelected = false;
         isBuy = true;
@@ -133,6 +135,7 @@ public class ShopScreen implements Screen{
                     descLabel.setText("It's okay, take your time.");
                     selectImage.setVisible(false);
                     selectImage2.setVisible(false);
+                    selectImage3.setVisible(false);
                     }
                 }
                 
@@ -147,6 +150,9 @@ public class ShopScreen implements Screen{
 
         selectImage2.setVisible(false);
         selectImage2.setSize(48, 72);
+
+        selectImage3.setVisible(false);
+        selectImage3.setSize(48,48);
         //UI
         invImg.setSize(220, VIRTUAL_HEIGHT - 200);
         invImg.setPosition(15, 0);
@@ -191,6 +197,7 @@ public class ShopScreen implements Screen{
                 relicsScroll.setVisible(false);
                 selectImage.setVisible(false);
                 selectImage2.setVisible(false);
+                selectImage3.setVisible(false);
 
                 descLabel.setText("These are what I have for\nsale!");
 
@@ -220,6 +227,7 @@ public class ShopScreen implements Screen{
                 shopScroll.setVisible(false);
                 selectImage.setVisible(false);
                 selectImage2.setVisible(false);
+                selectImage3.setVisible(false);
 
                 descLabel.setText("You wanna sell something?\nSure, lemme take a look...");
 
@@ -250,11 +258,23 @@ public class ShopScreen implements Screen{
                             isSelected = false;
                             update(0);
                         }
-                        // if(selected instanceof Relic)
-                            //TODO
+                        if(selected instanceof Relic){
+                            descLabel.setText(shop.buyRelic(((Relic)selected)));
+                            if(descLabel.getText().toString().equals("Alright, I'll take that!")){
+                                game.getAudioManager().playSfx(buySound);
+                            }
+                            if(descLabel.getText().toString().equals("Even I won't accept \nsomething like that,\nyou know...")){
+                                game.getAudioManager().playSfx(buzz);
+                            }
+                            selectImage3.setVisible(false);
+                            selected = null;
+                            isSelected = false;
+                            update(2);
+                            update(1);
+                        }
+                            
                     }
                     else{
-                        if(selected instanceof Card){
                             descLabel.setText(shop.sellCard(((Card)selected)));
                             if(descLabel.getText().toString().equals("Alright, I'll take that!")){
                                 game.getAudioManager().playSfx(buySound);
@@ -266,9 +286,6 @@ public class ShopScreen implements Screen{
                             selected = null;
                             isSelected = false;
                             update(0);
-                        }
-                        // if(selected instanceof Relic)
-                            //TODO
                     }
                 }
                 else{
@@ -309,6 +326,7 @@ public class ShopScreen implements Screen{
                 relicsScroll.setVisible(true);
                 selectImage.setVisible(false);
                 selectImage2.setVisible(false);
+                selectImage3.setVisible(false);
 
                 descLabel.setText("These are what I have for\nsale!");
 
@@ -351,7 +369,7 @@ public class ShopScreen implements Screen{
 
         descLabel = new Label("Hello, dear customer!\nLooking for something?\nI have all you might need!", labelStyle);
         descLabel.setWrap(true);
-        leftPanel.add(descLabel).width(200).left().padTop(50).padLeft(18).expandY().top();
+        leftPanel.add(descLabel).width(190).left().padTop(50).padLeft(18).expandY().top();
 
         //Right panel: inventory
         rightPanel = new Table();
@@ -527,7 +545,7 @@ public class ShopScreen implements Screen{
                 cardCell.add(cardImage).size(48, 72).row();
             }
 
-            Label nameLabel = new Label(card.getBuyingValue() + "G", style);
+            Label nameLabel = new Label(shop.getFinalCardBuyingValue(card) + "G", style);
             nameLabel.setFontScale(0.7f);
             cardCell.add(nameLabel).center();
 
@@ -569,39 +587,69 @@ public class ShopScreen implements Screen{
     }
 
     //Builds the relic buy table.
-    //(TODO)
     private Table buildRelicsTable(Label.LabelStyle style) {
         Table table = new Table();
          table.top().left().padLeft(70).padTop(30);
 
-        if (inventory.getRelicCount() == 0) {
+        if (shop.getRelicAmount() == 0) {
             table.add(new Label("No relics collected yet.", style));
             return table;
         }
 
-        for (final Relic relic : inventory.getRelics()) {
+        int col = 0;
+        for (Relic relic : shop.getRelicsForSale()) {
+            
             Table relicCell = new Table();
             relicCell.setUserObject("Item");
 
-            Label relicName = new Label(relic.getName(), style);
+            TextureRegion region = relic.getTextureRegion();
+            if (region != null) {
+                Image relicImage = new Image(region);
+                relicCell.add(relicImage).size(48, 48).row();
+            }
+
+            Label relicName = new Label(shop.getFinalRelicBuyingValue(relic) + "G", style);
             relicName.setFontScale(0.85f);
             relicCell.add(relicName);
 
             relicCell.addListener(new ClickListener() {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    descLabel.setText(relic.getName() + "\n\n" + relic.getDescription()
+                    if(isSelected == false){
+                        descLabel.setText("That is " + relic.getName() + "\n\n" + relic.getDescription()
                         + (relic.isActive() ? "\n[ACTIVE]" : "\n[INACTIVE]"));
+                    } 
+                }
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    descLabel.setText("That is " + relic.getName() + "\n\n" + relic.getDescription() + (relic.isActive() ? "\n[ACTIVE]" : "\n[INACTIVE]"));
+                    isSelected = true;
+                    selected = relic;
+                    selectImage3.setPosition(relicCell.getX(), relicCell.getY() + 14);
+                    selectImage3.setVisible(true);
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    descLabel.setText("Hover over an item to see its description.");
+                    if(isSelected == false){
+                    descLabel.setText("Wanna look for more?\nFair enough.");
+                    }
                 }
             });
-
-            table.add(relicCell).pad(8);
+            if(col == 0){
+                table.add(relicCell).padTop(10);
+            }
+            else{
+                table.add(relicCell).padLeft(90).padTop(10);;
+            }
+            col++;
+                if (col >= 3) {
+                    table.row();
+                    col = 0;
+                }
         }
+        table.addActor(selectImage3);
         return table;
     }
 
@@ -613,14 +661,21 @@ public class ShopScreen implements Screen{
             cardsScroll.setWidget(cardsTable);
         }
         if(i == 1){
-            //TODO
+        relicsTable.clear();
+        relicsTable = buildRelicsTable(labelStyle);
+        relicsScroll.setWidget(relicsTable);
+        }
+        if(i == 2){
+        shopTable.clear();
+        shopTable = buildShopTable(labelStyle);
+        shopScroll.setWidget(shopTable);
         }
     }
 
     @Override
     public void render(float delta) {
-        // ESC or I to go back
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+        // ESC to go back
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             screenManager.goBack();
             return;
         }
@@ -649,5 +704,10 @@ public class ShopScreen implements Screen{
         if (font != null) font.dispose();
     }
 }
+
+
+
+
+
 
 
