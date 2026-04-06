@@ -15,8 +15,9 @@ public class SpecialCard extends Card {
     public SpecialCard(Suit suit, Rank rank) {
         super(suit, rank, true);
         this.effect = buildEffect();
-        description = buildDescription();
         this.condition = assignCondition();
+        description = buildDescription();
+        
     }
 
     public boolean checkSpecialPlay(int[] diceValues) {
