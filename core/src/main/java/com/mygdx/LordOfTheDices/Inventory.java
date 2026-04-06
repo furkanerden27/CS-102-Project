@@ -130,12 +130,6 @@ public class Inventory implements Comparator<Card> {
     public int getRelicCount() { return relics.size(); }
 
 
-    public ArrayList<Relic> getRelics() { return relics; }
-
-    public Relic getRelic(int i) { return relics.get(i); }
-
-    public int getRelicCount() { return relics.size(); }
-
     //Gold
 
     public int getGold() { return gold; }
