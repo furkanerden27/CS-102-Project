@@ -269,7 +269,7 @@ public class ShopScreen implements Screen{
                             selectImage.setVisible(false);
                             selected = null;
                             isSelected = false;
-                            update(0);
+                            update(2);
                             update(1);
                         }
                             
@@ -545,7 +545,7 @@ public class ShopScreen implements Screen{
                 cardCell.add(cardImage).size(48, 72).row();
             }
 
-            Label nameLabel = new Label(card.getBuyingValue() + "G", style);
+            Label nameLabel = new Label(shop.getFinalCardBuyingValue(card) + "G", style);
             nameLabel.setFontScale(0.7f);
             cardCell.add(nameLabel).center();
 
@@ -602,8 +602,6 @@ public class ShopScreen implements Screen{
             Table relicCell = new Table();
             relicCell.setUserObject("Item");
 
-            relicCell.setUserObject("Relic");
-
             TextureRegion region = relic.getTextureRegion();
             if (region != null) {
                 Image relicImage = new Image(region);
@@ -618,7 +616,7 @@ public class ShopScreen implements Screen{
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                     if(isSelected == false){
-                        descLabel.setText(relic.getName() + "\n\n" + relic.getDescription()
+                        descLabel.setText("That is " + relic.getName() + "\n\n" + relic.getDescription()
                         + (relic.isActive() ? "\n[ACTIVE]" : "\n[INACTIVE]"));
                     } 
                 }
@@ -664,8 +662,13 @@ public class ShopScreen implements Screen{
         }
         if(i == 1){
         relicsTable.clear();
-        relicsTable = buildRelicsTable(chosenStyle);
+        relicsTable = buildRelicsTable(labelStyle);
         relicsScroll.setWidget(relicsTable);
+        }
+        if(i == 2){
+        shopTable.clear();
+        shopTable = buildShopTable(labelStyle);
+        shopScroll.setWidget(shopTable);
         }
     }
 
@@ -701,6 +704,9 @@ public class ShopScreen implements Screen{
         if (font != null) font.dispose();
     }
 }
+
+
+
 
 
 
