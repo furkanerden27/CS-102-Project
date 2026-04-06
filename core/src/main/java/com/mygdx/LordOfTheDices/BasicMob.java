@@ -7,8 +7,8 @@ public class BasicMob extends Mob {
 
     public static int level = 0;
     private final float CONSTANT = 20f;
-    private final int MIN = 3;
-    private final int MAX = 6; // can be changed
+    private final int MIN = 15;
+    private final int MAX = 25;
     private Animation<TextureRegion> standing;
 
     public BasicMob(float posX, float posY) {
@@ -20,7 +20,7 @@ public class BasicMob extends Mob {
             64, 64, new int[]{6});
         setSize(64, 64);
         name = "BasicMob";
-        baseAttackDamage = 10 * level; // may be changed later
+        baseAttackDamage = 5 + 3 * level;
     }
 
     @Override
