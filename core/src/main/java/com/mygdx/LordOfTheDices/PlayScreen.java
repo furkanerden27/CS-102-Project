@@ -50,7 +50,7 @@ public class PlayScreen implements Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
         initialiseEntities();
-        shop = new Shop(player.getInventory());
+        shop = new Shop(player.getInventory(), player);
     }
 
     private void initialiseEntities() {
