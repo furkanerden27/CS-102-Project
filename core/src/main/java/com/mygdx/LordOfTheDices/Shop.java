@@ -82,6 +82,7 @@ public class Shop {
         if(getFinalRelicBuyingValue(relic) <= inv.getGold()){
             if(inv.addRelic(relic)){
                 inv.setGold(inv.getGold() - getFinalRelicBuyingValue(relic));
+                relic.apply(player);
                 return "Thank you for your purchase!";
             }
             else { return "You already have this relic!"; } //these outputs are for the "dialogue" system of the shop.
