@@ -362,7 +362,7 @@ public class InventoryScreen implements Screen {
                     diceCell.addListener(new ClickListener() {
                     @Override
                     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                        descLabel.setText(dice.getName() + "\n\n" + dice.getDescription());
+                        descLabel.setText(dice.getName());
                     }
 
                     @Override
