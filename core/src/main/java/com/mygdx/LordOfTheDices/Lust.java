@@ -21,6 +21,11 @@ public class Lust extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Lust";
+    }
+
+    @Override
     public void specialAttack(Player player) {
         isAttacking = true;
         attackStateTime = 0;
