@@ -11,7 +11,6 @@ public class Shop {
     private ArrayList<Card> cardsForSale;
     private ArrayList<Relic> relicsForSale;
     private Inventory inv;
-    private int shopLevel;
     private Player player;
 
     public Shop(Inventory inv, Player player) {
@@ -41,13 +40,11 @@ public class Shop {
         relicsForSale.add(new Relic(RelicType.POTION));
 
         this.inv = inv;
-        shopLevel = 1;
         this.player = player;
     }
 
-    public Shop(Inventory inv, ArrayList<Card> cFS, ArrayList<Relic> rFS, int shopLevel, Player player) {
+    public Shop(Inventory inv, ArrayList<Card> cFS, ArrayList<Relic> rFS, Player player) {
         this.inv = inv;
-        this.shopLevel = shopLevel;
         cardsForSale = cFS;
         relicsForSale = rFS;
         this.player = player;
@@ -103,7 +100,6 @@ public class Shop {
     }
     
     public void shopUpgrade() {
-        shopLevel++;
     }
 
     public Inventory getInv() {
