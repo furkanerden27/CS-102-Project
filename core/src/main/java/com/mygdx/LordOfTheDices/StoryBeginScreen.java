@@ -21,6 +21,7 @@ public class StoryBeginScreen implements Screen {
 
     private final Core game;
     private final ScreenManager screenManager;
+    private PlayerData playerData;
 
     private OrthographicCamera camera;
     private FitViewport viewport;
@@ -38,6 +39,13 @@ public class StoryBeginScreen implements Screen {
     public StoryBeginScreen(Core game, ScreenManager screenManager) {
         this.game = game;
         this.screenManager = screenManager;
+        this.playerData = null;
+    }
+
+    public StoryBeginScreen(Core game, ScreenManager screenManager, PlayerData playerData) {
+        this.game = game;
+        this.screenManager = screenManager;
+        this.playerData = playerData;
     }
 
     @Override
@@ -123,20 +131,28 @@ public class StoryBeginScreen implements Screen {
                 if (currentSlide < slideCount - 1) {
                     currentSlide++;
                 } else {
-                    screenManager.showScreen(Screens.PLAY);
+                    startGame();
                 }
             }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             if (currentSlide < slideCount - 1) currentSlide++;
-            else screenManager.showScreen(Screens.PLAY);
+            else startGame();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && currentSlide > 0) {
             currentSlide--;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             screenManager.showScreen(Screens.MAIN_MENU);
+        }
+    }
+
+    private void startGame() {
+        if (playerData != null) {
+            screenManager.showScreen(Screens.PLAY, playerData);
+        } else {
+            screenManager.showScreen(Screens.PLAY);
         }
     }
 

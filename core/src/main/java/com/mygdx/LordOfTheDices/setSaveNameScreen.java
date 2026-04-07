@@ -277,7 +277,7 @@ public class setSaveNameScreen implements Screen {
                 if (status == 200) {
                     showStatus("Saved: " + name, 2f);
                     Gdx.app.postRunnable(() ->
-                        screenManager.showScreen(Screens.STORY_BEGIN));
+                        game.setScreen(new StoryBeginScreen(game, screenManager, data)));
                 } else {
                     showStatus("Error: " + status, 3f);
                 }
