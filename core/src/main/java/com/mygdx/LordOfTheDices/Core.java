@@ -21,12 +21,12 @@ public class Core extends Game {
 
         Card.init(assets.getAtlas(Assets.ATLAS_CARDS));
         Dice.init(assets.getTexture(Assets.TEXTURE_DICE));
+        Relic.init(assets.getAtlas(Assets.ATLAS_RELICS));
         Effect.effects = assets.getAtlas(Assets.ATLAS_EFFECTS);
 
         screen = new ScreenManager(this);
         audioManager = new AudioManager();
 
-        // Kaydedilmiş fullscreen ayarını uygula
         Preferences prefs = Gdx.app.getPreferences("game_settings");
         if (prefs.getBoolean("fullscreen", false)) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());

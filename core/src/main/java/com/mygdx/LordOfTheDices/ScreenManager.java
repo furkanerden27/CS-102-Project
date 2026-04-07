@@ -22,11 +22,13 @@ public class ScreenManager {
     public void restartLevel() {
         if (previousScreen instanceof PlayScreen) {
             PlayScreen ps = (PlayScreen) previousScreen;
-            PlayerData data = PlayerData.newSave(
+            PlayerData data = PlayerData.fromPlayScreen(
                 ps.getSaveName(),
                 ps.getLevel().getNumber(),
                 200,
-                ps.getCurrentGold()
+                300, 350,
+                ps.getPlayerInventory(),
+                false, false
             );
             previousScreen = null;
             game.setScreen(new PlayScreen(game, data));
@@ -36,10 +38,6 @@ public class ScreenManager {
     }
 
     public void showScreen(Screens screen){
-        //Ama PAUSE için dikkat! Pause ekranına geçerken eski ekranı dispose etmemelisin,
-        // çünkü oyuna geri dönmek isteyeceksin. PAUSE'u ekrana hazır olduğunda bunu düşün.
-
-
         if(screen == Screens.MAIN_MENU)         game.setScreen(new MainMenuScreen(game, this));
 
         else if(screen == Screens.NEW_SAVE)    game.setScreen(new setSaveNameScreen(game, this));

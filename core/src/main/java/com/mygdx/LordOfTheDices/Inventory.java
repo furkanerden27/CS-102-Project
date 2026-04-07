@@ -34,13 +34,17 @@ public class Inventory implements Comparator<Card> {
         cards.add(new Card(Suit.HEARTS, Rank.TWO));
         Collections.sort(cards, this); //look at the bottom for explanation
         dice.add(new Dice("Dice of Greed"));
-        gold = 100; //can be changed
+        gold = 100;
     }
 
     // Dice
 
     public void addDice(String str) {
-        dice.add(new Dice(str));
+         if(str == null) return;
+         for (Dice d : dice) {
+             if (d.getName().equals(str)) return;
+         }
+         dice.add(new Dice(str));
     }
 
     public ArrayList<Dice> getDice() { return dice; }
@@ -106,28 +110,29 @@ public class Inventory implements Comparator<Card> {
     //Relics
 
     //Adds a relic. Relics can't be stacked.
-    // public boolean addRelic(Relic relic) {
-    //     if (hasRelic(relic)) {
-    //         return false;
-    //     }
-    //     relics.add(relic);
-    //     return true;
-    // }
+    public boolean addRelic(Relic relic) {
+        if (hasRelic(relic)) {
+            return false;
+        }
+        relics.add(relic);
+        return true;
+    }
 
-    // public boolean hasRelic(Relic relic) {
-    //     for (Relic r : relics) {
-    //         if (r.getType() == relic.getType()) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    public boolean hasRelic(Relic relic) {
+        for (Relic r : relics) {
+            if (r.getRelicType() == relic.getRelicType()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public ArrayList<Relic> getRelics() { return relics; }
 
     public Relic getRelic(int i) { return relics.get(i); }
 
     public int getRelicCount() { return relics.size(); }
+
 
     //Gold
 
@@ -137,10 +142,10 @@ public class Inventory implements Comparator<Card> {
 
     public void addGold(int amount) { this.gold += amount; }
 
-    /** Returns true if the player can afford the cost. */
+    // Returns true if the player can afford the cost. 
     public boolean canAfford(int cost) { return gold >= cost; }
 
-    /** Spends gold. Returns false if insufficient funds. */
+    // Spends gold. Returns false if insufficient funds. 
     public boolean spendGold(int amount) {
         if (gold < amount) {return false;}
         gold -= amount;

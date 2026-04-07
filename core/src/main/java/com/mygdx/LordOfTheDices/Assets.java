@@ -24,7 +24,7 @@ public class Assets {
     public static final String TEX_CARD_HEARTS     = "Cards/card-hearts.png";
     public static final String TEX_CARD_DIAMONDS   = "Cards/card-diamonds.png";
 
-    private static final int STORY_BEGIN_COUNT = 5;
+    private static final int STORY_BEGIN_COUNT = 6;
     private static final String STORY_BEGIN_FMT = "ui/Story/Story_Beginning_bg/%d.Story_bg.jpeg";
 
     private static final int STORY_END_COUNT = 6;

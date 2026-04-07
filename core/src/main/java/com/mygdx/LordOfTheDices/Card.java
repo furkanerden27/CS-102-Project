@@ -96,37 +96,29 @@ public class Card extends Item {
         return cachedRegion;
     }
 
-    // SPADES: TWO=8, THREE=11, FOUR=14 ... TEN=26, robust early game damage
-    // HEARTS: TWO=6, THREE=8 ... TEN=18
-    // CLUBS/DIAMONDS: power is per-turn buff/debuff magnitude
     private float calculateStartingPower() {
         int r = rank.getNumericValue();
         switch (suit) {
-            case SPADES:   return 5 + r * 1.5f;
-            case HEARTS:   return 4 + r * 1.2f;
-            case CLUBS:    return 1 + r * 0.4f;
-            case DIAMONDS: return 1 + r * 0.4f;
+            case SPADES:   return 4 + r * 2f;
+            case HEARTS:   return 3 + r * 1.5f;
+            case CLUBS:    return 0.08f + r * 0.03f;
+            case DIAMONDS: return 0.08f + r * 0.03f;
             default:       return 0;
         }
     }
 
-    // Dice requirement = rank - 1 so TWO(2) needs 1 die showing 1+
-    // This means even with 1 die early game you can play rank 2-6
     private int calculateDiceRequirement() {
         return Math.max(2, rank.getNumericValue() - 1);
     }
 
     private int getEffectDuration() {
-        int r = rank.getNumericValue();
-        if (r <= 4) return 2;
-        if (r <= 7) return 3;
-        return 4;
+        return 3;
     }
 
     public void apply(Player player, Mob mob) {
         switch (suit) {
             case SPADES:
-                float damage = (power + player.getAttackModifier()) * player.getRelicDamageMultiplier();
+                float damage = power * (1f + player.getAttackModifier()) * player.getRelicDamageMultiplier();
                 mob.takeDamage(Math.max(0, damage));
                 break;
             case HEARTS:
@@ -160,12 +152,10 @@ public class Card extends Item {
                 effectDesc = "Heals " + (int) power + " HP";
                 break;
             case CLUBS:
-                effectDesc = "Weakens enemy by " + String.format("%.1f", power)
-                    + " for " + getEffectDuration() + " turns";
+                effectDesc = "Weakens enemy " + (int)(power * 100) + "% for " + getEffectDuration() + " turns";
                 break;
             case DIAMONDS:
-                effectDesc = "Strengthens you by " + String.format("%.1f", power)
-                    + " for " + getEffectDuration() + " turns";
+                effectDesc = "Strengthens " + (int)(power * 100) + "% for " + getEffectDuration() + " turns";
                 break;
             default:
                 effectDesc = "";

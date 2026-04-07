@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
-    private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
+    private final float GRAVITY = 8f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 150;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer WallMob;
     private TiledMapTileLayer WallBoss;
@@ -55,7 +55,8 @@ public class Player extends Entity{
     }
 
     public Player(float health, float posX, float posY, TiledMap map, Inventory inventory) {
-        super(health, posX, posY);
+        super(200, posX, posY);
+        this.health = health;
         initAnimationsFromAtlas("maincharacter",
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
@@ -205,14 +206,18 @@ public class Player extends Entity{
                     float nextX = getX() + speedX * FIXED_STEP;
                     float nextY = getY() + speedY * FIXED_STEP;
 
-                    if (!isCollision(nextX, getY(), collisionLayer))
+                    if (!isCollision(nextX, getY(), collisionLayer)
+                        && (isMobDefeated || WallMob == null || !isCollision(nextX, getY(), WallMob))
+                        && (isBossDefeated || WallBoss == null || !isCollision(nextX, getY(), WallBoss)))
                     {
                         setX(nextX);
                     }
                     else {
                         speedX = 0;
                     }
-                    if (!isCollision(getX(), nextY, collisionLayer))
+                    if (!isCollision(getX(), nextY, collisionLayer)
+                        && (isMobDefeated || WallMob == null || !isCollision(getX(), nextY, WallMob))
+                        && (isBossDefeated || WallBoss == null || !isCollision(getX(), nextY, WallBoss)))
                     {
                         setY(nextY);
                         isOnGround = false;
@@ -230,6 +235,7 @@ public class Player extends Entity{
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         }
         updateDamageEffect(deltaTime);
+        updateFloatingTexts(deltaTime);
     }
 
     public void addGold(int gold){
@@ -244,6 +250,11 @@ public class Player extends Entity{
         isLocked = t;
     }
 
+    public void setMobDefeated(boolean b){ isMobDefeated = b; }
+    public void setBossDefeated(boolean b){ isBossDefeated = b; }
+    public boolean isMobDefeated(){ return isMobDefeated; }
+    public boolean isBossDefeated(){ return isBossDefeated; }
+
     public void playBattleAttack() {
         if (!isBattleAttacking) {
             isBattleAttacking = true;
@@ -255,6 +266,10 @@ public class Player extends Entity{
 
     public float getAttackModifier(){
         return attackModifier;
+    }
+
+    public void addAttackModifier(float m){
+        attackModifier += m;
     }
 
     public void setAttackModifier(float m){

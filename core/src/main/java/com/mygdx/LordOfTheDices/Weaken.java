@@ -10,13 +10,13 @@ public class Weaken extends Effect{
     @Override
     public void applyEffect(Entity e) {
         if(e instanceof Player){
-            ((Player)e).setAttackModifier(baseValue * magnitude * (-1));
+            ((Player)e).addAttackModifier(-baseValue);
         }
         else if(e instanceof Mob){
-            ((Mob)e).setEffectiveAttackDamage(((Mob)e).getBaseAttackDamage() - (baseValue * magnitude));
+            float current = ((Mob)e).getEffectiveAttackDamage();
+            ((Mob)e).setEffectiveAttackDamage(current * (1f - baseValue));
         }
         super.applyEffect(e);
-
     }
-    
+
 }

@@ -26,6 +26,11 @@ public class Pride extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Pride";
+    }
+    
+    @Override
     public void takeDamage(float damage) {
         // Reducing the incoming damage by the ego shield
         float actualDamage = shieldBroken ? damage : damage * (1 - egoShield);
@@ -73,7 +78,7 @@ public class Pride extends Boss {
         isAttacking = true;
         if(Math.random() < 1 - missProb) {
             attackStateTime = 0;
-            float damage = baseAttackDamage * attackMultiplier;
+            float damage = effectiveAttackDamage * attackMultiplier;
             player.takeDamage(damage);
         }
         else {

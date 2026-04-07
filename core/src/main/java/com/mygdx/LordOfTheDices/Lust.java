@@ -21,10 +21,15 @@ public class Lust extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Lust";
+    }
+
+    @Override
     public void specialAttack(Player player) {
         isAttacking = true;
         attackStateTime = 0;
-        float damage = baseAttackDamage;
+        float damage = effectiveAttackDamage;
         player.takeDamage(damage);
         if (Math.random() < lureProb) {
             player.addEffect(new Lure(1, 0));

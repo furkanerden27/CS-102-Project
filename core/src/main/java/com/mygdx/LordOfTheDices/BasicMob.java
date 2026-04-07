@@ -27,7 +27,7 @@ public class BasicMob extends Mob {
     public void specialAttack(Player player) {
         isAttacking = true;
         attackStateTime = 0;
-        float damage = baseAttackDamage;
+        float damage = effectiveAttackDamage;
         player.takeDamage(damage);
     }
 
@@ -45,6 +45,8 @@ public class BasicMob extends Mob {
                 translate(60, 0);
             }
         }
+        updateDamageEffect(deltaTime);
+        updateFloatingTexts(deltaTime);
     }
 
     @Override

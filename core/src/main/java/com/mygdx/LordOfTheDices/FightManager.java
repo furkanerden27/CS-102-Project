@@ -8,6 +8,7 @@ public class FightManager {
     public enum FightState {
         PLAYER_PICK_CARD,
         PLAYER_ROLL,
+        DICE_ROLLING,
         MOB_TURN,
         FIGHT_END
     }
@@ -39,6 +40,7 @@ public class FightManager {
 
     private float mobTurnTimer;
     private static final float MOB_TURN_DELAY = 2.5f;
+    private boolean waitingForMobAnim;
 
     private float endFightTimer;
     private static final float END_FIGHT_DELAY = 2.0f;
@@ -57,6 +59,7 @@ public class FightManager {
         isPlayerTurn = true;
         selectedCard = null;
         endFightStarted = false;
+        waitingForMobAnim = false;
         mobTurnTimer = 0;
         endFightTimer = 0;
         lastMessage = null;
@@ -90,6 +93,12 @@ public class FightManager {
             mob.setPosition(mobBattleX, mobBattleY);
         }
 
+        player.removeAllEffects();
+        player.setAttackModifier(0);
+        player.setStun(false);
+        mob.removeAllEffects();
+        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
+        mob.setStun(false);
         determineHands();
     }
 
@@ -123,9 +132,26 @@ public class FightManager {
             if (messageTimer <= 0) lastMessage = null;
         }
 
+        if (state == FightState.DICE_ROLLING) {
+            boolean anyRolling = false;
+            for (Dice d : dices) {
+                if (d.isRolling()) { anyRolling = true; break; }
+            }
+            if (!anyRolling) {
+                resolveCardPlay();
+            }
+        }
+
         if (state == FightState.MOB_TURN) {
-            mobTurnTimer += delta;
-            if (mobTurnTimer >= MOB_TURN_DELAY) executeMobTurn();
+            if (waitingForMobAnim) {
+                if (!mob.isAttacking) {
+                    waitingForMobAnim = false;
+                    startPlayerTurn();
+                }
+            } else {
+                mobTurnTimer += delta;
+                if (mobTurnTimer >= MOB_TURN_DELAY) executeMobTurn();
+            }
         }
 
         if (state == FightState.FIGHT_END && endFightStarted) {
@@ -158,11 +184,9 @@ public class FightManager {
         for (Dice d : dices) {
             if (!d.isLocked()) {
                 d.startRolling();
-                d.roll();
             }
         }
-
-        resolveCardPlay();
+        state = FightState.DICE_ROLLING;
     }
 
     private void resolveCardPlay() {
@@ -182,6 +206,11 @@ public class FightManager {
 
         if (success) {
             player.playBattleAttack();
+
+            float healthBefore = 0;
+            if (selectedCard.getSuit() == Card.Suit.SPADES) healthBefore = mob.getHealth();
+            float playerHealthBefore = player.getHealth();
+
             selectedCard.apply(player, mob);
 
             if (mob instanceof Envy) {
@@ -195,10 +224,12 @@ public class FightManager {
 
             switch (selectedCard.getSuit()) {
                 case SPADES:
-                    mob.showFloatingText("-" + (int) selectedCard.getPower(), com.badlogic.gdx.graphics.Color.RED);
+                    int dealt = (int)(healthBefore - mob.getHealth());
+                    mob.showFloatingText("-" + dealt, com.badlogic.gdx.graphics.Color.RED);
                     break;
                 case HEARTS:
-                    player.showFloatingText("+" + (int) selectedCard.getPower(), com.badlogic.gdx.graphics.Color.GREEN);
+                    int healed = (int)(player.getHealth() - playerHealthBefore);
+                    player.showFloatingText("+" + healed, com.badlogic.gdx.graphics.Color.GREEN);
                     break;
                 case CLUBS:
                     mob.showFloatingText("Weakened!", com.badlogic.gdx.graphics.Color.PURPLE);
@@ -253,21 +284,33 @@ public class FightManager {
     }
 
     private void executeMobTurn() {
+        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
         mob.applyEffects();
+        if (!player.isAlive || !mob.isAlive) return;
 
         if (mob.isAlive && !mob.isStunned) {
             mob.specialAttack(player);
-        } else if (mob.isStunned) {
-            mob.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
-            mob.setStun(false);
+            waitingForMobAnim = true;
+        } else {
+            if (mob.isStunned) {
+                mob.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
+                mob.setStun(false);
+            }
+            startPlayerTurn();
         }
-
-        startPlayerTurn();
     }
 
     private void startPlayerTurn() {
+        player.setAttackModifier(0);
         player.applyEffects();
         if (!player.isAlive || !mob.isAlive) return;
+
+        if (player.isStunned) {
+            player.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
+            player.setStun(false);
+            startMobTurn();
+            return;
+        }
 
         isPlayerTurn = true;
         selectedCard = null;
@@ -276,9 +319,6 @@ public class FightManager {
             d.canRoll = true;
             d.setLocked(false);
         }
-
-        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
-        player.setAttackModifier(0);
 
         state = FightState.PLAYER_PICK_CARD;
     }
@@ -293,6 +333,7 @@ public class FightManager {
             player.setPosition(playerLastX, playerLastY);
             player.addGold(mob.getGold());
             player.setLocked(false);
+            player.getInventory().addDice(mob.diceDrop());
             screenManager.goBack();
         } else {
             player.setLocked(false);

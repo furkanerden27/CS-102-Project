@@ -22,7 +22,7 @@ public class Sloth extends Boss {
     @Override
     public void specialAttack(Player player) {
         attackStateTime = 0;
-        float damage = baseAttackDamage;
+        float damage = effectiveAttackDamage;
         if (Math.random() < stunProb) {
             isAttacking = true;
             player.takeDamage(damage);
@@ -32,6 +32,11 @@ public class Sloth extends Boss {
         else {
             showFloatingText("zzz...", Color.BLUE);
         }
+    }
+
+    @Override
+    protected String diceDrop() {
+        return "Dice Of Sloth";
     }
 
     @Override

@@ -18,8 +18,6 @@ public abstract class Effect {
         this.magnitude = 1f;
     }
 
-   
-
     public void applyEffect(Entity e){
         durationLeft--;
         if(didExpire()){

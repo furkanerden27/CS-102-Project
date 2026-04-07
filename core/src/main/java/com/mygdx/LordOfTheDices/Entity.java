@@ -63,6 +63,8 @@ public abstract class Entity extends Sprite {
         floatingTexts = new ArrayList<>();
     }
 
+    protected String diceDrop() {return null;}
+
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
         TextureRegion region = atlas.findRegion(regionName);
         initAnimationsFromRegion(region, tileWidth, tileHeight, frameCounts);
@@ -182,8 +184,8 @@ public abstract class Entity extends Sprite {
         TextureRegion frameToDraw = (currentFrame != null) ? currentFrame : currentAnimation.getKeyFrame(stateTime, true);
         if (isShaking) {
             // Apply shake effect when taking damage
-            float shakeX = (float) (Math.random() * 8 - 4);
-            float shakeY = (float) (Math.random() * 8 - 4);
+            float shakeX = (float) (Math.random() * 20 - 10);
+            float shakeY = (float) (Math.random() * 20 - 10);
             
             float origX = getX();
             float origY = getY();
@@ -227,6 +229,7 @@ public abstract class Entity extends Sprite {
         for(Effect e : effectsRemoveList){
             effectsInFight.remove(e);
         }
+        effectsRemoveList.clear();
     }
     public int getGold(){
         return goldDropped;

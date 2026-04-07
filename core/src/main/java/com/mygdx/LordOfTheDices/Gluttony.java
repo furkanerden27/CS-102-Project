@@ -23,13 +23,18 @@ public class Gluttony extends Boss {
     }
 
     @Override
+    protected String diceDrop() {
+        return "Dice Of Gluttony";
+    }
+
+    @Override
     public void specialAttack(Player player) {
         // Start the attacking animation
         isAttacking = true;
         attackStateTime = 0;
         currentAnimation = attack;
         if (Math.random() < hitProb) {
-            float damage = baseAttackDamage * 4;
+            float damage = effectiveAttackDamage * 4;
             player.takeDamage(damage);
         }
         else {

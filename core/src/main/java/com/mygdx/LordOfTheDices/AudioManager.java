@@ -57,7 +57,6 @@ public class AudioManager {
 
     // ── SFX ──────────────────────────────────────────────────────────────────
 
-    /** Herhangi bir ses efektini mevcut sfxVolume ile çalar. */
     public void playSfx(Sound sound) {
         if (sound != null && sfxVolume > 0f) {
             sound.play(sfxVolume);
@@ -71,8 +70,6 @@ public class AudioManager {
     public float getSfxVolume() {
         return sfxVolume;
     }
-
-    // ── Temizlik ─────────────────────────────────────────────────────────────
 
     public void dispose(){
         if (menuMusic != null) {

@@ -16,5 +16,9 @@ public abstract class Mob extends Entity {
         return baseAttackDamage;
     }
 
+    public float getEffectiveAttackDamage(){
+        return effectiveAttackDamage;
+    }
+
     public abstract void specialAttack(Player player);
 }
