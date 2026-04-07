@@ -15,6 +15,7 @@ A 2D desktop game built with **LibGDX** combining a side-scrolling exploration w
 | Furkan | Erden | [@furkanerden27](https://github.com/furkanerden27/CS-102-Project/commits?author=furkanerden27) | Entity system, maps & play screen |
 | Ömer | Şen | [@0shen6](https://github.com/furkanerden27/CS-102-Project/commits?author=0shen6) | Item/card system & relic management |
 
+Specail thanks to [@Fansesi] for the music
 ---
 
 ## 🎮 Game Description
@@ -157,6 +158,32 @@ core/src/main/java/com/mygdx/LordOfTheDices/
   - Inventory.java and InventoryScreen.java updated
   - Shop and merchant integration completed
   - Merge conflicts resolved, branches integrated
+
+
+  ### Week 7:
+  - Remaining screens added, AssetManager refined
+  - compareTo added to Card for sorting
+  - Map 2 added and completed
+  - BattleScreen updated to work with AssetManager
+  - InventoryScreen created with assets
+  - Firebase integration completed: Inventory can now be saved and loaded
+  - Lust and BasicMob special attacks implemented
+  - All boss special effects implemented
+  - Gold drop system added to PlayScreen
+  - Shop mechanics finalized: buy, sell, discount, relic application
+  - Relic/Dice updates and discount logic applied
+  - Merchant entity placed in maps, interaction layers improved
+  - BattleScreen improved, entity sprites displayed during fights
+  - Fight animations fixed
+  - Invisible collision walls activated
+  - Health bar added, gold display optimized
+  - Bought cards correctly removed from shop inventory
+  - Load/save problems resolved (boss save bug fixed)
+  - Shop optimized, fight logic finalized for all effects
+  - Game effects and mechanics optimized
+  - Tutorial page added
+  - Final merge completed, game ready for presentationCard effects and asset management implemented
+
 
 
 ---
