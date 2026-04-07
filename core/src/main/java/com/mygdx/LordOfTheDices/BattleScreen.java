@@ -153,6 +153,14 @@ public class BattleScreen implements Screen {
                     switchToSecondView();
                 }
             }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                descLabel.setText("SPADES\n\nDeal direct damage to the enemy.\nHigher rank = more damage.\nBoost with DIAMONDS cards.");
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                descLabel.setText(SUIT_OVERVIEW);
+            }
         });
 
         Image clubsImage = new Image(cardClubs);
@@ -163,6 +171,14 @@ public class BattleScreen implements Screen {
                     selectedSuit = Suit.CLUBS;
                     switchToSecondView();
                 }
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                descLabel.setText("CLUBS\n\nWeaken the enemy.\nReduces enemy damage by %.\nStacks multiplicatively.");
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                descLabel.setText(SUIT_OVERVIEW);
             }
         });
 
@@ -175,6 +191,14 @@ public class BattleScreen implements Screen {
                     switchToSecondView();
                 }
             }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                descLabel.setText("DIAMONDS\n\nStrengthen yourself.\nIncreases your damage by %.\nMultiple stacks add up.");
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                descLabel.setText(SUIT_OVERVIEW);
+            }
         });
 
         Image heartsImage = new Image(cardHearts);
@@ -185,6 +209,14 @@ public class BattleScreen implements Screen {
                     selectedSuit = Suit.HEARTS;
                     switchToSecondView();
                 }
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                descLabel.setText("HEARTS\n\nHeal yourself.\nHigher rank = more healing.\nCan restore up to max HP.");
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                descLabel.setText(SUIT_OVERVIEW);
             }
         });
 
@@ -223,14 +255,19 @@ public class BattleScreen implements Screen {
         switchToFirstView();
     }
 
+    private static final String SUIT_OVERVIEW =
+        "SPADES  - Deal damage\n" +
+        "CLUBS   - Weaken enemy (reduces damage%)\n" +
+        "DIAMONDS - Strengthen self (increases damage%)\n" +
+        "HEARTS  - Heal yourself";
+
     public void switchToFirstView() {
-        descLabel.setText("");
+        descLabel.setText(SUIT_OVERVIEW);
         cardsWrapper.clearChildren();
         cardsWrapper.setActor(cardsTable1);
     }
 
     public void switchToSecondView() {
-        descLabel.setText("");
         cardsWrapper.clearChildren();
         updateCards();
         cardsWrapper.setActor(cardsTable2);
@@ -327,16 +364,16 @@ public class BattleScreen implements Screen {
         }
 
         uiFont.setColor(Color.WHITE);
-        uiFont.draw(batch, "Dice: " + manager.getDiceTotal(), 10, 395);
+        uiFont.draw(batch, "Dice: " + manager.getDiceTotal(), 10, 55);
 
         uiFont.setColor(Color.LIGHT_GRAY);
         FightManager.FightState currentState = manager.getState();
         if (currentState == FightManager.FightState.PLAYER_PICK_CARD) {
-            uiFont.draw(batch, "Pick a card!", 10, 375);
+            uiFont.draw(batch, "Pick a card!", 10, 38);
         } else if (currentState == FightManager.FightState.PLAYER_ROLL) {
             Card sel = manager.getSelectedCard();
             if (sel != null) {
-                uiFont.draw(batch, "Selected: " + sel.name + " - Roll!", 10, 375);
+                uiFont.draw(batch, "Selected: " + sel.name + " - Roll!", 10, 38);
             }
         }
 
