@@ -205,14 +205,18 @@ public class Player extends Entity{
                     float nextX = getX() + speedX * FIXED_STEP;
                     float nextY = getY() + speedY * FIXED_STEP;
 
-                    if (!isCollision(nextX, getY(), collisionLayer))
+                    if (!isCollision(nextX, getY(), collisionLayer)
+                        && (isMobDefeated || WallMob == null || !isCollision(nextX, getY(), WallMob))
+                        && (isBossDefeated || WallBoss == null || !isCollision(nextX, getY(), WallBoss)))
                     {
                         setX(nextX);
                     }
                     else {
                         speedX = 0;
                     }
-                    if (!isCollision(getX(), nextY, collisionLayer))
+                    if (!isCollision(getX(), nextY, collisionLayer)
+                        && (isMobDefeated || WallMob == null || !isCollision(getX(), nextY, WallMob))
+                        && (isBossDefeated || WallBoss == null || !isCollision(getX(), nextY, WallBoss)))
                     {
                         setY(nextY);
                         isOnGround = false;
@@ -244,6 +248,11 @@ public class Player extends Entity{
     public void setLocked(boolean t){
         isLocked = t;
     }
+
+    public void setMobDefeated(boolean b){ isMobDefeated = b; }
+    public void setBossDefeated(boolean b){ isBossDefeated = b; }
+    public boolean isMobDefeated(){ return isMobDefeated; }
+    public boolean isBossDefeated(){ return isBossDefeated; }
 
     public void playBattleAttack() {
         if (!isBattleAttacking) {

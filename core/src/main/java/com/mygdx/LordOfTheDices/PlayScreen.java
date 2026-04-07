@@ -79,6 +79,9 @@ public class PlayScreen implements Screen {
             player.getInventory().addDice(diceName);
         }
 
+        player.setMobDefeated(playerData.mobDefeated);
+        player.setBossDefeated(playerData.bossDefeated);
+
         for (Relic r : player.getInventory().getRelics()) {
             r.reapply(player);
         }
@@ -292,6 +295,8 @@ public class PlayScreen implements Screen {
         for (Entity e : entities) {
             if (!e.isAlive()) {
                 toRemove.add(e);
+                if (e instanceof Boss) player.setBossDefeated(true);
+                else if (e instanceof Mob) player.setMobDefeated(true);
             }
         }
         for (Entity e : toRemove) {
@@ -314,6 +319,9 @@ public class PlayScreen implements Screen {
     public float getPlayerX() { return player.getX(); }
 
     public float getPlayerY() { return player.getY(); }
+
+    public boolean isMobDefeated() { return player.isMobDefeated(); }
+    public boolean isBossDefeated() { return player.isBossDefeated(); }
 
     public Inventory getPlayerInventory() { return player.getInventory(); }
 

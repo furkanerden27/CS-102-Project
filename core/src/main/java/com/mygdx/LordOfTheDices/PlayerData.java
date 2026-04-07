@@ -15,6 +15,8 @@ public class PlayerData {
     public float playerX;
     public float playerY;
     public long timestamp;
+    public boolean mobDefeated;
+    public boolean bossDefeated;
 
     //Inventory data
     public ArrayList<String> cards;
@@ -28,13 +30,16 @@ public class PlayerData {
     }
 
     public static PlayerData fromPlayScreen(String saveName, int level, float health,
-                                            float x, float y, Inventory inv) {
+                                            float x, float y, Inventory inv,
+                                            boolean mobDefeated, boolean bossDefeated) {
         PlayerData data = new PlayerData();
         data.saveName = saveName;
         data.currentLevel = level;
         data.currentHealth = health;
         data.playerX = x;
         data.playerY = y;
+        data.mobDefeated = mobDefeated;
+        data.bossDefeated = bossDefeated;
         data.timestamp = System.currentTimeMillis();
         data.currentMoney = inv.getGold();
 
@@ -58,6 +63,8 @@ public class PlayerData {
         data.currentHealth = player.getHealth();
         data.playerX = player.getX();
         data.playerY = player.getY();
+        data.mobDefeated = player.isMobDefeated();
+        data.bossDefeated = player.isBossDefeated();
         data.timestamp = System.currentTimeMillis();
 
         Inventory inv = player.getInventory();
@@ -126,7 +133,7 @@ public class PlayerData {
     }
 
     // Serialize to JSON string for Firebase
-    public String toJson() {
+    public String toJson(){
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append("\"saveName\":\"").append(escapeJson(saveName)).append("\",");
@@ -138,6 +145,8 @@ public class PlayerData {
         sb.append("\"cards\":").append(toJsonArray(cards)).append(",");
         sb.append("\"dice\":").append(toJsonArray(dice)).append(",");
         sb.append("\"relics\":").append(toJsonArray(relics)).append(",");
+        sb.append("\"mobDefeated\":").append(mobDefeated).append(",");
+        sb.append("\"bossDefeated\":").append(bossDefeated).append(",");
         sb.append("\"timestamp\":").append(timestamp);
         sb.append("}");
         return sb.toString();
@@ -158,6 +167,8 @@ public class PlayerData {
         data.cards = extractArray(json, "cards");
         data.dice = extractArray(json, "dice");
         data.relics = extractArray(json, "relics");
+        data.mobDefeated = extractBoolean(json, "mobDefeated");
+        data.bossDefeated = extractBoolean(json, "bossDefeated");
 
         if (data.saveName == null || data.saveName.isEmpty()) return null;
         return data;
@@ -248,6 +259,14 @@ public class PlayerData {
             end++;
         try { return Float.parseFloat(json.substring(start, end)); }
         catch (NumberFormatException e) { return 0; }
+    }
+
+    private static boolean extractBoolean(String json, String key) {
+        String search = "\"" + key + "\":";
+        int start = json.indexOf(search);
+        if (start == -1) return false;
+        start += search.length();
+        return json.regionMatches(start, "true", 0, 4);
     }
 
     private static long extractLong(String json, String key) {

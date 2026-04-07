@@ -27,7 +27,8 @@ public class ScreenManager {
                 ps.getLevel().getNumber(),
                 200,
                 300, 350,
-                ps.getPlayerInventory()
+                ps.getPlayerInventory(),
+                false, false
             );
             previousScreen = null;
             game.setScreen(new PlayScreen(game, data));
