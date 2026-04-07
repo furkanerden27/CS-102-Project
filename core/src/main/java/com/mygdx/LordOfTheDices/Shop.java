@@ -18,7 +18,7 @@ public class Shop {
         cardsForSale = new ArrayList<Card>();
         relicsForSale = new ArrayList<Relic>();
 
-        for (int i = 2; i <= 14; i++) {
+        for (int i = 2; i <= 10; i++) {
             cardsForSale.add(new Card(Suit.CLUBS, intToRank(i)));
             cardsForSale.add(new Card(Suit.DIAMONDS, intToRank(i)));
             cardsForSale.add(new Card(Suit.HEARTS, intToRank(i)));
@@ -63,6 +63,7 @@ public class Shop {
         }
         inv.addCard(card);
         inv.setGold(inv.getGold() - getFinalCardBuyingValue(card));
+        cardsForSale.remove(card);
         return "Thank you for your purchase!";
     }
 
@@ -74,6 +75,7 @@ public class Shop {
         boolean sold = inv.removeCard(card);
         if (sold) {
             inv.setGold(inv.getGold() + card.getSellingValue());
+            cardsForSale.add(card);
         }
         return sold ? "Alright, I'll take that!" : "Something went wrong...";
     }

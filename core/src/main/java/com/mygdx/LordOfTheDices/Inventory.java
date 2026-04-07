@@ -40,7 +40,11 @@ public class Inventory implements Comparator<Card> {
     // Dice
 
     public void addDice(String str) {
-         if(str != null){dice.add(new Dice(str));}
+         if(str == null) return;
+         for (Dice d : dice) {
+             if (d.getName().equals(str)) return;
+         }
+         dice.add(new Dice(str));
     }
 
     public ArrayList<Dice> getDice() { return dice; }

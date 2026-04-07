@@ -257,6 +257,7 @@ public class ShopScreen implements Screen{
                             selected = null;
                             isSelected = false;
                             update(0);
+                            update(2);
                         }
                         if(selected instanceof Relic){
                             descLabel.setText(shop.buyRelic(((Relic)selected)));
@@ -286,6 +287,7 @@ public class ShopScreen implements Screen{
                             selected = null;
                             isSelected = false;
                             update(0);
+                            update(2);
                     }
                 }
                 else{
@@ -658,17 +660,20 @@ public class ShopScreen implements Screen{
         if (i == 0){
             cardsTable.clear();
             cardsTable = buildCardsTable(labelStyle);
-            cardsScroll.setWidget(cardsTable);
+            cardsScroll.setActor(cardsTable);
+            cardsScroll.layout();
         }
         if(i == 1){
         relicsTable.clear();
         relicsTable = buildRelicsTable(labelStyle);
-        relicsScroll.setWidget(relicsTable);
+        relicsScroll.setActor(relicsTable);
+        relicsScroll.layout();
         }
         if(i == 2){
         shopTable.clear();
         shopTable = buildShopTable(labelStyle);
-        shopScroll.setWidget(shopTable);
+        shopScroll.setActor(shopTable);
+        shopScroll.layout();
         }
     }
 
