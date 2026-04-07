@@ -184,8 +184,8 @@ public abstract class Entity extends Sprite {
         TextureRegion frameToDraw = (currentFrame != null) ? currentFrame : currentAnimation.getKeyFrame(stateTime, true);
         if (isShaking) {
             // Apply shake effect when taking damage
-            float shakeX = (float) (Math.random() * 8 - 4);
-            float shakeY = (float) (Math.random() * 8 - 4);
+            float shakeX = (float) (Math.random() * 20 - 10);
+            float shakeY = (float) (Math.random() * 20 - 10);
             
             float origX = getX();
             float origY = getY();

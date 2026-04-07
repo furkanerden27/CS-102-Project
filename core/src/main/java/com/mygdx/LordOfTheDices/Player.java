@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player extends Entity{
-    private final float GRAVITY = 1f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 70;
+    private final float GRAVITY = 8f, FRICTION = 5f, ACC = 15, MAX_SPEED = 200, JUMP_SPEED = 150;
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer WallMob;
     private TiledMapTileLayer WallBoss;
@@ -230,6 +230,7 @@ public class Player extends Entity{
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         }
         updateDamageEffect(deltaTime);
+        updateFloatingTexts(deltaTime);
     }
 
     public void addGold(int gold){

@@ -32,7 +32,7 @@ public class FloatingText {
         this.text = text;
         this.x = x;
         this.y = y;
-        this.color = color;
+        this.color = new Color(color);
         this.font = font;
         this.velocityY = 50f; // pixels per second upwards
         this.duration = 2f; // seconds

@@ -45,6 +45,8 @@ public class BasicMob extends Mob {
                 translate(60, 0);
             }
         }
+        updateDamageEffect(deltaTime);
+        updateFloatingTexts(deltaTime);
     }
 
     @Override

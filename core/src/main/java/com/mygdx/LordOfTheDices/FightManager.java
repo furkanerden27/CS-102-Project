@@ -39,6 +39,7 @@ public class FightManager {
 
     private float mobTurnTimer;
     private static final float MOB_TURN_DELAY = 2.5f;
+    private boolean waitingForMobAnim;
 
     private float endFightTimer;
     private static final float END_FIGHT_DELAY = 2.0f;
@@ -57,6 +58,7 @@ public class FightManager {
         isPlayerTurn = true;
         selectedCard = null;
         endFightStarted = false;
+        waitingForMobAnim = false;
         mobTurnTimer = 0;
         endFightTimer = 0;
         lastMessage = null;
@@ -124,8 +126,15 @@ public class FightManager {
         }
 
         if (state == FightState.MOB_TURN) {
-            mobTurnTimer += delta;
-            if (mobTurnTimer >= MOB_TURN_DELAY) executeMobTurn();
+            if (waitingForMobAnim) {
+                if (!mob.isAttacking) {
+                    waitingForMobAnim = false;
+                    startPlayerTurn();
+                }
+            } else {
+                mobTurnTimer += delta;
+                if (mobTurnTimer >= MOB_TURN_DELAY) executeMobTurn();
+            }
         }
 
         if (state == FightState.FIGHT_END && endFightStarted) {
@@ -257,12 +266,14 @@ public class FightManager {
 
         if (mob.isAlive && !mob.isStunned) {
             mob.specialAttack(player);
-        } else if (mob.isStunned) {
-            mob.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
-            mob.setStun(false);
+            waitingForMobAnim = true;
+        } else {
+            if (mob.isStunned) {
+                mob.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
+                mob.setStun(false);
+            }
+            startPlayerTurn();
         }
-
-        startPlayerTurn();
     }
 
     private void startPlayerTurn() {
