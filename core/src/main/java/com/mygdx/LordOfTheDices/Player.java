@@ -55,7 +55,8 @@ public class Player extends Entity{
     }
 
     public Player(float health, float posX, float posY, TiledMap map, Inventory inventory) {
-        super(health, posX, posY);
+        super(200, posX, posY);
+        this.health = health;
         initAnimationsFromAtlas("maincharacter",
             32, 32, new int[]{2, 2, 4, 8, 6, 8, 3, 8, 8});
         setSize(24, 24);
