@@ -22,11 +22,12 @@ public class ScreenManager {
     public void restartLevel() {
         if (previousScreen instanceof PlayScreen) {
             PlayScreen ps = (PlayScreen) previousScreen;
-            PlayerData data = PlayerData.newSave(
+            PlayerData data = PlayerData.fromPlayScreen(
                 ps.getSaveName(),
                 ps.getLevel().getNumber(),
                 200,
-                ps.getCurrentGold()
+                300, 350,
+                ps.getPlayerInventory()
             );
             previousScreen = null;
             game.setScreen(new PlayScreen(game, data));

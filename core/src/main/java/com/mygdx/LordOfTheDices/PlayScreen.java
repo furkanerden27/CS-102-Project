@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class PlayScreen implements Screen {
@@ -23,8 +25,6 @@ public class PlayScreen implements Screen {
     private Player player;
     private OrthographicCamera camera;
     private ArrayList<Entity> entities;
-    private float stateTime = 0;
-    private FloatingText goldDisplay;
     private Texture pauseBtnTexture;
     private Shop shop;
     private float merchantX = -1;
@@ -32,6 +32,8 @@ public class PlayScreen implements Screen {
     private String saveName;
     private Level level;
     private PlayerData playerData;
+    private ShapeRenderer shapeRenderer;
+    private BitmapFont hudFont;
 
     public PlayScreen(Core game) {
         this(game, PlayerData.newSave("", 1, 200, 100));
@@ -49,11 +51,16 @@ public class PlayScreen implements Screen {
         map = assets.getMap(level.getMapFile());
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         pauseBtnTexture = assets.getTexture(Assets.TEX_PAUSE_BTN);
+        shapeRenderer = new ShapeRenderer();
+        hudFont = new BitmapFont();
+        hudFont.getData().setScale(0.5f);
+        hudFont.setUseIntegerPositions(false);
         initialiseEntities();
         shop = new Shop(player.getInventory(), player);
     }
 
     private void initialiseEntities() {
+        BasicMob.level = 0;
         entities = new ArrayList<>();
         float px = (playerData.playerX == 0 && playerData.playerY == 0) ? 300 : playerData.playerX;
         float py = (playerData.playerX == 0 && playerData.playerY == 0) ? 350 : playerData.playerY;
@@ -66,8 +73,10 @@ public class PlayScreen implements Screen {
             player.getInventory().setGold(playerData.currentMoney);
         }
         int targetDice = Math.min(level.getNumber(), 6);
-        while (player.getInventory().getDiceCount() < targetDice) {
-            player.getInventory().addDice("Dice " + (player.getInventory().getDiceCount() + 1));
+        for (int i = 1; i < level.getNumber() && player.getInventory().getDiceCount() < targetDice; i++) {
+            Level prev = Level.fromNumber(i);
+            String diceName = "Dice Of " + prev.getBossName();
+            player.getInventory().addDice(diceName);
         }
 
         for (Relic r : player.getInventory().getRelics()) {
@@ -93,9 +102,6 @@ public class PlayScreen implements Screen {
             entities.add(boss);
         }
 
-        goldDisplay = new FloatingText("Gold: 0", 0, 0, Color.GOLD);
-        goldDisplay.setImmovable();
-        goldDisplay.setDurationIndefinite();
     }
 
     private Boss createBoss(String bossName, float x, float y) {
@@ -128,10 +134,25 @@ public class PlayScreen implements Screen {
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        float goldX = camera.position.x - (viewport.getWorldWidth() / 2) + 20;
-        float goldY = camera.position.y + (viewport.getWorldHeight() / 2) - 15;
-        goldDisplay.setPosition(goldX, goldY);
-        goldDisplay.setText("Gold: " + player.getInventory().getGold());
+        float halfW = viewport.getWorldWidth() / 2f;
+        float halfH = viewport.getWorldHeight() / 2f;
+        float hudLeft = camera.position.x - halfW + 5;
+        float hudTop = camera.position.y + halfH - 5;
+        float hudRight = camera.position.x + halfW - 5;
+
+        float hpBarW = 60f, hpBarH = 5f;
+        float hpBarX = hudLeft;
+        float hpBarY = hudTop - hpBarH;
+        float healthRatio = player.getHealth() / player.getMaxHealth();
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setAutoShapeType(true);
+        shapeRenderer.begin();
+        shapeRenderer.setColor(0.3f, 0.05f, 0.05f, 0.9f);
+        shapeRenderer.rect(hpBarX, hpBarY, hpBarW, hpBarH);
+        shapeRenderer.setColor(1f - healthRatio, healthRatio * 0.85f, 0.05f, 1f);
+        shapeRenderer.rect(hpBarX, hpBarY, hpBarW * healthRatio, hpBarH);
+        shapeRenderer.end();
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -139,15 +160,19 @@ public class PlayScreen implements Screen {
             e.draw(game.batch);
         }
 
-        if (goldDisplay != null) {
-            goldDisplay.render(game.batch);
-        }
+        hudFont.setColor(Color.WHITE);
+        hudFont.draw(game.batch, (int) player.getHealth() + "/" + (int) player.getMaxHealth(),
+            hpBarX, hpBarY - 2);
+
+        hudFont.setColor(Color.GOLD);
+        hudFont.draw(game.batch, "Gold: " + player.getInventory().getGold(),
+            hpBarX, hpBarY - 14);
 
         float btnScale = 0.1f;
         float btnW = pauseBtnTexture.getWidth() * btnScale;
         float btnH = pauseBtnTexture.getHeight() * btnScale;
-        float btnX = camera.position.x + (viewport.getWorldWidth() / 2) - btnW + 5;
-        float btnY = camera.position.y + (viewport.getWorldHeight() / 2) - btnH + 5;
+        float btnX = hudRight - btnW;
+        float btnY = hudTop - btnH;
         game.batch.draw(pauseBtnTexture, btnX, btnY, btnW, btnH);
 
         game.batch.end();
@@ -169,6 +194,7 @@ public class PlayScreen implements Screen {
             screenManager.showScreen(Screens.STORY_END);
         } else {
             PlayerData data = PlayerData.fromPlayer(saveName, next.getNumber(), player);
+            data.currentHealth = 200;
             data.playerX = 300;
             data.playerY = 350;
             saveToFirebase(data);

@@ -99,7 +99,13 @@ public class PlayerData {
                 Suit suit = Suit.valueOf(split[0]);
                 int rankVal = Integer.parseInt(split[1]);
                 Rank rank = intToRank(rankVal);
-                if (rank != null) cardList.add(new Card(suit, rank));
+                if (rank != null) {
+                    if (rankVal >= 11) {
+                        cardList.add(new SpecialCard(suit, rank));
+                    } else {
+                        cardList.add(new Card(suit, rank));
+                    }
+                }
             }
         }
         for (String s : dice) {

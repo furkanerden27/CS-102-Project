@@ -180,6 +180,7 @@ public class PauseScreen implements Screen {
 
         PlayerData data = PlayerData.fromPlayScreen(saveName, ps.getLevel().getNumber(),
             ps.getPlayerHealth(), ps.getPlayerX(), ps.getPlayerY(), ps.getPlayerInventory());
+        System.out.println("[SAVE] Gold: " + data.currentMoney + " HP: " + data.currentHealth + " JSON: " + data.toJson());
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/" + saveName + ".json";
 
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.PUT);
