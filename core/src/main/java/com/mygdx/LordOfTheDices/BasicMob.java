@@ -27,7 +27,7 @@ public class BasicMob extends Mob {
     public void specialAttack(Player player) {
         isAttacking = true;
         attackStateTime = 0;
-        float damage = baseAttackDamage;
+        float damage = effectiveAttackDamage;
         player.takeDamage(damage);
     }
 

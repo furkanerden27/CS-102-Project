@@ -59,7 +59,7 @@ public class Envy extends Boss {
             mimic(player);
         } 
         else {
-            player.takeDamage(baseAttackDamage);
+            player.takeDamage(effectiveAttackDamage);
         }
         lastPlayedCard = null;
     }

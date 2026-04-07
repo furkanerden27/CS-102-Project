@@ -8,6 +8,7 @@ public class FightManager {
     public enum FightState {
         PLAYER_PICK_CARD,
         PLAYER_ROLL,
+        DICE_ROLLING,
         MOB_TURN,
         FIGHT_END
     }
@@ -92,6 +93,12 @@ public class FightManager {
             mob.setPosition(mobBattleX, mobBattleY);
         }
 
+        player.removeAllEffects();
+        player.setAttackModifier(0);
+        player.setStun(false);
+        mob.removeAllEffects();
+        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
+        mob.setStun(false);
         determineHands();
     }
 
@@ -123,6 +130,16 @@ public class FightManager {
         if (lastMessage != null) {
             messageTimer -= delta;
             if (messageTimer <= 0) lastMessage = null;
+        }
+
+        if (state == FightState.DICE_ROLLING) {
+            boolean anyRolling = false;
+            for (Dice d : dices) {
+                if (d.isRolling()) { anyRolling = true; break; }
+            }
+            if (!anyRolling) {
+                resolveCardPlay();
+            }
         }
 
         if (state == FightState.MOB_TURN) {
@@ -167,11 +184,9 @@ public class FightManager {
         for (Dice d : dices) {
             if (!d.isLocked()) {
                 d.startRolling();
-                d.roll();
             }
         }
-
-        resolveCardPlay();
+        state = FightState.DICE_ROLLING;
     }
 
     private void resolveCardPlay() {
@@ -191,6 +206,11 @@ public class FightManager {
 
         if (success) {
             player.playBattleAttack();
+
+            float healthBefore = 0;
+            if (selectedCard.getSuit() == Card.Suit.SPADES) healthBefore = mob.getHealth();
+            float playerHealthBefore = player.getHealth();
+
             selectedCard.apply(player, mob);
 
             if (mob instanceof Envy) {
@@ -204,10 +224,12 @@ public class FightManager {
 
             switch (selectedCard.getSuit()) {
                 case SPADES:
-                    mob.showFloatingText("-" + (int) selectedCard.getPower(), com.badlogic.gdx.graphics.Color.RED);
+                    int dealt = (int)(healthBefore - mob.getHealth());
+                    mob.showFloatingText("-" + dealt, com.badlogic.gdx.graphics.Color.RED);
                     break;
                 case HEARTS:
-                    player.showFloatingText("+" + (int) selectedCard.getPower(), com.badlogic.gdx.graphics.Color.GREEN);
+                    int healed = (int)(player.getHealth() - playerHealthBefore);
+                    player.showFloatingText("+" + healed, com.badlogic.gdx.graphics.Color.GREEN);
                     break;
                 case CLUBS:
                     mob.showFloatingText("Weakened!", com.badlogic.gdx.graphics.Color.PURPLE);
@@ -256,14 +278,16 @@ public class FightManager {
     }
 
     private void startMobTurn() {
+        player.setAttackModifier(0);
+        player.applyEffects();
+        if (!player.isAlive || !mob.isAlive) return;
+
         isPlayerTurn = false;
         state = FightState.MOB_TURN;
         mobTurnTimer = 0;
     }
 
     private void executeMobTurn() {
-        mob.applyEffects();
-
         if (mob.isAlive && !mob.isStunned) {
             mob.specialAttack(player);
             waitingForMobAnim = true;
@@ -277,10 +301,8 @@ public class FightManager {
     }
 
     private void startPlayerTurn() {
-        player.setAttackModifier(0);
         mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
-
-        player.applyEffects();
+        mob.applyEffects();
         if (!player.isAlive || !mob.isAlive) return;
 
         if (player.isStunned) {

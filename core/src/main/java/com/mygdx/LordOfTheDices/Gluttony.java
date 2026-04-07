@@ -34,7 +34,7 @@ public class Gluttony extends Boss {
         attackStateTime = 0;
         currentAnimation = attack;
         if (Math.random() < hitProb) {
-            float damage = baseAttackDamage * 4;
+            float damage = effectiveAttackDamage * 4;
             player.takeDamage(damage);
         }
         else {

@@ -375,6 +375,8 @@ public class BattleScreen implements Screen {
             if (sel != null) {
                 uiFont.draw(batch, "Selected: " + sel.name + " - Roll!", 10, 38);
             }
+        } else if (currentState == FightManager.FightState.DICE_ROLLING) {
+            uiFont.draw(batch, "Rolling...", 10, 38);
         }
 
         String msg = manager.getLastMessage();

@@ -36,7 +36,7 @@ public class Wrath extends Boss {
             showRageText = true;
         }
         else {
-            player.takeDamage(baseAttackDamage);
+            player.takeDamage(effectiveAttackDamage);
         }
     }
 

@@ -78,7 +78,7 @@ public class Pride extends Boss {
         isAttacking = true;
         if(Math.random() < 1 - missProb) {
             attackStateTime = 0;
-            float damage = baseAttackDamage * attackMultiplier;
+            float damage = effectiveAttackDamage * attackMultiplier;
             player.takeDamage(damage);
         }
         else {

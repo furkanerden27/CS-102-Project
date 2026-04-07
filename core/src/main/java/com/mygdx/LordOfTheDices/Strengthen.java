@@ -10,12 +10,13 @@ public class Strengthen extends Effect{
     @Override
     public void applyEffect(Entity e) {
         if(e instanceof Player){
-            ((Player)e).addAttackModifier(baseValue * magnitude);
+            ((Player)e).addAttackModifier(baseValue);
         }
         else if(e instanceof Mob){
-            ((Mob)e).setEffectiveAttackDamage(((Mob)e).getEffectiveAttackDamage() + (baseValue * magnitude));
+            float current = ((Mob)e).getEffectiveAttackDamage();
+            ((Mob)e).setEffectiveAttackDamage(current * (1f + baseValue));
         }
         super.applyEffect(e);
     }
-    
+
 }

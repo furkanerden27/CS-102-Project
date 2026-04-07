@@ -62,7 +62,7 @@ public class PlayScreen implements Screen {
     private void initialiseEntities() {
         BasicMob.level = 0;
         entities = new ArrayList<>();
-        
+
         Merchant merchant = new Merchant(0, 0);
         merchant.setEntity(map);
         merchantX = merchant.getX();
@@ -201,11 +201,14 @@ public class PlayScreen implements Screen {
         if (next == null) {
             deleteFromFirebase();
             screenManager.showScreen(Screens.STORY_END);
-        } else {
+        } 
+        else {
             PlayerData data = PlayerData.fromPlayer(saveName, next.getNumber(), player);
             data.currentHealth = 200;
             data.playerX = 300;
             data.playerY = 350;
+            data.mobDefeated = false;
+            data.bossDefeated = false;
             saveToFirebase(data);
             screenManager.showScreen(Screens.PLAY, data);
         }
