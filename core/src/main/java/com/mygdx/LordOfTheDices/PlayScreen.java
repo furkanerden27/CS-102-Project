@@ -62,6 +62,12 @@ public class PlayScreen implements Screen {
     private void initialiseEntities() {
         BasicMob.level = 0;
         entities = new ArrayList<>();
+        
+        Merchant merchant = new Merchant(0, 0);
+        merchant.setEntity(map);
+        merchantX = merchant.getX();
+        entities.add(merchant);
+
         float px = (playerData.playerX == 0 && playerData.playerY == 0) ? 300 : playerData.playerX;
         float py = (playerData.playerX == 0 && playerData.playerY == 0) ? 350 : playerData.playerY;
 
@@ -79,27 +85,30 @@ public class PlayScreen implements Screen {
             player.getInventory().addDice(diceName);
         }
 
+        player.setMobDefeated(playerData.mobDefeated);
+        player.setBossDefeated(playerData.bossDefeated);
+
         for (Relic r : player.getInventory().getRelics()) {
             r.reapply(player);
         }
         entities.add(player);
 
-        BasicMob mob = new BasicMob(0, 0);
-        mob.setEntity(map);
-        entities.add(mob);
+        if (!playerData.mobDefeated) {
+            BasicMob mob = new BasicMob(0, 0);
+            mob.setEntity(map);
+            entities.add(mob);
+        }
 
-        Merchant merchant = new Merchant(0, 0);
-        merchant.setEntity(map);
-        merchantX = merchant.getX();
-        entities.add(merchant);
 
-        Boss boss = createBoss(level.getBossName(), 0, 0);
-        if (boss != null) {
-            String originalName = boss.name;
-            boss.name = "Boss";
-            boss.setEntity(map);
-            boss.name = originalName;
-            entities.add(boss);
+        if (!playerData.bossDefeated) {
+            Boss boss = createBoss(level.getBossName(), 0, 0);
+            if (boss != null) {
+                String originalName = boss.name;
+                boss.name = "Boss";
+                boss.setEntity(map);
+                boss.name = originalName;
+                entities.add(boss);
+            }
         }
 
     }
@@ -292,6 +301,8 @@ public class PlayScreen implements Screen {
         for (Entity e : entities) {
             if (!e.isAlive()) {
                 toRemove.add(e);
+                if (e instanceof Boss) player.setBossDefeated(true);
+                else if (e instanceof Mob) player.setMobDefeated(true);
             }
         }
         for (Entity e : toRemove) {
@@ -314,6 +325,9 @@ public class PlayScreen implements Screen {
     public float getPlayerX() { return player.getX(); }
 
     public float getPlayerY() { return player.getY(); }
+
+    public boolean isMobDefeated() { return player.isMobDefeated(); }
+    public boolean isBossDefeated() { return player.isBossDefeated(); }
 
     public Inventory getPlayerInventory() { return player.getInventory(); }
 
