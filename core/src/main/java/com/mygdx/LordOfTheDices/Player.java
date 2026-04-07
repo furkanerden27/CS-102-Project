@@ -268,6 +268,10 @@ public class Player extends Entity{
         return attackModifier;
     }
 
+    public void addAttackModifier(float m){
+        attackModifier += m;
+    }
+
     public void setAttackModifier(float m){
         attackModifier = m;
     }

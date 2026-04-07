@@ -277,8 +277,18 @@ public class FightManager {
     }
 
     private void startPlayerTurn() {
+        player.setAttackModifier(0);
+        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
+
         player.applyEffects();
         if (!player.isAlive || !mob.isAlive) return;
+
+        if (player.isStunned) {
+            player.showFloatingText("Stunned!", com.badlogic.gdx.graphics.Color.YELLOW);
+            player.setStun(false);
+            startMobTurn();
+            return;
+        }
 
         isPlayerTurn = true;
         selectedCard = null;
@@ -287,9 +297,6 @@ public class FightManager {
             d.canRoll = true;
             d.setLocked(false);
         }
-
-        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
-        player.setAttackModifier(0);
 
         state = FightState.PLAYER_PICK_CARD;
     }

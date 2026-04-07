@@ -126,7 +126,7 @@ public class Card extends Item {
     public void apply(Player player, Mob mob) {
         switch (suit) {
             case SPADES:
-                float damage = (power + player.getAttackModifier()) * player.getRelicDamageMultiplier();
+                float damage = power * (1f + player.getAttackModifier()) * player.getRelicDamageMultiplier();
                 mob.takeDamage(Math.max(0, damage));
                 break;
             case HEARTS:
