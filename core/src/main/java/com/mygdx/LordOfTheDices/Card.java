@@ -101,8 +101,8 @@ public class Card extends Item {
         switch (suit) {
             case SPADES:   return 4 + r * 2f;
             case HEARTS:   return 3 + r * 1.5f;
-            case CLUBS:    return 0.05f + r * 0.02f;
-            case DIAMONDS: return 0.05f + r * 0.02f;
+            case CLUBS:    return 0.08f + r * 0.03f;
+            case DIAMONDS: return 0.08f + r * 0.03f;
             default:       return 0;
         }
     }
@@ -152,10 +152,10 @@ public class Card extends Item {
                 effectDesc = "Heals " + (int) power + " HP";
                 break;
             case CLUBS:
-                effectDesc = "Weakens enemy " + (int)(power * 100) + "% for " + (getEffectDuration() - 1) + " turns";
+                effectDesc = "Weakens enemy " + (int)(power * 100) + "% for " + getEffectDuration() + " turns";
                 break;
             case DIAMONDS:
-                effectDesc = "Strengthens " + (int)(power * 100) + "% for " + (getEffectDuration() - 1) + " turns";
+                effectDesc = "Strengthens " + (int)(power * 100) + "% for " + getEffectDuration() + " turns";
                 break;
             default:
                 effectDesc = "";

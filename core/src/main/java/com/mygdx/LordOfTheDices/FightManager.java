@@ -278,16 +278,16 @@ public class FightManager {
     }
 
     private void startMobTurn() {
-        player.setAttackModifier(0);
-        player.applyEffects();
-        if (!player.isAlive || !mob.isAlive) return;
-
         isPlayerTurn = false;
         state = FightState.MOB_TURN;
         mobTurnTimer = 0;
     }
 
     private void executeMobTurn() {
+        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
+        mob.applyEffects();
+        if (!player.isAlive || !mob.isAlive) return;
+
         if (mob.isAlive && !mob.isStunned) {
             mob.specialAttack(player);
             waitingForMobAnim = true;
@@ -301,8 +301,8 @@ public class FightManager {
     }
 
     private void startPlayerTurn() {
-        mob.setEffectiveAttackDamage(mob.getBaseAttackDamage());
-        mob.applyEffects();
+        player.setAttackModifier(0);
+        player.applyEffects();
         if (!player.isAlive || !mob.isAlive) return;
 
         if (player.isStunned) {

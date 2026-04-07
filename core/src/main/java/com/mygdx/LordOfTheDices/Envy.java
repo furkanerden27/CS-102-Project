@@ -11,7 +11,7 @@ public class Envy extends Boss {
     private Animation<TextureRegion> attack;
     private Card lastPlayedCard = null;
     private boolean showMimicText = false;
-    private float mimicDamageMultiplier = 0.75f; // can be changed
+    private float mimicDamageMultiplier = 0.75f;
     private final float MIMIC_PROB = 0.8f; 
 
 
@@ -33,7 +33,6 @@ public class Envy extends Boss {
             case HEARTS:
                 this.heal(lastPlayedCard.getPower() * mimicDamageMultiplier);
                 break;
-            // TODO I m not sure
             case DIAMONDS:
                 player.addEffect(new Weaken(2, lastPlayedCard.getPower() * mimicDamageMultiplier));
                 break;

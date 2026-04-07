@@ -231,31 +231,31 @@ public class InventoryScreen implements Screen {
 
         // Cards section(Visible at start)
 
-            cardsTitle = new Label("Cards ", titleStyle);
-            rightPanel.add(cardsTitle).center().padLeft(20).padTop(-10).colspan(2).row();
+        cardsTitle = new Label("Cards ", titleStyle);
+        rightPanel.add(cardsTitle).center().padLeft(20).padTop(-10).colspan(2).row();
 
-            Table cardsTable = buildCardsTable(labelStyle);
-            cardsScroll = new ScrollPane(cardsTable);
-            cardsScroll.setFadeScrollBars(false);
+        Table cardsTable = buildCardsTable(labelStyle);
+        cardsScroll = new ScrollPane(cardsTable);
+        cardsScroll.setFadeScrollBars(false);
 
         
         // Relics section(Not visible at start)
 
-            relicsTitle = new Label("Relics", titleStyle);
-            rightPanel.add(relicsTitle).center().padLeft(20).padTop(-40).colspan(2).row();
+        relicsTitle = new Label("Relics", titleStyle);
+        rightPanel.add(relicsTitle).center().padLeft(20).padTop(-40).colspan(2).row();
 
 
-            Table relicsTable = buildRelicsTable(labelStyle);
-            relicsScroll = new ScrollPane(relicsTable);
-            relicsScroll.setFadeScrollBars(false);
+        Table relicsTable = buildRelicsTable(labelStyle);
+        relicsScroll = new ScrollPane(relicsTable);
+        relicsScroll.setFadeScrollBars(false);
 
         //Dice section(Not visible at start)
-            DiceTitle = new Label("Dice", titleStyle);
-            rightPanel.add(DiceTitle).center().padLeft(20).padTop(-40).colspan(2).row();
+        DiceTitle = new Label("Dice", titleStyle);
+        rightPanel.add(DiceTitle).center().padLeft(20).padTop(-40).colspan(2).row();
 
-            Table diceTable = buildDiceTable(labelStyle);
-            diceScroll = new ScrollPane(diceTable);
-            diceScroll.setFadeScrollBars(false);
+        Table diceTable = buildDiceTable(labelStyle);
+        diceScroll = new ScrollPane(diceTable);
+        diceScroll.setFadeScrollBars(false);
         
         Stack stack = new Stack();
         relicsScroll.setTouchable(Touchable.disabled);
@@ -265,9 +265,6 @@ public class InventoryScreen implements Screen {
         stack.add(relicsScroll);
         stack.add(diceScroll);
         rightPanel.add(stack).width(480).height(300).padTop(10).colspan(2);
-
-        
-
 
         cardsScroll.setVisible(true);
         relicsScroll.setVisible(false);

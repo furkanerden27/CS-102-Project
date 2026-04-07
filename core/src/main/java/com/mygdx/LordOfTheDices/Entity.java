@@ -63,7 +63,7 @@ public abstract class Entity extends Sprite {
         floatingTexts = new ArrayList<>();
     }
 
-    protected String diceDrop(){return null;}
+    protected String diceDrop() {return null;}
 
     protected void initAnimationsFromAtlas(String regionName, int tileWidth, int tileHeight, int[] frameCounts) {
         TextureRegion region = atlas.findRegion(regionName);
@@ -229,6 +229,7 @@ public abstract class Entity extends Sprite {
         for(Effect e : effectsRemoveList){
             effectsInFight.remove(e);
         }
+        effectsRemoveList.clear();
     }
     public int getGold(){
         return goldDropped;

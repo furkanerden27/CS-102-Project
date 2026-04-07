@@ -27,7 +27,6 @@ public class Core extends Game {
         screen = new ScreenManager(this);
         audioManager = new AudioManager();
 
-        // Kaydedilmiş fullscreen ayarını uygula
         Preferences prefs = Gdx.app.getPreferences("game_settings");
         if (prefs.getBoolean("fullscreen", false)) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());

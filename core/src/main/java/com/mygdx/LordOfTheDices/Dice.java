@@ -31,7 +31,6 @@ public class Dice extends Item {
         isLocked = false;
         isRolling = false;
         this.stateTime = 0f;
-        // TODO  KALDIR FOR DEBUGGING 
     }
 
     //returns a random num from 1 to 6, call it to stop rolling animation

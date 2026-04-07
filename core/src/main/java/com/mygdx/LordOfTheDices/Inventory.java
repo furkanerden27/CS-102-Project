@@ -34,7 +34,7 @@ public class Inventory implements Comparator<Card> {
         cards.add(new Card(Suit.HEARTS, Rank.TWO));
         Collections.sort(cards, this); //look at the bottom for explanation
         dice.add(new Dice("Dice of Greed"));
-        gold = 100; //can be changed
+        gold = 100;
     }
 
     // Dice

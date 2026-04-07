@@ -155,9 +155,9 @@ public class Relic extends Item {
         }
     }
 
-    public RelicType getRelicType()        { return type; }
+    public RelicType getRelicType() { return type; }
     public float getEffectMagnitude() { return effectMagnitude; }
-    public boolean isActive()         { return isActive; }
-    public int getBuyingValue()       { return buyingValue; }
+    public boolean isActive(){ return isActive; }
+    public int getBuyingValue(){ return buyingValue; }
     public TextureRegion getTextureRegion() { return textureRegion; }
 }

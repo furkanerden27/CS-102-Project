@@ -87,7 +87,7 @@ public class StoryBeginScreen implements Screen {
         Texture slide = game.getAssets().getStoryBeginSlide(currentSlide);
         batch.draw(slide, 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
-        if (currentSlide > 0) {
+        if (currentSlide > 0 && currentSlide < slideCount - 1) {
             drawButton(btnPrev, regionPrev, hoveredBtn == 0);
         }
 
@@ -114,7 +114,7 @@ public class StoryBeginScreen implements Screen {
         viewport.unproject(mouse);
 
         hoveredBtn = -1;
-        if (currentSlide > 0 && btnPrev.contains(mouse.x, mouse.y))
+        if (currentSlide > 0 && currentSlide < slideCount - 1 && btnPrev.contains(mouse.x, mouse.y))
             hoveredBtn = 0;
         else if (btnNext.contains(mouse.x, mouse.y))
             hoveredBtn = 1;
