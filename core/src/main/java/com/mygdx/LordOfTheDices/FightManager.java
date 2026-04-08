@@ -254,7 +254,7 @@ public class FightManager {
 
     public void diceClicked(Dice clickedDice) {
         if (state != FightState.PLAYER_ROLL) return;
-        clickedDice.setLocked(!clickedDice.isLocked());
+        clickedDice.setLocked(true);
     }
 
     public void skipTurn() {
@@ -359,17 +359,31 @@ public class FightManager {
 
     public ArrayList<Card> getHand(Card.Suit selectedSuit) {
         switch (selectedSuit) {
-            case SPADES:   return spadesCards;
-            case CLUBS:    return clubsCards;
-            case DIAMONDS: return diamondsCards;
-            case HEARTS:   return heartsCards;
+            case SPADES:
+                return spadesCards;
+            case CLUBS:    
+                return clubsCards;
+            case DIAMONDS:
+                 return diamondsCards;
+            case HEARTS:
+                return heartsCards;
             default: throw new AssertionError();
         }
     }
 
-    public boolean isPlayerTurn() { return isPlayerTurn; }
-    public FightState getState() { return state; }
-    public String getLastMessage() { return lastMessage; }
-    public Player getPlayer() { return player; }
-    public Mob getMob() { return mob; }
+    public boolean isPlayerTurn() {
+        return isPlayerTurn;
+    }
+    public FightState getState() { 
+        return state; 
+    }
+    public String getLastMessage(){ 
+        return lastMessage; 
+    }
+    public Player getPlayer() { 
+        return player; 
+    }
+    public Mob getMob() { 
+        return mob; 
+    }
 }

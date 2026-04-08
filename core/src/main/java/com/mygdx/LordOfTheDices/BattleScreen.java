@@ -368,12 +368,13 @@ public class BattleScreen implements Screen {
 
         uiFont.setColor(Color.LIGHT_GRAY);
         FightManager.FightState currentState = manager.getState();
+
         if (currentState == FightManager.FightState.PLAYER_PICK_CARD) {
             uiFont.draw(batch, "Pick a card!", 10, 38);
         } else if (currentState == FightManager.FightState.PLAYER_ROLL) {
             Card sel = manager.getSelectedCard();
             if (sel != null) {
-                uiFont.draw(batch, "Selected: " + sel.name + " - Roll!", 10, 38);
+                uiFont.draw(batch, "Selected: " + sel.name+ " - Roll!", 10, 38);
             }
         } else if (currentState == FightManager.FightState.DICE_ROLLING) {
             uiFont.draw(batch, "Rolling...", 10, 38);
