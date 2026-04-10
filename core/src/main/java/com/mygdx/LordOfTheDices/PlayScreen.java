@@ -74,7 +74,8 @@ public class PlayScreen implements Screen {
         if (!playerData.cards.isEmpty()) {
             Inventory loadedInv = playerData.toInventory();
             player = new Player(playerData.currentHealth, px, py, map, loadedInv);
-        } else {
+        } 
+        else {
             player = new Player(playerData.currentHealth, px, py, map);
             player.getInventory().setGold(playerData.currentMoney);
         }
@@ -304,8 +305,8 @@ public class PlayScreen implements Screen {
         for (Entity e : entities) {
             if (!e.isAlive()) {
                 toRemove.add(e);
-                if (e instanceof Boss) player.setBossDefeated(true);
-                else if (e instanceof Mob) player.setMobDefeated(true);
+                if (e instanceof Boss) { player.setBossDefeated(true);}
+                else if (e instanceof Mob) { player.setMobDefeated(true);}
             }
         }
         for (Entity e : toRemove) {
@@ -317,22 +318,22 @@ public class PlayScreen implements Screen {
         viewport.update(width, height); 
     }
 
-    public String getSaveName() { return saveName; }
+    public String getSaveName() { return saveName;}
 
-    public int getCurrentGold() { return player.getInventory().getGold(); }
+    public int getCurrentGold() { return player.getInventory().getGold();}
 
-    public Level getLevel() { return level; }
+    public Level getLevel() { return level;}
 
-    public float getPlayerHealth() { return player.getHealth(); }
+    public float getPlayerHealth() { return player.getHealth();}
 
-    public float getPlayerX() { return player.getX(); }
+    public float getPlayerX() { return player.getX();}
 
-    public float getPlayerY() { return player.getY(); }
+    public float getPlayerY() { return player.getY();}
 
-    public boolean isMobDefeated() { return player.isMobDefeated(); }
-    public boolean isBossDefeated() { return player.isBossDefeated(); }
+    public boolean isMobDefeated() { return player.isMobDefeated();}
+    public boolean isBossDefeated() { return player.isBossDefeated();}
 
-    public Inventory getPlayerInventory() { return player.getInventory(); }
+    public Inventory getPlayerInventory() { return player.getInventory();}
 
     @Override public void show() {}
     @Override public void hide() {}

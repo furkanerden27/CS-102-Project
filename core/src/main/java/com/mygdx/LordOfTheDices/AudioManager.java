@@ -7,18 +7,18 @@ import com.badlogic.gdx.Preferences;
 
 public class AudioManager {
 
-    private static final String PREFS_NAME  = "game_settings";
-    private static final String PREF_MUSIC  = "music_level";
-    private static final String PREF_SFX    = "sfx_level";
+    private static final String NAME  = "game_settings";
+    private static final String MUSIC  = "music_level";
+    private static final String SFX    = "sfx_level";
 
     private Music menuMusic;
     private float musicVolume;
     private float sfxVolume;
 
     public AudioManager() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
-        musicVolume = prefs.getFloat(PREF_MUSIC, 0.75f);
-        sfxVolume   = prefs.getFloat(PREF_SFX,   0.6f);
+        Preferences prefs = Gdx.app.getPreferences(NAME);
+        musicVolume = prefs.getFloat(MUSIC, 0.75f);
+        sfxVolume   = prefs.getFloat(SFX,   0.6f);
     }
 
     // ── Müzik ────────────────────────────────────────────────────────────────
