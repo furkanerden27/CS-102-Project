@@ -24,33 +24,35 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class OptionsScreen implements Screen {
 
+    //screen w & h const.
     private static final float VIRTUAL_WIDTH  = 1366f;
     private static final float VIRTUAL_HEIGHT = 768f;
 
-    private static final String PREFS_NAME        = "game_settings";
-    private static final String PREF_SFX          = "sfx_level";
-    private static final String PREF_MUSIC        = "music_level";
-    private static final String PREF_FULLSCREEN   = "fullscreen";
+    //Selections
+    private static final String NAME = "game_settings";
+    private static final String SFX = "sfx_level";
+    private static final String MUSIC = "music_level";
+    private static final String FULLSCREEN   = "fullscreen";
 
-    private final Core          game;
+    //game initials
+    private final Core game;
     private final ScreenManager screenManager;
-
-    private Stage        stage;
-    private Texture      backgroundTexture;
+    private Stage stage;
+    private Texture backgroundTexture;
     private TextureAtlas atlas;
 
+
     private final Array<Texture> generatedTextures = new Array<>();
-
     private Pixmap returnBtnPixmap;
-
     private ImageButton fullscreenBtn;
 
-    private float   sfxLevel;
+    //settings varaibles
+    private float sfxLevel;
     private float   musicLevel;
     private boolean fullscreen;
 
     public OptionsScreen(Core game, ScreenManager screenManager) {
-        this.game          = game;
+        this.game = game;
         this.screenManager = screenManager;
     }
 
@@ -62,14 +64,14 @@ public class OptionsScreen implements Screen {
         loadSettings();
         applyAudioLevels();
         
-        Assets assets      = game.getAssets();
+        //we are getting assets
+        Assets assets = game.getAssets();
         backgroundTexture = assets.getTexture(Assets.BG_MAIN_MENU);
-        atlas             = assets.getAtlas(Assets.ATLAS_OPTIONS);
-
-        TextureRegion panelRegion             = atlas.findRegion("Options_bg");
-        TextureRegion checkboxEmptyRegion     = atlas.findRegion("checkbox_empty");
-        TextureRegion checkboxFilledRegion    = atlas.findRegion("checkbox_filled");
-        TextureRegion returnButtonRegion      = atlas.findRegion("returnToMenuButton");
+        atlas = assets.getAtlas(Assets.ATLAS_OPTIONS);
+        TextureRegion panelRegion = atlas.findRegion("Options_bg");
+        TextureRegion checkboxEmptyRegion = atlas.findRegion("checkbox_empty");
+        TextureRegion checkboxFilledRegion = atlas.findRegion("checkbox_filled");
+        TextureRegion returnButtonRegion = atlas.findRegion("returnToMenuButton");
         TextureRegion returnButtonHoverRegion = atlas.findRegion("returnToMenuButtonHover");
 
         Texture retTex = returnButtonRegion.getTexture();
@@ -219,17 +221,17 @@ public class OptionsScreen implements Screen {
 
 
     private void loadSettings() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
-        sfxLevel   = prefs.getFloat(PREF_SFX,   0.6f);
-        musicLevel = prefs.getFloat(PREF_MUSIC,  0.75f);
+        Preferences prefs = Gdx.app.getPreferences(NAME);
+        sfxLevel   = prefs.getFloat(SFX,   0.6f);
+        musicLevel = prefs.getFloat(MUSIC,  0.75f);
         fullscreen = Gdx.graphics.isFullscreen();
     }
 
     private void saveSettings() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
-        prefs.putFloat(PREF_SFX,   sfxLevel);
-        prefs.putFloat(PREF_MUSIC, musicLevel);
-        prefs.putBoolean(PREF_FULLSCREEN, fullscreen);
+        Preferences prefs = Gdx.app.getPreferences(NAME);
+        prefs.putFloat(SFX,   sfxLevel);
+        prefs.putFloat(MUSIC, musicLevel);
+        prefs.putBoolean(FULLSCREEN, fullscreen);
         prefs.flush();
     }
 
@@ -280,9 +282,7 @@ public class OptionsScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-
         if (returnBtnPixmap != null) returnBtnPixmap.dispose();
-
         for (Texture tex : generatedTextures) {
             tex.dispose();
         }

@@ -29,6 +29,27 @@ Players collect **gold**, **cards**, **dice**, and **relics** throughout the gam
 
 ---
 
+## 🎮 Controls
+
+### Roaming World
+| Key | Action |
+|-----|--------|
+| `A` | Move left |
+| `D` | Move right |
+| `W` | Jump |
+| `E` | İnteract Enemy |
+| `Z` | Merchant interaction|
+| `I` | Open inventory |
+
+### Battle Screen
+| Input | Action |
+|-------|--------|
+| Mouse click | Select a card from your hand |
+| Mouse click | Roll the dice |
+| Mouse click | Lock/unlock dice before rerolling |
+
+---
+
 ## 🏗️ Architecture
 
 The project follows the **Model-View-Controller (MVC)** design pattern:

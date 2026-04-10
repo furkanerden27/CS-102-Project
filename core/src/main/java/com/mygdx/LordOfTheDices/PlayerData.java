@@ -18,7 +18,7 @@ public class PlayerData {
     public boolean mobDefeated;
     public boolean bossDefeated;
 
-    //Inventory data
+    //Inventory data is listing in these varaibles
     public ArrayList<String> cards;
     public ArrayList<String> dice;
     public ArrayList<String> relics;
@@ -28,34 +28,35 @@ public class PlayerData {
         dice = new ArrayList<>();
         relics = new ArrayList<>();
     }
-
-    public static PlayerData fromPlayScreen(String saveName, int level, float health,
-                                            float x, float y, Inventory inv,
-                                            boolean mobDefeated, boolean bossDefeated) {
+    //it gets the datas in game if the player click to return menu
+    public static PlayerData fromPlayScreen
+    (String saveName, int level, float health, float x, float y, 
+        Inventory inv, boolean isMobDefeated, boolean isbossDefeated) {
         PlayerData data = new PlayerData();
         data.saveName = saveName;
         data.currentLevel = level;
         data.currentHealth = health;
         data.playerX = x;
         data.playerY = y;
-        data.mobDefeated = mobDefeated;
-        data.bossDefeated = bossDefeated;
+        data.mobDefeated = isMobDefeated;
+        data.bossDefeated = isbossDefeated;
         data.timestamp = System.currentTimeMillis();
         data.currentMoney = inv.getGold();
 
-        for (Card c : inv.getCards()) {
+            //we add the datas into our object
+        for(Card c : inv.getCards()) {
             data.cards.add(c.getSuit().name() + "-" + c.getRank().getNumericValue());
-        }
-        for (Dice d : inv.getDice()) {
-            data.dice.add(d.getName());
         }
         for (Relic r : inv.getRelics()) {
             data.relics.add(r.getRelicType().name() + ":" + r.isActive());
         }
-
+        for (Dice d : inv.getDice()) {
+            data.dice.add(d.getName());
+        }
         return data;
     }
-
+    //it works almost same wth from play screen it is
+    //added for funcitonality but removing it is also okey
     public static PlayerData fromPlayer(String saveName, int level, Player player) {
         PlayerData data = new PlayerData();
         data.saveName = saveName;
@@ -65,24 +66,24 @@ public class PlayerData {
         data.playerY = player.getY();
         data.mobDefeated = player.isMobDefeated();
         data.bossDefeated = player.isBossDefeated();
+
         data.timestamp = System.currentTimeMillis();
+        Inventory inventoryOb = player.getInventory();
+        data.currentMoney = inventoryOb.getGold();
 
-        Inventory inv = player.getInventory();
-        data.currentMoney = inv.getGold();
 
-        for (Card c : inv.getCards()) {
+        for (Card c : inventoryOb.getCards()) {
             data.cards.add(c.getSuit().name() + "-" + c.getRank().getNumericValue());
         }
-        for (Dice d : inv.getDice()) {
+        for (Dice d : inventoryOb.getDice()) {
             data.dice.add(d.getName());
         }
-        for (Relic r : inv.getRelics()) {
+        for (Relic r : inventoryOb.getRelics()) {
             data.relics.add(r.getRelicType().name() + ":" + r.isActive());
         }
-
         return data;
     }
-
+//create the save 
     public static PlayerData newSave(String saveName, int level, int health, int money) {
         PlayerData data = new PlayerData();
         data.saveName = saveName;
@@ -94,7 +95,7 @@ public class PlayerData {
         data.timestamp = System.currentTimeMillis();
         return data;
     }
-
+//this method help us to turn firebase data into object
     public Inventory toInventory() {
         ArrayList<Card> cardList = new ArrayList<>();
         ArrayList<Dice> diceList = new ArrayList<>();
@@ -102,18 +103,18 @@ public class PlayerData {
 
         for (String s : cards) {
             String[] split = s.split("-");
-            if (split.length == 2) {
+            
                 Suit suit = Suit.valueOf(split[0]);
-                int rankVal = Integer.parseInt(split[1]);
-                Rank rank = intToRank(rankVal);
+                int rankValue = Integer.parseInt(split[1]);
+                Rank rank = intToRank(rankValue);
                 if (rank != null) {
-                    if (rankVal >= 11) {
+                    if (rankValue >= 11) {
                         cardList.add(new SpecialCard(suit, rank));
                     } else {
                         cardList.add(new Card(suit, rank));
                     }
                 }
-            }
+            
         }
         for (String s : dice) {
             diceList.add(new Dice(s));
@@ -132,7 +133,7 @@ public class PlayerData {
         return new Inventory(diceList, cardList, relicList, currentMoney);
     }
 
-    // Serialize to JSON string for Firebase
+    //Serialization method to send request to firebase
     public String toJson(){
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -152,7 +153,7 @@ public class PlayerData {
         return sb.toString();
     }
 
-    /** Parse a PlayerData from a Firebase JSON object string. */
+    //it convert a firebase json into playerdata object
     public static PlayerData fromJson(String json) {
         if (json == null || json.isEmpty()) return null;
 
@@ -169,15 +170,17 @@ public class PlayerData {
         data.relics = extractArray(json, "relics");
         data.mobDefeated = extractBoolean(json, "mobDefeated");
         data.bossDefeated = extractBoolean(json, "bossDefeated");
-
-        if (data.saveName == null || data.saveName.isEmpty()) return null;
+        if (data.saveName == null || data.saveName.isEmpty()){
+            return null;
+        }
         return data;
     }
 
     public static ArrayList<PlayerData> fromJsonAll(String json) {
         ArrayList<PlayerData> list = new ArrayList<>();
-        if (json == null || json.length() < 2) return list;
-
+        if (json == null || json.length() < 2){
+            return list;
+        }
         json = json.trim();
         if (json.startsWith("{")) json = json.substring(1);
         if (json.endsWith("}")) json = json.substring(0, json.length() - 1);
@@ -185,13 +188,16 @@ public class PlayerData {
         int i = 0;
         while (i < json.length()) {
             int keyStart = json.indexOf('"', i);
-            if (keyStart == -1) break;
+            if (keyStart == -1){
+                break;
+            }
             int keyEnd = json.indexOf('"', keyStart + 1);
             if (keyEnd == -1) break;
 
             int objStart = json.indexOf('{', keyEnd);
-            if (objStart == -1) break;
-
+            if (objStart == -1){
+                break;
+            }
             int depth = 0;
             int objEnd = objStart;
             for (int j = objStart; j < json.length(); j++) {
@@ -203,16 +209,17 @@ public class PlayerData {
             }
 
             String obj = json.substring(objStart, objEnd + 1);
-            PlayerData entry = fromJson(obj);
-            if (entry != null) list.add(entry);
-
+            PlayerData input = fromJson(obj);
+            if (input != null){
+                list.add(input);
+            }
             i = objEnd + 1;
         }
 
         return list;
     }
-    // helpers
 
+    // helpers
     private static String toJsonArray(ArrayList<String> list) {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < list.size(); i++) {
@@ -224,53 +231,70 @@ public class PlayerData {
     }
 
     private static String escapeJson(String s) {
-        if (s == null) return "";
+        if (s == null){
+            return "";
+        }
+
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
-
-    private static String extractString(String json, String key) {
-        String search = "\"" + key + "\":\"";
+    //extracts string
+    private static String extractString(String json, String stringKey) {
+        String search = "\"" + stringKey + "\":\"";
         int start = json.indexOf(search);
         if (start == -1) return "";
         start += search.length();
         int end = json.indexOf('"', start);
         return end == -1 ? "" : json.substring(start, end);
     }
-
-    private static int extractInt(String json, String key) {
-        String search = "\"" + key + "\":";
+    //extracts int
+    private static int extractInt(String json, String intKey) {
+        String search = "\"" + intKey + "\":";
         int start = json.indexOf(search);
-        if (start == -1) return 0;
+        if (start == -1){
+            return 0;
+        }
         start += search.length();
         int end = start;
         while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-'))
             end++;
-        try { return Integer.parseInt(json.substring(start, end)); }
-        catch (NumberFormatException e) { return 0; }
+        try{
+            return Integer.parseInt(json.substring(start, end));
+        }
+        catch (NumberFormatException e){
+            return 0;
+        }
     }
-
-    private static float extractFloat(String json, String key) {
-        String search = "\"" + key + "\":";
+     //extracts float
+    private static float extractFloat(String json, String floatkey) {
+        String search = "\"" + floatkey + "\":";
         int start = json.indexOf(search);
-        if (start == -1) return 0;
+        if (start == -1){
+            return 0;
+        }
         start += search.length();
         int end = start;
         while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-' || json.charAt(end) == '.'))
             end++;
-        try { return Float.parseFloat(json.substring(start, end)); }
-        catch (NumberFormatException e) { return 0; }
+        try {
+            return Float.parseFloat(json.substring(start, end));
+        }
+        catch (NumberFormatException e){ 
+            return 0;
+        }
     }
-
-    private static boolean extractBoolean(String json, String key) {
-        String search = "\"" + key + "\":";
+    //extracts boolean
+    private static boolean extractBoolean(String json, String booleanKey) {
+        String search = "\"" + booleanKey + "\":";
         int start = json.indexOf(search);
-        if (start == -1) return false;
+        if (start == -1){
+            return false;
+        }
         start += search.length();
         return json.regionMatches(start, "true", 0, 4);
     }
-
-    private static long extractLong(String json, String key) {
-        String search = "\"" + key + "\":";
+    //extracts long
+    private static long extractLong(String json, String longKey) {
+        String search = "\"" + longKey + "\":";
         int start = json.indexOf(search);
         if (start == -1) return 0;
         start += search.length();
@@ -280,16 +304,15 @@ public class PlayerData {
         try { return Long.parseLong(json.substring(start, end)); }
         catch (NumberFormatException e) { return 0; }
     }
-
-    private static ArrayList<String> extractArray(String json, String key) {
+    //it extracts array
+    private static ArrayList<String> extractArray(String json, String Arrkey) {
         ArrayList<String> result = new ArrayList<>();
-        String search = "\"" + key + "\":[";
+        String search = "\"" + Arrkey + "\":[";
         int start = json.indexOf(search);
         if (start == -1) {
-            // Fallback: might be stored as a plain string (old format compatibility)
-            String asString = extractString(json, key);
-            if (!asString.isEmpty()) {
-                String[] parts = asString.split(",");
+            String str = extractString(json, Arrkey);
+            if (!str.isEmpty()) {
+                String[] parts = str.split(",");
                 for (String p : parts) {
                     if (!p.trim().isEmpty()) result.add(p.trim());
                 }
@@ -303,23 +326,26 @@ public class PlayerData {
         String arrayContent = json.substring(start, end);
         if (arrayContent.trim().isEmpty()) return result;
 
-        // Parse quoted strings from array
         int i = 0;
         while (i < arrayContent.length()) {
-            int qStart = arrayContent.indexOf('"', i);
-            if (qStart == -1) break;
-            int qEnd = arrayContent.indexOf('"', qStart + 1);
-            if (qEnd == -1) break;
-            result.add(arrayContent.substring(qStart + 1, qEnd));
-            i = qEnd + 1;
+            int quoteStart = arrayContent.indexOf('"', i);
+            if (quoteStart == -1){
+                break;
+            }
+            int quoteEnd = arrayContent.indexOf('"', quoteStart + 1);
+            if (quoteEnd == -1){
+                break;
+            }
+            result.add(arrayContent.substring(quoteStart + 1, quoteEnd));
+            i = quoteEnd + 1;
         }
 
         return result;
     }
-
-    private static Rank intToRank(int val) {
-        for (Rank r : Rank.values()) {
-            if (r.getNumericValue() == val) return r;
+    //turns card value to enum
+    private static Rank intToRank(int value) {
+        for (Rank r : Rank.values()){
+            if (r.getNumericValue() == value) return r;
         }
         return null;
     }

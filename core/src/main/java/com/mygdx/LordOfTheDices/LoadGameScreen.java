@@ -37,20 +37,22 @@ public class LoadGameScreen implements Screen {
     private static final Color COL_ROW_SEL    = new Color(0.85f, 0.38f, 0.05f, 0.70f);
     private static final Color COL_HEADER     = new Color(0.98f, 0.90f, 0.50f, 1f);
     private static final Color COL_TEXT       = new Color(0.90f, 0.88f, 0.82f, 1f);
-    private static final Color COL_BTN_TOP    = new Color(0.85f, 0.38f, 0.05f, 1f);
-    private static final Color COL_BTN_BOT    = new Color(0.50f, 0.16f, 0.02f, 1f);
+    private static final Color COL_BUTTON_TOP = new Color(0.85f, 0.38f, 0.05f, 1f);
+    private static final Color COL_BUTTON_BOT = new Color(0.50f, 0.16f, 0.02f, 1f);
     private static final Color COL_BTN_CAN_TOP = new Color(0.60f, 0.60f, 0.63f, 1f);
     private static final Color COL_BTN_CAN_BOT = new Color(0.28f, 0.28f, 0.30f, 1f);
     private static final Color COL_TEXT_BTN   = new Color(0.98f, 0.90f, 0.50f, 1f);
 
+
+    //LAYOUT FİNAL VALUES   
     private static final float PANEL_W = 900f;
     private static final float PANEL_H = 560f;
     private static final float ROW_H   = 55f;
     private static final float HEADER_H = 45f;
 
+    //Bases for screen
     private final Core game;
     private final ScreenManager screenManager;
-
     private OrthographicCamera camera;
     private FitViewport viewport;
     private SpriteBatch batch;
@@ -84,6 +86,7 @@ public class LoadGameScreen implements Screen {
 
     @Override
     public void show() {
+        //initials
         camera   = new OrthographicCamera();
         viewport = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
         batch    = new SpriteBatch();
@@ -126,7 +129,7 @@ public class LoadGameScreen implements Screen {
 
         fetchSaves();
     }
-
+    //get the saves
     private void fetchSaves() {
         loading = true;
         errorMsg = null;
@@ -195,8 +198,8 @@ public class LoadGameScreen implements Screen {
 
         drawTableRows();
 
-        drawShapeButton(btnLoad,   hoveredBtn == 0, COL_BTN_TOP, COL_BTN_BOT);
-        drawShapeButton(btnDelete, hoveredBtn == 1, COL_BTN_TOP, COL_BTN_BOT);
+        drawShapeButton(btnLoad,   hoveredBtn == 0, COL_BUTTON_TOP, COL_BUTTON_BOT);
+        drawShapeButton(btnDelete, hoveredBtn == 1, COL_BUTTON_TOP, COL_BUTTON_BOT);
         drawShapeButton(btnBack,   hoveredBtn == 2, COL_BTN_CAN_TOP, COL_BTN_CAN_BOT);
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -206,11 +209,10 @@ public class LoadGameScreen implements Screen {
         drawTexts();
         batch.end();
     }
-
+    //handle rows
     private void drawTableRows() {
         Rectangle scissors = new Rectangle();
         Rectangle clip = new Rectangle(tableX, tableY, tableW, tableH);
-
         com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(
             camera, viewport.getScreenX(), viewport.getScreenY(),
             viewport.getScreenWidth(), viewport.getScreenHeight(),
@@ -247,41 +249,43 @@ public class LoadGameScreen implements Screen {
             com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.popScissors();
         }
     }
-
+    //it handles the load screens texts
     private void drawTexts() {
         float cx = VIRTUAL_WIDTH / 2f;
-
         titleFont.setColor(COL_HEADER);
         layout.setText(titleFont, "Load Game");
         titleFont.draw(batch, "Load Game", cx - layout.width / 2f, panelY + PANEL_H - 15f);
 
-        float headerY = tableY + tableH - HEADER_H;
-        float colName  = tableX + 20f;
-        float colLevel = tableX + tableW * 0.45f;
-        float colHP    = tableX + tableW * 0.60f;
-        float colGold  = tableX + tableW * 0.75f;
+        float hY = tableY + tableH - HEADER_H;
+        float columnName = tableX + 20f;
+        float columnLevel = tableX + tableW * 0.45f;
+        float columnHP = tableX + tableW * 0.60f;
+        float columnGold = tableX + tableW * 0.75f;
 
         bodyFont.setColor(COL_HEADER);
-        bodyFont.draw(batch, "Save Name",  colName,  headerY + HEADER_H * 0.65f);
-        bodyFont.draw(batch, "Level",      colLevel, headerY + HEADER_H * 0.65f);
-        bodyFont.draw(batch, "HP",         colHP,    headerY + HEADER_H * 0.65f);
-        bodyFont.draw(batch, "Gold",       colGold,  headerY + HEADER_H * 0.65f);
+        bodyFont.draw(batch, "Save Name", columnName,hY + HEADER_H * 0.65f);
+        bodyFont.draw(batch, "Level", columnLevel, hY + HEADER_H * 0.65f);
+        bodyFont.draw(batch, "HP", columnHP,hY + HEADER_H * 0.65f);
+        bodyFont.draw(batch, "Gold", columnGold, hY + HEADER_H * 0.65f);
 
         if (loading) {
             bodyFont.setColor(COL_TEXT);
             layout.setText(bodyFont, "Loading...");
             bodyFont.draw(batch, "Loading...", cx - layout.width / 2f, tableY + tableH / 2f);
-        } else if (errorMsg != null) {
+        }
+        else if (errorMsg != null){
             bodyFont.setColor(Color.RED);
             layout.setText(bodyFont, errorMsg);
             bodyFont.draw(batch, errorMsg, cx - layout.width / 2f, tableY + tableH / 2f);
-        } else if (saves.isEmpty()) {
+        }
+        else if (saves.isEmpty()){
             bodyFont.setColor(COL_TEXT);
             String msg = "No saved games found.";
             layout.setText(bodyFont, msg);
             bodyFont.draw(batch, msg, cx - layout.width / 2f, tableY + tableH / 2f);
-        } else {
-            float dataTop = headerY;
+        }
+        else {
+            float dataTopFir = hY;
             Rectangle scissors = new Rectangle();
             Rectangle clip = new Rectangle(tableX, tableY, tableW, tableH - HEADER_H);
             com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(
@@ -292,17 +296,17 @@ public class LoadGameScreen implements Screen {
             batch.flush();
             if (com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.pushScissors(scissors)) {
                 for (int i = 0; i < saves.size(); i++) {
-                    float rowY = dataTop - (i + 1) * ROW_H + scrollOffset;
-                    if (rowY + ROW_H < tableY || rowY > dataTop) continue;
+                    float rowY = dataTopFir - (i + 1) * ROW_H + scrollOffset;
+                    if (rowY + ROW_H < tableY || rowY > dataTopFir) continue;
 
                     PlayerData e = saves.get(i);
                     float textY = rowY + ROW_H * 0.62f;
 
                     bodyFont.setColor(i == selectedIndex ? COL_HEADER : COL_TEXT);
-                    bodyFont.draw(batch, e.saveName,                       colName,  textY);
-                    bodyFont.draw(batch, String.valueOf(e.currentLevel),    colLevel, textY);
-                    bodyFont.draw(batch, String.valueOf((int) e.currentHealth), colHP, textY);
-                    bodyFont.draw(batch, String.valueOf(e.currentMoney),    colGold,  textY);
+                    bodyFont.draw(batch, e.saveName,columnName,textY);
+                    bodyFont.draw(batch, String.valueOf(e.currentLevel), columnLevel, textY);
+                    bodyFont.draw(batch, String.valueOf((int) e.currentHealth), columnHP, textY);
+                    bodyFont.draw(batch, String.valueOf(e.currentMoney),columnGold,textY);
                 }
                 batch.flush();
                 com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.popScissors();
@@ -310,16 +314,16 @@ public class LoadGameScreen implements Screen {
         }
 
         bodyFont.setColor(COL_TEXT_BTN);
-        drawCentered("Load",   btnLoad);
+        drawCentered("Load", btnLoad);
         drawCentered("Delete", btnDelete);
-        drawCentered("Back",   btnBack);
+        drawCentered("Back", btnBack);
 
         if (!saves.isEmpty()) {
             float totalContentH = saves.size() * ROW_H;
-            float visibleH = tableH - HEADER_H;
-            if (totalContentH > visibleH) {
+            float vH = tableH - HEADER_H;
+            if (totalContentH > vH) {
                 bodyFont.setColor(new Color(1f, 1f, 1f, 0.4f));
-                String scrollHint = (int)(scrollOffset / (totalContentH - visibleH) * 100) + "%";
+                String scrollHint = (int)(scrollOffset / (totalContentH - vH) * 100) + "%";
                 layout.setText(bodyFont, scrollHint);
                 bodyFont.draw(batch, scrollHint,
                     tableX + tableW - layout.width - 5f,
@@ -328,11 +332,11 @@ public class LoadGameScreen implements Screen {
         }
     }
 
-    private void drawCentered(String text, Rectangle r) {
+    private void drawCentered(String text, Rectangle rectangle) {
         layout.setText(bodyFont, text);
         bodyFont.draw(batch, text,
-            r.x + (r.width - layout.width) / 2f,
-            r.y + (r.height + layout.height) / 2f + 2f);
+            rectangle.x + (rectangle.width - layout.width) / 2f,
+            rectangle.y + (rectangle.height + layout.height) / 2f + 2f);
     }
 
     private void drawShapeButton(Rectangle r, boolean hov, Color topC, Color botC) {
@@ -354,9 +358,15 @@ public class LoadGameScreen implements Screen {
         viewport.unproject(mouse);
 
         hoveredBtn = -1;
-        if      (btnLoad.contains(mouse.x, mouse.y))   hoveredBtn = 0;
-        else if (btnDelete.contains(mouse.x, mouse.y)) hoveredBtn = 1;
-        else if (btnBack.contains(mouse.x, mouse.y))   hoveredBtn = 2;
+        if (btnLoad.contains(mouse.x, mouse.y)){
+            hoveredBtn = 0;
+        }
+        else if(btnDelete.contains(mouse.x, mouse.y)){
+            hoveredBtn = 1;
+        }
+        else if(btnBack.contains(mouse.x, mouse.y)){
+            hoveredBtn = 2;
+        }
 
         if (hoveredBtn != -1 && hoveredBtn != lastHoveredBtn) {
             game.getAudioManager().playSfx(hoverSound);
@@ -384,7 +394,9 @@ public class LoadGameScreen implements Screen {
             if (hoveredRow != -1) {
                 selectedIndex = hoveredRow;
             }
-            if (hoveredBtn == 0) onLoad();
+            if (hoveredBtn == 0){
+                onLoad();
+            }
             if (hoveredBtn == 1) onDelete();
             if (hoveredBtn == 2) onBack();
         }
@@ -404,6 +416,7 @@ public class LoadGameScreen implements Screen {
         }
     }
 
+    //for scrolling
     private void handleScroll() {
         if (pendingScroll != 0) {
             scrollOffset += pendingScroll * 40f;
@@ -419,13 +432,12 @@ public class LoadGameScreen implements Screen {
         scrollOffset = MathUtils.clamp(scrollOffset, 0, maxScroll);
     }
 
-    private void ensureVisible(int index) {
+    private void ensureVisible(int i) {
         float headerY = tableY + tableH - HEADER_H;
         float visibleH = tableH - HEADER_H;
-        float rowTop = (index) * ROW_H;
-        float rowBot = (index + 1) * ROW_H;
-
-        if (rowBot - scrollOffset > visibleH) {
+        float rowTop = (i) * ROW_H;
+        float rowBot = (i + 1) * ROW_H;
+        if(rowBot - scrollOffset > visibleH) {
             scrollOffset = rowBot - visibleH;
         }
         if (rowTop < scrollOffset) {
@@ -434,17 +446,19 @@ public class LoadGameScreen implements Screen {
         clampScroll();
     }
 
+    //it loads the save
     private void onLoad() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
         PlayerData entry = saves.get(selectedIndex);
         screenManager.showScreen(Screens.PLAY, entry);
     }
 
+    //deletes the save
     private void onDelete() {
         if (selectedIndex < 0 || selectedIndex >= saves.size()) return;
         PlayerData entry = saves.get(selectedIndex);
         String url = "https://lord-of-the-dices-default-rtdb.europe-west1.firebasedatabase.app/saves/"
-            + entry.saveName + ".json";
+    + entry.saveName + ".json";
 
         Net.HttpRequest req = new Net.HttpRequest(Net.HttpMethods.DELETE);
         req.setUrl(url);
